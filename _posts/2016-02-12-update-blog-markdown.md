@@ -18,8 +18,9 @@ function test() {
   console.log("notice the blank line before this function?");
 }
 ```
+
 >GitHub Pages now only supports Rouge, a pure-Ruby syntax highlighter, meaning you no longer need to install Python and Pygments to preview your site locally.
 
 Rubyer的福音，可是我更熟悉Python啊(⊙o⊙)...
 
-可是修改后查看`localhost`的是不行的。
+可是修改后查看`localhost`的是不行的。但是更新到pages上域名访问是可以的。
