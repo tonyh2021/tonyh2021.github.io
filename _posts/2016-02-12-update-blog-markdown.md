@@ -7,6 +7,8 @@ tags: [Blog]
 comments: true
 ---
 
+###修改`kramdown`引擎
+
 收到了`GitHub Pages`的邮件，大概是说，3月1号开始只支持`kramdown`引擎，代码高亮也要改成`Rouge`。参考链接：[github-pages-now-faster-and-simpler-with-jekyll-3-0](https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0)
 
 只好再研究下——主要是改为`kramdown`后，代码高亮的问题。我可不想用[`the Liquid tag`](http://jekyllrb.com/docs/templates/#code-snippet-highlighting)。(⊙o⊙)…
