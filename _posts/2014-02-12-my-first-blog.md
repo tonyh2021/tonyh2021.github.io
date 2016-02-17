@@ -58,8 +58,10 @@ $sudo gem install bundler
 source 'https://ruby.taobao.org'
 
 group :jekyll_plugins do
-	
- 	gem 'github-pages'
+    # gem "jekyll-paginate"
+    # gem "jekyll-feed"
+    gem 'github-pages'
+    gem 'pygments.rb'
 end
 
 #在项目目录下执行
@@ -94,7 +96,7 @@ pygmentize -f html -a .highlight -S default > css/pygments.css
 
 将`_config.yml`中修改：
 
-```
+```bash
 markdown: redcarpet
 highlighter: pygments
 ```

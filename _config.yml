@@ -3,8 +3,7 @@ url: 'http://www.ibloodline.com'
 description: 'Notes and thoughts from Bloodline'
 
 exclude: [Gemfile, Gemfile.lock, README.md]
-markdown: redcarpet
-highlighter: pygments
+markdown: kramdown
 
 author: 'Tony Han'
 disqus_shortname: Bloodline
@@ -20,3 +19,7 @@ sass:
     style: :compressed
 
 disqus_shortname : ibloodline
+
+timezone: Asia/Shanghai
+
+encoding : utf-8
