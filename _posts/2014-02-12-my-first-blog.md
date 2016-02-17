@@ -104,7 +104,7 @@ pygmentize -f html -a .highlight -S default > css/pygments.css
 
 将`_config.yml`中修改：
 
-```
+```ruby
 markdown: redcarpet
 highlighter: pygments
 ```
@@ -117,7 +117,7 @@ highlighter: pygments
 
 首先我们需要在jekyll中开启分页功能，在jekyll的_config.yml中加入分页配置：
 
-```
+```ruby
 paginate: 5
 paginate_path: "page:num"
 ```
@@ -126,11 +126,13 @@ paginate_path: "page:num"
 
 只是开启了分页还没有用，我们需要确实使用到首页之中，在首页(`/index.html`)中添加如下代码：
 
-```
+{% raw %}
+```html
 {% for post in paginator.posts %}
     <a href="{{ post.url }}">{{ post.title }}</a>
 {% endfor %}
 ```
+{% endraw %}
 
 这样，`jekyll`就会根据`paginator`来进行分页了，被分出来多少页，就会有多少个页面生成。排1-5的文章就在`/index.html`中了，而排6-10的文章则在`/page2/index.html`中，依次类推
 
@@ -140,22 +142,27 @@ paginate_path: "page:num"
 
 首先检测总的页数，如果只有一页，自然就不需要分页了。通过paginator的total_pages属性能判断总页数：
 
+{% raw %}
 ```html
 {% if paginator.total_pages > 1 %}
 <!-- 分页代码 -->
 {% endif %}
 ```
+{% endraw %}
 
 我们需要一个跳转到上一页的按钮，这个按钮在第一页不需要显示，通过`paginator`的`previous_page`属性来判断是否是第一个页面，使用`paginator`的`previous_page_path`来输出上一页的路径，注意在前面添加`baseurl`，并进行一些必要的字符替换：
 
+{% raw %}
 ```html
 {% if paginator.previous_page %}
     <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}"上一页</a>
 {% endif %}
 ```
+{% endraw %}
 
-接着是生成所有页面的按钮，并使当前页按钮无效化，遍历所有页面，使用`paginator`的`page`属性来确定当前页，如果是当前页，则按钮无效，否则使用`{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}`来将`:num`替换成当前页面的数字生成页面路径：
+接着是生成所有页面的按钮，并使当前页按钮无效化，遍历所有页面，使用`paginator`的`page`属性来确定当前页，如果是当前页，则按钮无效，否则使用{% raw %}`{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}`{% endraw %}来将`:num`替换成当前页面的数字生成页面路径：
 
+{% raw %}
 ```html
 {% for page in (1..paginator.total_pages) %}
 	{% if page == paginator.page %}
@@ -167,11 +174,14 @@ paginate_path: "page:num"
 	{% endif %}
 {% endfor %}
 ```
+{% endraw %}
 
 最后生成一个下一页的按钮，在最后一页不显示，和上一页按钮类似，通过`paginator`的`next_page_path`来确定是否还有下一页：
 
+{% raw %}
 ```html
 {% if paginator.next_page %}
     <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">下一页</a>
 {% endif %}
 ```
+{% endraw %}

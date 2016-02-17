@@ -3,7 +3,10 @@ url: 'http://www.ibloodline.com'
 description: 'Notes and thoughts from Bloodline'
 
 exclude: [Gemfile, Gemfile.lock, README.md]
+highlighter: rouge
 markdown: kramdown
+kramdown:
+  input: GFM
 
 author: 'Tony Han'
 disqus_shortname: Bloodline

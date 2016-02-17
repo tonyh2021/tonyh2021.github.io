@@ -4,12 +4,9 @@ title: About
 ---
 
 
-####Hi. I'm Bloodline.  
+<p>Hi. I'm Bloodline. </p> 
 
-####看似对一切新奇的东西感兴趣，实则只是缺乏专注吧——那就做一个不那么木讷的极客吧。 
-
-  
-
+<p>看似对一切新奇的东西感兴趣，实则只是缺乏专注吧——那就做一个不那么木讷的极客吧。</p>
 
 <blockquote>
     And one more thing...

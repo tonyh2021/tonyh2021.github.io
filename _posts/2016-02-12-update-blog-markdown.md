@@ -13,6 +13,15 @@ comments: true
 
 只好再研究下——主要是改为`kramdown`后，代码高亮的问题。我可不想用[`the Liquid tag`](http://jekyllrb.com/docs/templates/#code-snippet-highlighting)。(⊙o⊙)…
 
+修改`_config.yml`：
+
+```ruby
+highlighter: rouge
+markdown: kramdown
+kramdown:
+  input: GFM
+```
+
 貌似直接可用\`\`\`包裹代码，呃，跟Markdown普通语法一致。剩下的就是去掉Pygments相关了。
 
 ```js
@@ -26,3 +35,15 @@ function test() {
 Rubyer的福音，可是我更熟悉Python啊(⊙o⊙)...
 
 可是修改后查看`localhost`的是不行的。但是更新到pages上域名访问是可以的。
+
+还有就是想引用`Liquid tag`，比如：
+
+{% raw %}
+```html
+{% for post in paginator.posts %}
+    <a href="{{ post.url }}">{{ post.title }}</a>
+{% endfor %}
+```
+{% endraw %}
+
+就得使用{% raw %}`{% raw %}`标签{% endraw %}。具体看看[`本页GitHub`](https://github.com/lettleprince/lettleprince.github.io)的源码吧。
