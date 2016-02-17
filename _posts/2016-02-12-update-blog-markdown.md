@@ -7,7 +7,7 @@ tags: [Blog]
 comments: true
 ---
 
-###修改`kramdown`引擎
+### 修改`kramdown`引擎
 
 收到了`GitHub Pages`的邮件，大概是说，3月1号开始只支持`kramdown`引擎，代码高亮也要改成`Rouge`。参考链接：[github-pages-now-faster-and-simpler-with-jekyll-3-0](https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0)
 
@@ -21,7 +21,7 @@ function test() {
 }
 ```
 
->GitHub Pages now only supports Rouge, a pure-Ruby syntax highlighter, meaning you no longer need to install Python and Pygments to preview your site locally.
+> GitHub Pages now only supports Rouge, a pure-Ruby syntax highlighter, meaning you no longer need to install Python and Pygments to preview your site locally.
 
 Rubyer的福音，可是我更熟悉Python啊(⊙o⊙)...
 
