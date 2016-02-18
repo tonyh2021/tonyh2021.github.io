@@ -25,9 +25,9 @@ comments: true
 
 ### 环境搭建
 
-很多人都推荐使用`Jekyll`，也有很多现成的模板，比较方便。
+很多人都推荐使用`jekyll`，也有很多现成的模板，比较方便。
 
-#### 安装`Jekyll`
+#### 安装`jekyll`
 
 ```bash
 $ sudo gem install jekyll
@@ -44,7 +44,7 @@ jekyll 3.1.1
 $jekyll serve --safe --watch
 ```  
 
-此时`Jekyll`会在`localhost`的`4000`端口监听`http`请求，用浏览器访问`http://localhost:4000/index.html`，之前的页面出现了！
+此时`jekyll`会在`localhost`的`4000`端口监听`http`请求，用浏览器访问`http://localhost:4000/index.html`，之前的页面出现了！
 
 ### 使用jekyll
 
