@@ -7,6 +7,7 @@ highlighter: rouge
 markdown: kramdown
 kramdown:
   input: GFM
+  extensions: ["fenced_code_blocks", "autolink", "tables", "strikethrough"]
 
 author: 'Tony Han'
 disqus_shortname: Bloodline
@@ -17,7 +18,7 @@ gems:
   - jekyll-gist
   - jekyll-sitemap
 
-paginate: 10 # 指定每页多少条
+paginate: 5 # 指定每页多少条
 paginate_path: "page:num" # 指定每页的url
 
 sass:
