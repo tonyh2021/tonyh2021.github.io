@@ -9,7 +9,27 @@ comments: true
 
 ## 字典转模型
 
+`Student.h`
 
+<script src="https://gist.github.com/lettleprince/17d6cef4bee3696a5d8e.js?file=Student.h"></script>
+
+`NSObject+Extension.h`
+
+<script src="https://gist.github.com/lettleprince/17d6cef4bee3696a5d8e.js?file=Extension.h"></script>
+
+`NSObject+Extension.m`
+
+<script src="https://gist.github.com/lettleprince/17d6cef4bee3696a5d8e.js?file=Extension.m"></script>
+
+`ViewController.m`
+
+<script src="https://gist.github.com/lettleprince/17d6cef4bee3696a5d8e.js?file= ViewController-1.m"></script>
+
+代码输出：
+
+```
+2016-02-23 18:48:22.022 runtime_demo[34262:4960140] stu的name值为: Tom, address为: Beijing
+```
 
 ## 关联对象
 
