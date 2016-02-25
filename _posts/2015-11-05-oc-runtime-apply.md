@@ -260,3 +260,5 @@ Objective-C动态运行库会自动注册我们代码中定义的所有的类。
 获取类定义的方法有三个：`objc_lookUpClass`，`objc_getClass`和`objc_getRequiredClass`。如果类在运行时未注册，则`objc_lookUpClass`会返回nil，而objc_getClass会调用类处理回调，并再次确认类是否注册，如果确认未注册，再返回nil。而`objc_getRequiredClass`函数的操作与`objc_getClass`相同，只不过如果没有找到类，则会杀死进程。
 
 > `objc_getMetaClass`函数：如果指定的类没有注册，则该函数会调用类处理回调，并再次确认类是否注册，如果确认未注册，再返回nil。不过，每个类定义都必须有一个有效的元类定义，所以这个函数总是会返回一个元类定义，不管它是否有效。
+> 
+> #### 文章中的代码都可以从我的Github [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。
