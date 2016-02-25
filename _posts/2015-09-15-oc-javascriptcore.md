@@ -145,7 +145,7 @@ JSContext并不能让Objective-C和JavaScript的对象直接转换，毕竟两�
 2016-02-25 15:38:56.590 JavaScriptCoreDemo[39487:5554432] ---js log end: ---
 ```
 
-#### 文章中的代码都可以从我的Github [`JavaScriptCoreDemo`]()找到。
+#### 文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
 
 #### 参考：
 

@@ -56,11 +56,54 @@ JSExport不仅可以正确反映属性到JavaScript中，而且对属性的特�
 
 ### 对已定义类扩展协议— `class_addProtocol`
 
-对于自定义的Objective-C类，可以通过之前的方式自定义继承了JSExport的协议来实现与JavaScript的交互。对于已经定义好的系统类或者从外部引入的库类，她们都不会预先定义协议提供与JavaScript的交互的。好在[Objective-C是可以在运行时实行对类性质的修改](2015-11-02-oc-runtime)的。
+对于自定义的Objective-C类，可以通过之前的方式自定义继承了JSExport的协议来实现与JavaScript的交互。对于已经定义好的系统类或者从外部引入的库类，她们都不会预先定义协议提供与JavaScript的交互的。好在[Objective-C是可以在运行时实行对类性质的修改](../../../2015/11/02/oc-runtime.html)的。
 
 比如下边的例子，就是为UITextField添加了协议，让其能在JavaScript中可以直接访问text属性。该接口如下：
 
-#### 文章中的代码都可以从我的Github [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
+<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-5.m"></script>
+
+之后在通过runtime的`class_addProtocol`为其添加上该协议：
+
+<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-6.m"></script>
+
+为一个UIButton添加如下的事件，其方法只要是将textField传入到JSContext中然后读取其text值，自增1后重新赋值：
+
+<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-7.m"></script>
+
+运行结果：
+
+```
+2016-02-25 18:03:53.480 JavaScriptCoreDemo[39857:5592929] ---Begin Log---
+2016-02-25 18:03:53.482 JavaScriptCoreDemo[39857:5592929] 145
+2016-02-25 18:03:53.482 JavaScriptCoreDemo[39857:5592929] ---End Log---
+2016-02-25 18:03:54.057 JavaScriptCoreDemo[39857:5592929] ---Begin Log---
+2016-02-25 18:03:54.057 JavaScriptCoreDemo[39857:5592929] 146
+2016-02-25 18:03:54.057 JavaScriptCoreDemo[39857:5592929] ---End Log---
+2016-02-25 18:03:54.510 JavaScriptCoreDemo[39857:5592929] ---Begin Log---
+2016-02-25 18:03:54.511 JavaScriptCoreDemo[39857:5592929] 147
+2016-02-25 18:03:54.512 JavaScriptCoreDemo[39857:5592929] ---End Log---
+......
+```
+
+当运行点击UIButton时就会看到UITextField的值在不断增加，也证明了对于已定义的类，也可以在运行时添加神奇的JSExport协议让它们可以在Objective-C和JavaScript直接实现友好互通。
+
+### 不同内存管理机制—Reference Counting vs. Garbage Collection
+
+虽然Objetive-C和JavaScript都是面向对象的语言，而且它们都可以让程序员专心于业务逻辑，不用担心内存回收的问题。但是两者的内存回首机制全是不同的，Objective-C是基于引用计数，之后Xcode编译器又支持了[自动引用计数(ARC, Automatic Reference Counting](http://en.wikipedia.org/wiki/Automatic_Reference_Counting))；JavaScript则如同Java/C#那样用的是[垃圾回收机制(GC, Garbage Collection](http://en.wikipedia.org/wiki/Garbage_collection_(computer_science)))。当两种不同的内存回收机制在同一个程序中被使用时就难免会产生冲突。
+
+比如，在一个方法中创建了一个临时的Objective-C对象，然后将其加入到JSContext放在JavaScript中的变量中被使用。因为JavaScript中的变量有引用所以不会被释放回收，但是Objective-C上的对象可能在方法调用结束后，引用计数变0而被回收内存，因此JavaScript层面也会造成错误访问。
+
+同样的，如果用JSContext创建了对象或者数组，返回JSValue到Objective-C，即使把JSValue变量retain下，但可能因为JavaScript中因为变量没有了引用而被释放内存，那么对应的JSValue也没有用了。
+
+怎么在两种内存回收机制中处理好对象内存就成了问题。JavaScriptCore提供了JSManagedValue类型帮助开发人员更好地管理对象内存。
+
+<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-8.m"></script>
+
+JSVirtualMachine为整个JavaScriptCore的执行提供资源，所以当将一个JSValue转成JSManagedValue后，就可以添加到JSVirtualMachine中，这样在运行期间就可以保证在Objective-C和JavaScript两侧都可以正确访问对象而不会造成不必要的麻烦。
+
+<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-9.m"></script>
+
+#### 文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
 
 #### 参考：
 

@@ -261,4 +261,4 @@ Objective-C动态运行库会自动注册我们代码中定义的所有的类。
 
 > `objc_getMetaClass`函数：如果指定的类没有注册，则该函数会调用类处理回调，并再次确认类是否注册，如果确认未注册，再返回nil。不过，每个类定义都必须有一个有效的元类定义，所以这个函数总是会返回一个元类定义，不管它是否有效。
 > 
-> #### 文章中的代码都可以从我的Github [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。
+> #### 文章中的代码都可以从我的GitHub [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。

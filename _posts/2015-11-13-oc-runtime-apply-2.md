@@ -53,4 +53,4 @@ comments: true
 2016-02-23 17:46:25.424 runtime_demo[34075:4939529] myObj的属性property值为：Hi! AssociatedObject!
 ```
 
-#### 文章中的代码都可以从我的Github [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。
+#### 文章中的代码都可以从我的GitHub [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。
