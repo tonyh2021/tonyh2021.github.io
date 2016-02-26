@@ -1,8 +1,10 @@
 name: Bloodline's Blog
 url: 'http://www.ibloodline.com'
 description: 'Notes and thoughts from Bloodline'
-
+baseurl : '/'
 exclude: [Gemfile, Gemfile.lock, README.md]
+
+# Conversion
 highlighter: rouge
 markdown: kramdown
 kramdown:
@@ -17,9 +19,10 @@ gems:
   # https://help.github.com/articles/atom-rss-feeds-for-github-pages/
   - jekyll-gist
   - jekyll-sitemap
+  - jekyll-paginate
 
 paginate: 5 # 指定每页多少条
-paginate_path: "page:num" # 指定每页的url
+paginate_path: "blog/page:num" # 指定每页的url
 
 sass:
     sass_dir: _sass

@@ -37,10 +37,9 @@ og:
         {% elsif page == 1 %}
           <a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}&nbsp;</a>
         {% else %}
-          <a href="{{ site.paginate_path | '/index.html' | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}&nbsp;</a>
+          <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}&nbsp;</a>
         {% endif %}
       {% endfor %}
-
       {% if paginator.next_page %}
         <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
       {% else %}
