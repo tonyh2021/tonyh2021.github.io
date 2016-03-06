@@ -119,7 +119,7 @@ highlighter: pygments
 
 ```ruby
 paginate: 5
-paginate_path: "page:num"
+paginate_path: "blog/page:num"
 ```
 
 #### 使用分页
