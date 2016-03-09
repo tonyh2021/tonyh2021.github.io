@@ -15,13 +15,13 @@ js的调试方法：
  
 - 然后是`console.log()`，不过在客户端的webview中是无法使用的，这时候就可以用点小技巧，在定义js接口时，多定义一个：
 
-```Objective-C
+```c
 - (void)log:(NSString *)logStr;
 ```
 
 然后在.m文件中实现：
 
-```Objective-C
+```c
 - (void)log:(NSString *)logStr {
     NSLog(@"%@", logStr);
 }
