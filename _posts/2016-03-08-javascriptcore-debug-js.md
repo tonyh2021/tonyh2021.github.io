@@ -34,6 +34,7 @@ console.log = function(msg){
     jsObj.log(msg);
 };
 ```
+
 这样console.log就被替换为jsObj.log，此时console的输出就会打印到Xcode的控制太了。
 
 - 另外可以通过`typeof ()`来实现查看数据的类型。可能的数据类型有`number`、`string`、`boolean`、`object`、`function` 和 `undefined`。
