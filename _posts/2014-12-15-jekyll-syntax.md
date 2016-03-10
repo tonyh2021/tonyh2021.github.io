@@ -410,3 +410,7 @@ ruby
 2014-11-07-memcached-string-hash.md
 ```
 {% endraw %}
+
+### Jekyll的文章引用
+
+写博客过程中肯定避免不了文章之间相互引用。如Markdown文件的名字为`2016-03-10-memory2-block.md`。此时，可使用`[iOS的Block的内存分配](../../../2016/03/10/memory2-block.html)`来进行引用。
