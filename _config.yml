@@ -5,11 +5,11 @@ baseurl : '/'
 exclude: [Gemfile, Gemfile.lock, README.md]
 
 # Conversion
-highlighter: rouge
 markdown: kramdown
 kramdown:
   input: GFM
-  extensions: ["fenced_code_blocks", "autolink", "tables", "strikethrough"]
+  syntax_highlighter: rouge
+  extensions: [ "fenced_code_blocks", "hard_wrap","autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify","no_intra_emphasis"]
 
 author: 'Tony Han'
 disqus_shortname: Bloodline

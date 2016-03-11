@@ -23,7 +23,7 @@ Block 其实也是一个对象，并且在大多数情况下，Block 是分配�
 
 NSGlobalBlock类似函数，位于text段，在block内部没有引用任何外部变量。对NSGlobalBlock的retain、copy、release操作都无效。
 
-```c
+```objc
 void (^globalBlock) () = ^ () {
       NSLog(@"global block");
 };

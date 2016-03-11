@@ -16,7 +16,7 @@ comments: true
 
 系统非集合类对象指的是NSString，NSNumber之类的对象。下面先看个非集合类`immutable`对象拷贝的例子：
 
-```c
+```objc
 NSString *string = @"origin";
 NSString *stringCopy = [string copy];
 NSMutableString *stringMCopy = [string mutableCopy];
@@ -26,7 +26,7 @@ NSLog(@"%p", stringCopy);
 NSLog(@"%p", stringMCopy);
 ```
 
-```c
+```objc
 2016-03-10 17:32:04.479 Homework[21715:2353641] 0x1000d0ea0
 2016-03-10 17:32:04.481 Homework[21715:2353641] 0x1000d0ea0
 2016-03-10 17:32:04.481 Homework[21715:2353641] 0x17006fe40
@@ -36,7 +36,7 @@ NSLog(@"%p", stringMCopy);
 
 再看`mutable`对象拷贝例子：
 
-```c
+```objc
 NSMutableString *string      = [NSMutableString stringWithString: @"origin"];
 //copy
 NSString *stringCopy         = [string copy];
@@ -49,14 +49,14 @@ NSLog(@"%p", mStringCopy);
 NSLog(@"%p", stringMCopy);
 ```
 
-```c
+```objc
 2016-03-10 17:34:11.486 Homework[21728:2354359] 0x17426f800
 2016-03-10 17:34:11.487 Homework[21728:2354359] 0x174230600
 2016-03-10 17:34:11.487 Homework[21728:2354359] 0x1742306e0
 2016-03-10 17:34:11.487 Homework[21728:2354359] 0x174267240
 ```
 
-```c
+```objc
 //change value
 [mStringCopy appendString:@"mm"]; //crash
 [string appendString:@" origion!"];
@@ -79,7 +79,7 @@ crash的原因就是copy返回的对象是`immutable`对象。注释后运行`st
 
 集合类对象是指NSArray、NSDictionary、NSSet之类的对象。下面先看集合类immutable对象使用copy和mutableCopy的一个例子：
 
-```c
+```objc
 NSArray *array = @[@[@"a", @"b"], @[@"c", @"d"]];
 NSArray *copyArray = [array copy];
 NSMutableArray *mCopyArray = [array mutableCopy];
@@ -89,7 +89,7 @@ NSLog(@"%p", copyArray);
 NSLog(@"%p", mCopyArray);
 ```
 
-```c
+```objc
 2016-03-10 17:53:40.113 Homework[21775:2358227] 0x17403f040
 2016-03-10 17:53:40.114 Homework[21775:2358227] 0x17403f040
 2016-03-10 17:53:40.114 Homework[21775:2358227] 0x174247e60
@@ -97,7 +97,7 @@ NSLog(@"%p", mCopyArray);
 
 可以看到copyArray和array的地址是一样的，而mCopyArray和array的地址是不同的。说明copy操作进行了指针拷贝，mutableCopy进行了内容拷贝。但需要强调的是：此处的内容拷贝，仅仅是拷贝array这个对象，array集合内部的元素仍然是指针拷贝。这和上面的非集合immutable对象的拷贝还是挺相似的，那么mutable对象的拷贝会不会类似呢？我们继续往下，看mutable对象拷贝的例子：
 
-```c
+```objc
 NSMutableArray *array = [NSMutableArray arrayWithObjects:[NSMutableString stringWithString:@"a"],@"b",@"c",nil];
 NSArray *copyArray = [array copy];
 NSMutableArray *mCopyArray = [array mutableCopy];
@@ -107,7 +107,7 @@ NSLog(@"%p", copyArray);
 NSLog(@"%p", mCopyArray);
 ```
 
-```
+```objc
 2016-03-10 17:54:39.114 Homework[21782:2358605] 0x170058e40
 2016-03-10 17:54:39.115 Homework[21782:2358605] 0x170058ed0
 2016-03-10 17:54:39.115 Homework[21782:2358605] 0x170058ea0
@@ -128,7 +128,7 @@ NSLog(@"%p", mCopyArray);
 
 > **Listing 2**  Making a deep copy
 
-```c
+```objc
 NSArray *deepCopyArray=[[NSArray alloc] initWithArray:someArray copyItems:YES];
 ```
 
@@ -138,7 +138,7 @@ NSArray *deepCopyArray=[[NSArray alloc] initWithArray:someArray copyItems:YES];
 
 **Listing 3**  A true deep copy
 
-```c
+```objc
 NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
           [NSKeyedArchiver archivedDataWithRootObject:oldArray]];
 ```
@@ -153,7 +153,7 @@ NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
 
 补充：
 
-```c
+```objc
 NSString *str = @"string";
 NSLog(@"%p", str);
     
@@ -161,7 +161,7 @@ str = @"newString";
 NSLog(@"%p", str);
 ```
 
-```c
+```objc
 2016-03-10 17:58:02.152 Homework[21794:2359359] 0x1000f8ea0
 2016-03-10 17:58:02.154 Homework[21794:2359359] 0x1000f8ee0
 ```
@@ -170,3 +170,4 @@ NSLog(@"%p", str);
 
 参考：  
 [iOS 集合的深复制与浅复制](https://www.zybuluo.com/MicroCai/note/50592)
+
