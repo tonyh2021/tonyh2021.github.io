@@ -21,7 +21,7 @@ comments: true
 
 刚开始使用Autolayout遇到下面的警告人容易让人气馁。经常不知所措而放弃了使用Autolayout。
 
-```
+```objc
 Unable to simultaneously satisfy constraints.
 Probably at least one of the constraints in the following list is one you don't want.
 Try this:
@@ -57,7 +57,7 @@ The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in
 
 这样就可以直接看到输出：
 
-```
+```objc
 (lldb) po [[UIWindow keyWindow] _autolayoutTrace]
 
 UIWindow:0x7f9481c93360
@@ -73,14 +73,14 @@ UIWindow:0x7f9481c93360
 
 打印视图对象：
 
-```
+```objc
 (lldb) po 0x7f9481c9d990
 <UIView: 0x7f9481c9d990; frame = (0 0; 768 359); autoresize = RM+BM; layer = <CALayer: 0x7fc82d338960>>
 ```
 
 改变颜色：
 
-```
+```objc
 (lldb) expr ((UIView *)0x174197010).backgroundColor = [UIColor redColor]
 (UICachedDeviceRGBColor *) $4 = 0x0000000174469cc0
 ```
@@ -123,7 +123,7 @@ UIWindow:0x7f9481c93360
 
 - 如果想使用动画效果，需要如下代码：
 
-```
+```objc
 // 通知需要更新约束，但是不立即执行
 [self setNeedsUpdateConstraints];
 // 立即更新约束，以执行动态变换
@@ -145,7 +145,7 @@ UIWindow:0x7f9481c93360
 
 可以使用辅助的contentView来设置，思路大概如下
 
-```
+```objc
 //首先设置scrollview的约束
 [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
 		make.edges.equalTo(self.view); // self.view一样大小
