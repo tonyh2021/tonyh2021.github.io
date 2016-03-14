@@ -183,3 +183,18 @@ for (int i = 0; i < 10; i++) {
 ```
 
 不过对于我的项目来讲计算的太蛋疼了，于是偷了个懒，因为从pageview往里的每个view都是撑满父视图的，所以也就可以使用默认的autoresizingMask进行自适应布局啦。
+
+## SizeClass示意图
+
+一般如果涉及到iPad的布局，最好还是用SizeClass比较方便。
+
+**约束添加注解：**
+
+![约束添加](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_1.png)
+
+![约束添加](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_2.png)
+
+**SizeClass注解：**
+
+![SizeClass](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_3.png)
+
