@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "函数式编程"
+title: "函数式编程原理与简单实现"
 description: ""
 category: articles
 tags: 编程思想
