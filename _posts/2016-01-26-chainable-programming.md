@@ -3,14 +3,16 @@ layout: post
 title: "链式编程原理及简单实现"
 description: ""
 category: articles
-tags: [RAC]
+tags: 编程思想
 comments: true
 ---
 
 
 ## 前言
 
-RAC的学习中涉及到了链式编程的概念，同时一直在用的Masonry更是典型的链式编程的代表。所以还是要深入了解下其代码的实现。个人理解Masonry的优势主要在于：<font color="red">**能够将视图的约束代码聚集起来，方便代码的阅读与修改**</font>。
+一直在用Masonry，对其链式编程很敢兴趣。于是稍微看了下下其代码的实现。个人理解Masonry的优势主要在于：<font color="red">**能够将视图的约束代码聚集起来，方便代码的阅读与修改**</font>。
+
+链式编程是将多个操作（多行代码）通过点号(.)链接在一起成为一句代码，以增强代码的可读性。核心思想：方法的返回值是block，block必须有返回值（self，即对象本身），block参数为需要操作的值。
 
 ## Masonry的应用
 
@@ -86,21 +88,23 @@ demoView.backgroundColor = [UIColor orangeColor];
 
 - 链式编程思想方法特点：方法返回值必须是block。Block参数：传入需要操作的内容，block返回值：方法调用者
 
+## 链式编程简单实现
+
 下面使用传统方式和链式编程思想对比着来实现下计算器：
 
 ```objc
-//TraditionalCaculatorMaker.h
+//TraditionalCalculatorMaker.h
 @property (nonatomic, assign) int result;
 - (instancetype)add:(int)num;
 
-//TraditionalCaculatorMaker.m
+//TraditionalCalculatorMaker.m
 - (instancetype)add:(int)num {
     self.result += num;
     return self;
 }
 
 //方法调用
-TraditionalCaculatorMaker *make = [[TraditionalCaculatorMaker alloc] init];
+TraditionalCalculatorMaker *make = [[TraditionalCalculatorMaker alloc] init];
 [[[make add:3] add:5] add:2];
 NSLog(@"result:%d", [make result]);
 ```
@@ -108,12 +112,12 @@ NSLog(@"result:%d", [make result]);
 多个中括号看起来相当恶心啦。下面按照Masonry的思路来实现计算器：
 
 ```objc
-//CaculatorMaker.h
+//CalculatorMaker.h
 @property (nonatomic, assign) int result;
-- (CaculatorMaker * (^)(int num))add;
+- (CalculatorMaker * (^)(int num))add;
 
-//CaculatorMaker.m
-- (CaculatorMaker * (^)(int num))add {
+//CalculatorMaker.m
+- (CalculatorMaker * (^)(int num))add {
     return ^(int num){
         self.result += num;
         return self;
@@ -126,12 +130,12 @@ NSLog(@"result:%d", [make result]);
 当然，要实现类似Masonry的调用方式，必须要用分类实现，比如给NSObject添加分类：
 
 ```objc
-//NSObject+CaculatorAdditions.h
-- (int)makeCaculator:(void(^)(CaculatorMaker *))block;
+//NSObject+CalculatorAdditions.h
+- (int)makeCalculator:(void(^)(CalculatorMaker *))block;
 
-//NSObject+CaculatorAdditions.m
-- (int)makeCaculator:(void(^)(CaculatorMaker *))block {
-    CaculatorMaker *make = [[CaculatorMaker alloc] init];
+//NSObject+CalculatorAdditions.m
+- (int)makeCalculator:(void(^)(CalculatorMaker *))block {
+    CalculatorMaker *make = [[CalculatorMaker alloc] init];
     block(make);
     return [make result];
 }
@@ -141,12 +145,12 @@ NSLog(@"result:%d", [make result]);
 
 ```objc
 NSObject *obj = [[NSObject alloc] init];
-int result = [obj makeCaculator:^(CaculatorMaker *make) {
+int result = [obj makeCalculator:^(CalculatorMaker *make) {
    make.add(1).add(2).add(4);
 }];
 NSLog(@"result:%d", result);
 ```
 
-#### 文章中的代码都可以从我的GitHub [`ChainableProgramming`](https://github.com/lettleprince/ChainableProgramming)找到。
+### 文章中的代码都可以从我的GitHub [`ChainableProgramming`](https://github.com/lettleprince/ChainableProgramming)找到。
 
 
