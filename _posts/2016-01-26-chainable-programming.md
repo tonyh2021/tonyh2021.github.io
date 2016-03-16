@@ -151,6 +151,7 @@ int result = [obj makeCalculator:^(CalculatorMaker *make) {
 NSLog(@"result:%d", result);
 ```
 
-### 文章中的代码都可以从我的GitHub [`ChainableProgramming`](https://github.com/lettleprince/ChainableProgramming)找到。
+### 代码
+文章中的代码都可以从我的GitHub [`ChainableProgramming`](https://github.com/lettleprince/ChainableProgramming)找到。
 
 

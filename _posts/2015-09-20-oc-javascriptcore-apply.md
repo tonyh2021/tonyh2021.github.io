@@ -103,9 +103,10 @@ JSVirtualMachine为整个JavaScriptCore的执行提供资源，所以当将一�
 
 <script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-9.m"></script>
 
-#### 文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
+### 代码：
+文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
 
-#### 参考：
+### 参考资料：
 
 [JavaScriptCore框架在iOS7中的对象交互和管理](http://blog.iderzheng.com/ios7-objects-management-in-javascriptcore-framework/)
 

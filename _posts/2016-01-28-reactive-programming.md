@@ -101,6 +101,7 @@ KVO的用法非常简单：
 ```
 
 
-### 文章中的代码都可以从我的GitHub [`FRP`](https://github.com/lettleprince/FRP)找到。
+### 代码：
+文章中的代码都可以从我的GitHub [`FRP`](https://github.com/lettleprince/FRP)找到。
 
 
