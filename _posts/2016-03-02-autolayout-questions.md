@@ -135,6 +135,41 @@ UIWindow:0x7f9481c93360
 }];
 ```
 
+- 经过测试，又找到一个方法，remake约束之后直接使用动画`layoutIfNeeded`即可。
+
+```objc
+self.button = ({
+   UIButton *button = [[UIButton alloc] init];
+   button.backgroundColor = [UIColor orangeColor];
+   [self.view addSubview:button];
+   [button mas_makeConstraints:^(MASConstraintMaker *make) {
+       make.centerX.equalTo(self.view);
+       make.width.height.equalTo(@100);
+       make.top.equalTo(self.blueView.mas_bottom).with.offset(20);
+   }];
+   @weakify(self);
+   [[button rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(id x) {
+       
+       @strongify(self);
+       [self.blueView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        //这里进行大小状态的判断
+           if (!self.isBigger) {
+               make.top.bottom.left.right.equalTo(self.view).with.insets(UIEdgeInsetsMake(50, 50, 200, 50));
+           } else {
+               make.center.equalTo(self.view);
+               make.width.height.equalTo(@200);
+           }
+       }];
+       [UIView animateWithDuration:0.25f animations:^{
+           [self.view layoutIfNeeded];
+       }];
+       
+       self.isBigger = !self.isBigger;
+   }];
+   button;
+});
+```
+
 ## 关于UIScrollView的自动布局
 
 上面提到的页面遇到了多重的UIScrollView，使用自动布局的时候也是够蛋疼的。具体使用技巧参考[Masonry自动布局详解九：复杂ScrollView布局](http://www.henishuo.com/masonry-complex-scrollview-layout/)、[在UIScrollView中使用Autolayout布局](http://blog.csdn.net/kmyhy/article/details/41827985)以及[iOS_autoLayout_Masonry](http://www.cnblogs.com/-ljj/p/4470658.html)。主要注意点为：
@@ -170,10 +205,10 @@ for (int i = 0; i < 10; i++) {
 		make.top.equalTo(lastView ? lastView.mas_bottom : @0); // 第一个View top = 0;
 		make.left.equalTo(@0); // left 0
 		make.width.equalTo(_contentView); // width = _contentView;
-		make.height.equalTo(@(height)); // heinght = height
+		make.height.equalTo(@(height)); // height = height
    }];
 
-   height += 25; // += 25;
+   height += 25;
    lastView = view;
 }
 
