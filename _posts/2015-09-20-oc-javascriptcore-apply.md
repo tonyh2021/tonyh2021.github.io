@@ -9,13 +9,55 @@ comments: true
 
 JavaScript可以脱离prototype继承完全用JSON来定义对象，但是Objective-C编程里可不能脱离类和继承了写代码。所以JavaScriptCore就提供了JSExport作为两种语言的互通协议。JSExport中没有约定任何的方法，连可选的(@optional)都没有，但是所有继承了该协议(@protocol)的协议（注意不是Objective-C的类(@interface)）中定义的方法，都可以在JSContext中被使用。
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-1.m"></script>
+```objc
+@protocol PersonProtocol <JSExport>
+
+@property (nonatomic, strong) NSDictionary *urls;
+- (NSString *)fullName;
+
+@end
+```
 
 在上边的代码中，定义了一个`PersonProtocol`，并让它继承了神秘的JSExport协议，在新定义的协议中约定urls属性和fullName方法。之后又定义了Person类，除了让它实现PersonProtocol外，还定义了firstName和lastName属性。而fullName方法返回的则是两部分名字的结合。
 
 下边就来创建一个Person对象，然后传入到JSContext中并尝试使用JavaScript来访问和修改该对象。
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-2.m"></script>
+```objc
+- (void)jsTest8 {
+    JSContext *context = [[JSContext alloc] init];
+    context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
+        NSLog(@"JSValue exception: %@", exception);
+        con.exception = exception;
+    };
+    
+    context[@"log"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        for (id obj in args) {
+            NSLog(@"js log: %@", obj);
+        }
+    };
+    
+    Person *person = [[Person alloc] init];
+    context[@"p"] = person;
+    person.firstName = @"Tony";
+    person.lastName = @"Han";
+    person.urls = @{@"site": @"http://www.ibloodline.com"};
+    
+    // ok to get fullName
+    [context evaluateScript:@"log(p.fullName());"];
+    // cannot access firstName
+    [context evaluateScript:@"log(p.firstName);"];
+    // ok to access dictionary as object
+    [context evaluateScript:@"log('site:', p.urls.site, 'blog:', p.urls.blog);"];
+    // ok to change urls property
+    [context evaluateScript:@"p.urls = {blog:'http://blog.ibloodline.com'}"];
+    [context evaluateScript:@"log('-------')"];
+    [context evaluateScript:@"log('site:', p.urls.site, 'blog:', p.urls.blog);"];
+    
+    // affect on Objective-C side as well
+    NSLog(@"%@", person.urls);
+}
+```
 
 ```
 2016-02-25 16:01:39.476 JavaScriptCoreDemo[39550:5561905] js log: Tony Han
@@ -40,11 +82,25 @@ JSExport不仅可以正确反映属性到JavaScript中，而且对属性的特�
 
 对于多参数的方法，JavaScriptCore的转换方式将Objective-C的方法每个部分都合并在一起，冒号后的字母变为大写并移除冒号。比如下边协议中的方法，在JavaScript调用就是：`doFooWithBar(foo, bar);`
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-3.m"></script>
+```objc
+@protocol MultiArgs <JSExport>
+- (void)doFoo:(id)foo withBar:(id)bar;
+@end
+```
 
 如果希望方法在JavaScript中有一个比较短的名字，就需要用的JSExport.h中提供的宏：`JSExportAs(PropertyName, Selector)`。
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-4.m"></script>
+```objc
+@protocol LongArgs <JSExport>
+ 
+JSExportAs(testArgumentTypes,
+           - (NSString *)testArgumentTypesWithInt:(int)i double:(double)d 
+                    boolean:(BOOL)b string:(NSString *)s number:(NSNumber *)n 
+                    array:(NSArray *)a dictionary:(NSDictionary *)o
+           );
+ 
+@end
+```
 
 比如上边定义的协议中的方法，在JavaScript就只要用`testArgumentTypes(i, d, b, s, n, a, dic);`来调用就可以了。
 
@@ -60,15 +116,50 @@ JSExport不仅可以正确反映属性到JavaScript中，而且对属性的特�
 
 比如下边的例子，就是为UITextField添加了协议，让其能在JavaScript中可以直接访问text属性。该接口如下：
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-5.m"></script>
+```objc
+@protocol JSUITextFieldExport <JSExport>
+ 
+@property(nonatomic,copy) NSString *text;
+ 
+@end
+```
 
 之后在通过runtime的`class_addProtocol`为其添加上该协议：
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-6.m"></script>
+```objc
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    class_addProtocol([UITextField class], @protocol(JSUITextFieldExport));
+}
+```
 
 为一个UIButton添加如下的事件，其方法只要是将textField传入到JSContext中然后读取其text值，自增1后重新赋值：
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-7.m"></script>
+```objc
+- (IBAction)buttonClicked {
+    JSContext *context = [[JSContext alloc] init];
+    context[@"log"] = ^() {
+        NSLog(@"---Begin Log---");
+        NSArray *args = [JSContext currentArguments];
+        for (JSValue *jsVal in args) {
+            NSLog(@"%@", jsVal);
+        }
+        NSLog(@"---End Log---");
+    };
+    
+    context[@"textField"] = self.textField;
+    NSString *script = @"var text = textField.text;";
+    [context evaluateScript:script];
+    
+    [context evaluateScript:@"log(text)"];
+    
+    NSString *script2 = @"var num = parseInt(textField.text, 10);"
+    "++num;"
+    "textField.text = num;";
+    [context evaluateScript:script2];
+}
+```
 
 运行结果：
 
@@ -97,11 +188,47 @@ JSExport不仅可以正确反映属性到JavaScript中，而且对属性的特�
 
 怎么在两种内存回收机制中处理好对象内存就成了问题。JavaScriptCore提供了JSManagedValue类型帮助开发人员更好地管理对象内存。
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-8.m"></script>
+```objc
+@interface JSManagedValue : NSObject
+ 
+// Convenience method for creating JSManagedValues from JSValues.
++ (JSManagedValue *)managedValueWithValue:(JSValue *)value;
+ 
+// Create a JSManagedValue.
+- (id)initWithValue:(JSValue *)value;
+ 
+// Get the JSValue to which this JSManagedValue refers. If the JavaScript value has been collected,
+// this method returns nil.
+- (JSValue *)value;
+ 
+@end
+```
 
 JSVirtualMachine为整个JavaScriptCore的执行提供资源，所以当将一个JSValue转成JSManagedValue后，就可以添加到JSVirtualMachine中，这样在运行期间就可以保证在Objective-C和JavaScript两侧都可以正确访问对象而不会造成不必要的麻烦。
 
-<script src="https://gist.github.com/lettleprince/f365fa24481da3a88fff.js?file=2015-09-20-oc-javascriptcore-apply-9.m"></script>
+```objc
+@interface JSVirtualMachine : NSObject
+ 
+// Create a new JSVirtualMachine.
+- (id)init;
+ 
+// addManagedReference:withOwner and removeManagedReference:withOwner allow 
+// clients of JSVirtualMachine to make the JavaScript runtime aware of 
+// arbitrary external Objective-C object graphs. The runtime can then use 
+// this information to retain any JavaScript values that are referenced 
+// from somewhere in said object graph.
+// 
+// For correct behavior clients must make their external object graphs 
+// reachable from within the JavaScript runtime. If an Objective-C object is 
+// reachable from within the JavaScript runtime, all managed references 
+// transitively reachable from it as recorded with 
+// addManagedReference:withOwner: will be scanned by the garbage collector.
+// 
+- (void)addManagedReference:(id)object withOwner:(id)owner;
+- (void)removeManagedReference:(id)object withOwner:(id)owner;
+ 
+@end
+```
 
 ### 代码：
 文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。

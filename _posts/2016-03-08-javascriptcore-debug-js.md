@@ -15,13 +15,13 @@ js的调试方法：
  
 - 然后是`console.log()`，不过在客户端的webview中是无法使用的，这时候就可以用点小技巧，在定义js接口时，多定义一个：
 
-```c
+```objc
 - (void)log:(NSString *)logStr;
 ```
 
 然后在.m文件中实现：
 
-```c
+```objc
 - (void)log:(NSString *)logStr {
     NSLog(@"%@", logStr);
 }
@@ -40,3 +40,4 @@ console.log = function(msg){
 - 另外可以通过`typeof ()`来实现查看数据的类型。可能的数据类型有`number`、`string`、`boolean`、`object`、`function` 和 `undefined`。
 
 - 在恰当的时候可以在OC的代码中调用js方法：`- (JSValue *)evaluateScript:(NSString *)script;`，要注意打印JSValue时的与OC对象的转化。
+

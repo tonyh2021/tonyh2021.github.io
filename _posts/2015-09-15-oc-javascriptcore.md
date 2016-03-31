@@ -17,7 +17,25 @@ comments: true
 
 `<JavaScriptCore/JavaScriptCore.h>`引入了5个文件，每个文件里都定义跟文件名对应的类：
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=JavaScriptCore.h"></script>
+```objc
+#ifndef JavaScriptCore_h
+#define JavaScriptCore_h
+
+#include <JavaScriptCore/JavaScript.h>
+#include <JavaScriptCore/JSStringRefCF.h>
+
+#if defined(__OBJC__) && JSC_OBJC_API_ENABLED
+
+#import "JSContext.h"
+#import "JSValue.h"
+#import "JSManagedValue.h"
+#import "JSVirtualMachine.h"
+#import "JSExport.h"
+
+#endif
+
+#endif /* JavaScriptCore_h */
+```
 
 ## JSContext和JSValue
 
@@ -31,7 +49,14 @@ JSValue则可以说是JavaScript和Object-C之间互换的桥梁，它提供了�
 
 先看个简单的例子：
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-1.m"></script>
+```objc
+- (void)jsTest {
+    JSContext *context = [[JSContext alloc] init];
+    JSValue *jsValue = [context evaluateScript:@"15 + 7"];
+    int intVal = [jsValue toInt32];
+    NSLog(@"JSValue: %@, int: %d", jsValue, intVal);
+}
+```
 
 输出结果：
 
@@ -42,7 +67,22 @@ JSValue则可以说是JavaScript和Object-C之间互换的桥梁，它提供了�
 
 还可以存一个JavaScript变量在JSContext中，然后通过下标来获取出来。而对于Array或者Object类型，JSValue也可以通过下标直接取值和赋值。
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-2.m"></script>
+```objc
+- (void)jsTest2 {
+    JSContext *context = [[JSContext alloc] init];
+    [context evaluateScript:@"var arr = [15, 7 , 'www.ibloodline.com'];"];
+    JSValue *jsValueArray = context[@"arr"]; // Get array from JSContext
+    
+    NSLog(@"jsValueArray: %@;    length: %@", jsValueArray, jsValueArray[@"length"]);
+    jsValueArray[1] = @"blog"; // Use JSValue as array
+    jsValueArray[7] = @7;
+    
+    NSLog(@"jsValueArray: %@;    length: %d", jsValueArray, [jsValueArray[@"length"] toInt32]);
+    
+    NSArray *nsArray = [jsValueArray toArray];
+    NSLog(@"NSArray: %@", nsArray);
+}
+```
 
 输出结果：
 
@@ -67,7 +107,25 @@ JSValue则可以说是JavaScript和Object-C之间互换的桥梁，它提供了�
 
 各种数据类型可以转换，Objective-C的Block也可以传入JSContext中当做JavaScript的方法使用。比如在前端开发中常用的log方法，虽然JavaScritpCore没有自带（毕竟不是在网页上运行的，自然不会有window、document、console这些类了），仍然可以定义一个Block方法来调用NSLog来模拟：
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-3.m"></script>
+```objc
+- (void)jsTest3 {
+    JSContext *context = [[JSContext alloc] init];
+    context[@"log"] = ^() {
+        NSLog(@"---Begin Log---");
+        
+        NSArray *args = [JSContext currentArguments];
+        for (JSValue *jsVal in args) {
+            NSLog(@"%@", jsVal);
+        }
+        
+        JSValue *this = [JSContext currentThis];
+        NSLog(@"this: %@",this);
+        NSLog(@"---End Log---");
+    };
+    
+    [context evaluateScript:@"log('ibloodline', [15, 7], { hello:'javascript', js:100 });"];
+}
+```
 
 这对于调试有一定的帮助。输出结果：
 
@@ -84,7 +142,17 @@ JSValue则可以说是JavaScript和Object-C之间互换的桥梁，它提供了�
 
 Block可以传入JSContext作方法，但是JSValue没有toBlock方法来把JavaScript方法变成Block在Objetive-C中使用。毕竟Block的参数个数和类型已经返回类型都是固定的。虽然不能把方法提取出来，但是JSValue提供了`- (JSValue *)callWithArguments:(NSArray *)arguments;`方法可以反过来将参数传进去来调用方法。
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-4.m"></script>
+```objc
+- (void)jsTest4 {
+    JSContext *context = [[JSContext alloc] init];
+    [context evaluateScript:@"function add(a, b) { return a + b; }"];
+    JSValue *add = context[@"add"];
+    NSLog(@"JSValue add:  %@", add);
+    
+    JSValue *sum = [add callWithArguments:@[@(15), @(7)]];
+    NSLog(@"JSValue sum:  %d",[sum toInt32]);
+}
+```
 
 结果输出：
 
@@ -99,11 +167,25 @@ JSValue还提供`- (JSValue *)invokeMethod:(NSString *)method withArguments:(NSA
 
 Objective-C的异常会在运行时被Xcode捕获，而在JSContext中执行的JavaScript如果出现异常，只会被JSContext捕获并存储在`exception`属性上，而不会向外抛出。时时刻刻检查JSContext对象的`exception`是否不为`nil`显然是不合适，更合理的方式是给JSContext对象设置`exceptionHandler`，它接受的是`^(JSContext *context, JSValue *exceptionValue)`形式的Block。其默认值就是将传入的`exceptionValue`赋给传入的`context`的`exception`属性：
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-5.m"></script>
+```objc
+^(JSContext *context, JSValue *exceptionValue) {
+    context.exception = exceptionValue;
+};
+```
 
 我们也可以给`exceptionHandler`赋予新的Block以便在JavaScript运行发生异常的时候我们可以立即知道：
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-6.m"></script>
+```objc
+- (void)jsTest5 {
+    JSContext *context = [[JSContext alloc] init];
+    context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
+        NSLog(@"%@", exception);
+        con.exception = exception;
+    };
+    
+    [context evaluateScript:@"ibloodline.age = 897"];
+}
+```
 
 输出结果：
 
@@ -122,7 +204,29 @@ Objective-C的异常会在运行时被Xcode捕获，而在JSContext中执行的J
 
 JSContext并不能让Objective-C和JavaScript的对象直接转换，毕竟两者的面向对象的设计方式是不同的：前者基于class，后者基于prototype。但所有的对象其实可以视为一组键值对的集合，所以JavaScript中的对象可以返回到Objective-C中当做NSDictionary类型进行访问。
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-7.m"></script>
+```objc
+- (void)jsTest6 {
+    
+    JSContext *context = [[JSContext alloc] init];
+    context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
+        NSLog(@"JSValue exception: %@", exception);
+        con.exception = exception;
+    };
+    
+    context[@"log"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        for (id obj in args) {
+            NSLog(@"js log: %@", obj);
+        }
+    };
+
+    JSValue *obj =[context evaluateScript:@"var jsObj = { age:897, name:'ibloodline' }; log(jsObj.age); jsObj"];
+    NSLog(@"JSValue obj: %@, %@", obj[@"age"], obj[@"name"]);
+    
+    NSDictionary *dic = [obj toDictionary];
+    NSLog(@"NSDictionary dic: %@, %@", dic[@"age"], dic[@"name"]);
+}
+```
 
 ```
 2016-02-25 15:38:37.879 JavaScriptCoreDemo[39480:5554190] ---js log: ---
@@ -134,7 +238,28 @@ JSContext并不能让Objective-C和JavaScript的对象直接转换，毕竟两�
 
 同样的，NSDicionary和NSMutableDictionary传入到JSContext之后也可以直接当对象来调用:
 
-<script src="https://gist.github.com/lettleprince/f1b24867a3a55c974034.js?file=2015-09-15-oc-javascriptcore-8.m"></script>
+```objc
+- (void)jsTest7 {
+    JSContext *context = [[JSContext alloc] init];
+    context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
+        NSLog(@"JSValue exception: %@", exception);
+        con.exception = exception;
+    };
+    
+    context[@"log"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        for (id obj in args) {
+            NSLog(@"---js log begin: ---");
+            NSLog(@"%@", obj);
+            NSLog(@"---js log end: ---");
+        }
+    };
+    
+    NSDictionary *dic = @{@"name": @"ibloodline", @"#":@(897)};
+    context[@"dic"] = dic;
+    [context evaluateScript:@"log(dic.name, dic['#'])"];
+}
+```
 
 ```
 2016-02-25 15:38:56.589 JavaScriptCoreDemo[39487:5554432] ---js log begin: ---
