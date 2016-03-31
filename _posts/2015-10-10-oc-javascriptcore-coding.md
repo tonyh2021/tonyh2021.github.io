@@ -13,11 +13,69 @@ comments: true
 
 `MyJSInterface.h`
 
-<script src="https://gist.github.com/lettleprince/707acdf1743c37af62b3.js?file=MyJSInterface.h"></script>
+```objc
+#import <Foundation/Foundation.h>
+#import <JavaScriptCore/JavaScriptCore.h>
+
+@protocol MyJSInterfaceExport <JSExport>
+
+- (void)log:(NSString *)logStr;
+
+- (void)myJSInterfaceMethodWithArg1:(NSString *)arg1;
+
+/**
+ *  多个参数调用时比较别扭，第二个参数之前直接加冒号。
+ */
+- (void)myJSInterfaceMethodWithArgs:(NSString *)arg1 :(NSString *)arg2;
+
+- (NSNumber *)myJSInterfaceMethod:(NSNumber *)num;
+
+//- (void)initMethodWithArg:(NSNumber *)num;
+
+/**
+ * init开头的方法必须使用JSExportAs转换。
+ */
+JSExportAs(initMethodWithArg, - (void)setupMethodWithArg:(NSNumber *)num);
+
+@end
+
+@interface MyJSInterface : NSObject <MyJSInterfaceExport>
+
+@end
+```
 
 `MyJSInterface.m`
 
-<script src="https://gist.github.com/lettleprince/707acdf1743c37af62b3.js?file=MyJSInterface.m"></script>
+```objc
+#import "MyJSInterface.h"
+
+@implementation MyJSInterface
+
+#pragma mark - js调用接口
+- (void)log:(NSString *)logStr {
+    NSLog(@"%@", logStr);
+}
+
+- (void)myJSInterfaceMethodWithArg1:(NSString *)arg1 {
+    NSLog(@"myJSInterfaceMethodWithArg1:%@", arg1);
+}
+
+- (void)myJSInterfaceMethodWithArgs:(NSString *)arg1 :(NSString *)arg2 {
+    NSLog(@"myJSInterfaceMethodWithArgs:%@, %@", arg1, arg2);
+}
+
+- (NSNumber *)myJSInterfaceMethod:(NSNumber *)num {
+    int numInt = [num intValue];
+    numInt += 24;
+    return [NSNumber numberWithInt:numInt];
+}
+
+- (void)setupMethodWithArg:(NSNumber *)num {
+    NSLog(@"call js initMethodWithArg...");
+}
+
+@end
+```
 
 - MyJSInterface实现所定义的`MyJSInterfaceExport `协议，然后在`MyJSInterface.m`中实现相应的方法。
 
@@ -25,7 +83,80 @@ comments: true
 
 `WebViewController.m`
 
-<script src="https://gist.github.com/lettleprince/707acdf1743c37af62b3.js?file=WebViewController.m"></script>
+```objc
+#import "WebViewController.h"
+#import <Masonry/Masonry.h>
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "MyJSInterface.h"
+
+@interface WebViewController () <UIWebViewDelegate>
+
+@property (weak, nonatomic) UIWebView *webView;
+
+@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) JSValue   *jsObj;
+@property (nonatomic, strong) JSManagedValue *managedValue;
+
+@end
+
+@implementation WebViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    UIWebView *webView = [[UIWebView alloc] init];
+    //去掉UIWebView的底图
+    for (UIView *subView in [webView subviews]) {
+        if ([subView isKindOfClass:[UIScrollView class]]) {
+            ((UIScrollView *)subView).bounces = NO;
+        }
+    }
+    //设置背景透明
+    webView.backgroundColor = [UIColor clearColor];
+    webView.opaque = NO;
+    self.webView = webView;
+    [self.view insertSubview:webView atIndex:0];
+    self.webView.delegate = self;
+    
+    [webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.insets(UIEdgeInsetsMake(0, 0, 0, 0));
+    }];
+    
+//    mainBundle下的html貌似无法使用loadHTMLString来加载
+    NSURL *htmlFile = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"html"] isDirectory:NO];
+    [webView loadRequest:[NSURLRequest requestWithURL:htmlFile]];
+
+}
+
+#pragma mark - UIWebViewDelegate
+- (void)webViewDidStartLoad:(UIWebView *)webView{
+    NSLog(@"webViewDidStartLoad");
+    
+    [self setupJSObj];
+}
+
+- (void)setupJSObj {
+    self.context = [self.webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    
+    MyJSInterface *ocObj = [[MyJSInterface alloc] init];
+    JSValue *jsObj = [JSValue valueWithObject:ocObj inContext:self.context];
+    self.jsObj = jsObj;
+    JSManagedValue* managedValue = [JSManagedValue managedValueWithValue:self.jsObj];
+    self.managedValue = managedValue;
+    [self.context.virtualMachine addManagedReference:self.managedValue withOwner:self];
+    self.context[@"jsObj"] = jsObj;
+    self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
+        NSLog(@"%@", exception);
+        context.exception = exception;
+    };
+}
+
+- (IBAction)callJSMethod:(UIButton *)sender {
+    [self.webView stringByEvaluatingJavaScriptFromString:@"log('call js method!')"];
+    
+}
+@end
+```
 
 - JSContext不能直接创建，需要从webview获取，`JSContext *context = [webview valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];`。
 
