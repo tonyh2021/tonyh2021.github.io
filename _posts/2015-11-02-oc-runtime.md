@@ -19,13 +19,17 @@ comments: true
 
 在`Objective-C`中，使用`[receiver message]`语法并不会马上执行`receiver`对象的`message`方法的代码，而是向`receiver`发送一条`message`消息，这条消息可能由`receiver`来处理，也可能由转发给其他对象来处理，也有可能假装没有接收到这条消息而没有处理。其实`[receiver message]`被编译器转化为：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-1.m"></script>
+```objc
+id objc_msgSend ( id self, SEL op, ... );  
+```
 
 ### SEL
 
 SEL是函数`objc_msgSend`第二个参数的数据类型，表示方法选择器，`<objc.h>`文件中SEL数据结构：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-2.m"></script>
+```objc
+typedef struct objc_selector *SEL; 
+```
 
 其实它就是映射到方法的C字符串，你可以通过objc编译器命令`@selector()`或者`runtime`系统的`sel_registerName`函数来获取一个SEL类型的方法选择器。
 
@@ -35,7 +39,15 @@ SEL是函数`objc_msgSend`第二个参数的数据类型，表示方法选择器
 
 `objc_msgSend`第一个参数的数据类型id，id是通用类型指针，能够表示任何对象。`<objc.h>`文件中id数据结构如下：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-3.m"></script>
+```objc
+/// Represents an instance of a class.  
+struct objc_object {  
+    Class isa  OBJC_ISA_AVAILABILITY;  
+};  
+  
+/// A pointer to an instance of a class.  
+typedef struct objc_object *id; 
+```
 
 id其实就是一个指向objc_object结构体指针，它包含一个Class isa成员，根据isa指针就可以顺藤摸瓜找到对象所属的类。
 
@@ -45,17 +57,44 @@ id其实就是一个指向objc_object结构体指针，它包含一个Class isa�
 
 isa指针的数据类型是Class，Class表示对象所属的类，`<objc.h>`文件中：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-4.m"></script>
+```objc
+/// An opaque type that represents an Objective-C class.  
+typedef struct objc_class *Class; 
+```
 
 可以查看到Class其实就是一个`objc_class`结构体指针。再看`<runtime.h>`中`objc_class`的定义：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-5.m"></script>
+```objc
+struct objc_class {
+    Class isa  OBJC_ISA_AVAILABILITY;
+
+#if !__OBJC2__
+	Class super_class; // 指向其父类
+	const char *name; // 类名
+	long version; // 类的版本信息，初始化默认为0，可以通过runtime函数class_setVersion和class_getVersion进行修改、读取
+	long info; // 一些标识信息,如CLS_CLASS (0x1L) 表示该类为普通 class ，其中包含对象方法和成员变量;CLS_META (0x2L) 表示该类为 metaclass，其中包含类方法;
+	long instance_size ; // 该类的实例变量大小(包括从父类继承下来的实例变量);
+	struct objc_ivar_list *ivars; // 用于存储每个成员变量的地址
+	struct objc_method_list **methodLists; // 与 info 的一些标志位有关,如CLS_CLASS (0x1L),则存储对象方法，如CLS_META (0x2L)，则存储类方法;
+	struct objc_cache *cache; // 指向最近使用的方法的指针，用于提升效率；
+	struct objc_protocol_list *protocols; // 存储该类遵守的协议
+#endif
+```
 
 > 注意：OBJC2_UNAVAILABLE是一个Apple对Objc系统运行版本进行约束的宏定义，主要为了兼容非Objective-C 2.0的遗留版本，但我们仍能从中获取一些有用信息。
 
 - **isa**：表示一个Class对象的Class，也就是MetaClass。在面向对象设计中，一切都是对象，Class在设计中本身也是一个对象。我们会在`<objc-runtime-new.h>`文件找到证据，发现`objc_class`有以下定义：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-6.m"></script>
+```objc
+struct objc_class : objc_object {  
+  // Class ISA;  
+  Class superclass;  
+  cache_t cache;             // formerly cache pointer and vtable  
+  class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags  
+  
+  ......  
+}  
+```
 
 由此可见，结构体`objc_class`也是继承`objc_object`，说明Class在设计中本身也是一个对象。
 
@@ -78,13 +117,33 @@ isa指针的数据类型是Class，Class表示对象所属的类，`<objc.h>`文
 - **instance_size**：该类的实例变量大小。
 - **ivars**：表示多个成员变量，它指向objc_ivar_list结构体。。
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-7.m"></script>
+```objc
+struct objc_ivar_list {
+    int ivar_count;
+#ifdef __LP64__
+    int space;
+#endif
+    /* variable length structure */
+    struct objc_ivar ivar_list[1];
+};
+```
 
 `objc_ivar_list`其实就是一个链表，存储多个`objc_ivar`，而`objc_ivar`结构体存储类的单个成员变量信息。
 
 - **methodLists**：表示方法列表，它指向`objc_method_list`结构体的二级指针，可以动态修改`*methodLists`的值来添加成员方法，也是Category实现原理，同样也解释Category不能添加属性的原因。。
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-8.m"></script>
+```objc
+struct objc_method_list {
+    struct objc_method_list *obsolete;
+
+    int method_count;
+#ifdef __LP64__
+    int space;
+#endif
+    /* variable length structure */
+    struct objc_method method_list[1];
+};
+```
 
 同理，`objc_method_list`也是一个链表，存储多个`objc_method`，而`objc_method`结构体存储类的某个方法的信息。
 
@@ -92,25 +151,60 @@ isa指针的数据类型是Class，Class表示对象所属的类，`<objc.h>`文
 - **protocols**：类遵循哪些协议。
 - **Method**：表示类中的某个方法，`<runtime.h>`文件中：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-9.m"></script>
+```objc
+/// An opaque type that represents a method in a class definition.  
+typedef struct objc_method *Method;  
+struct objc_method {  
+    SEL method_name                                          OBJC2_UNAVAILABLE;  
+    char *method_types                                       OBJC2_UNAVAILABLE;  
+    IMP method_imp                                           OBJC2_UNAVAILABLE;  
+}  
+```
 
 其实`Method`就是一个指向`objc_method`结构体指针，它存储了方法名(`method_name`)、方法类型(`method_types`)和方法实现(`method_imp`)等信息。而`method_imp`的数据类型是IMP，它是一个函数指针。
 
 - **Ivar**：表示类中的实例变量，在`<runtime.h>`文件中：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-10.m"></script>
+```objc
+/// An opaque type that represents an instance variable.  
+typedef struct objc_ivar *Ivar;  
+  
+struct objc_ivar {  
+    char *ivar_name                                          OBJC2_UNAVAILABLE;  
+    char *ivar_type                                          OBJC2_UNAVAILABLE;  
+    int ivar_offset                                          OBJC2_UNAVAILABLE;  
+#ifdef __LP64__  
+    int space                                                OBJC2_UNAVAILABLE;  
+#endif  
+}  
+```
 
 Ivar其实就是一个指向`objc_ivar`结构体指针，它包含了变量名(`ivar_name`)、变量类型(`ivar_type`)等信息。
 
 - **IMP**：在上面讲Method时就说过，IMP本质上就是一个函数指针，指向方法的实现，在`<objc.h>`文件中：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-11.m"></script>
+```objc
+/// A pointer to the function of a method implementation.   
+#if !OBJC_OLD_DISPATCH_PROTOTYPES  
+typedef void (*IMP)(void /* id, SEL, ... */ );   
+#else  
+typedef id (*IMP)(id, SEL, ...);   
+#endif  
+```
 
 当你向某个对象发送一条信息，可以由这个函数指针来指定方法的实现，它最终就会执行那段代码，这样可以绕开消息传递阶段而去执行另一个方法实现。
 
 - **Cache**：顾名思义，Cache主要用来缓存，那它缓存什么呢？我们先在runtime.h文件看看它的定义：
 
-<script src="https://gist.github.com/lettleprince/2ecc8e8383666c833d89.js?file=2015-11-02-oc-runtime-12.m"></script>
+```objc
+typedef struct objc_cache *Cache                             OBJC2_UNAVAILABLE;  
+  
+struct objc_cache {  
+    unsigned int mask /* total = mask + 1 */                 OBJC2_UNAVAILABLE;  
+    unsigned int occupied                                    OBJC2_UNAVAILABLE;  
+    Method buckets[1]                                        OBJC2_UNAVAILABLE;  
+};  
+```
 
 Cache其实就是一个存储Method的链表，主要是为了优化方法调用的性能。当对象receiver调用方法message时，首先根据对象receiver的isa指针查找到它对应的类，然后在类的methodLists中搜索方法，如果没有找到，就使用super_class指针到父类中的methodLists查找，一旦找到就调用方法。如果没有找到，有可能消息转发，也可能忽略它。但这样查找方式效率太低，因为往往一个类大概只有20%的方法经常被调用，占总调用次数的80%。所以使用Cache来缓存经常调用的方法，当调用方法时，优先在Cache查找，如果没有找到，再到methodLists查找。
 
