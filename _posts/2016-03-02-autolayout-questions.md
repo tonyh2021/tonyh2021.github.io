@@ -124,6 +124,20 @@ UIWindow:0x7f9481c93360
 - 如果想使用动画效果，需要如下代码：
 
 ```objc
+//重写updateViewConstraints方法，进行约束的更新
+- (void)updateViewConstraints {
+    [self.growingButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(self.view);
+        
+        // 初始宽、高为100，优先级最低
+        make.width.height.mas_equalTo(100 * self.scacle).priorityLow();
+        // 最大放大到整个view
+        make.width.height.lessThanOrEqualTo(self.view);
+    }];
+    [super updateViewConstraints];
+}
+
+
 // 通知需要更新约束，但是不立即执行
 [self setNeedsUpdateConstraints];
 // 立即更新约束，以执行动态变换

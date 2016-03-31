@@ -37,6 +37,11 @@ comments: true
 
 - `loadRequest`和`loadHTMLString`都是可以加载mainbundle下的html和对应的js及css资源的，如果不能的话，则查看html是否为utf-8格式，以及上面的那一点。当然，使用上面那种加载资源的方式，要记得添加相对路径。
 
+```objc
+NSURL *htmlFile =  [[NSBundle mainBundle] URLForResource:@"text" withExtension:@"html" subdirectory:@"question/q_text"];
+[questionWebView loadRequest:[NSURLRequest requestWithURL:htmlFile]];
+```
+
 ### 代码：
 文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
 
