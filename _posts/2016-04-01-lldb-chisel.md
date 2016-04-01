@@ -288,7 +288,7 @@ Syntax: pkp <keypath>
 
 ```
 (lldb) pkp self.view.frame
-NSRect: {{0, 0}, {320, 568}}
+NSRect: { {0, 0}, {320, 568} }
 ```
 
 ### fvc
