@@ -245,7 +245,7 @@ Syntax: pinternals <object>
 ...
 ```
 
-pdata
+### pdata
 
 对编码过的NSData进行解码打印，等效于调用`-[NSString initWithData:encoding:]`
 
@@ -255,7 +255,7 @@ Syntax: pdata [--encoding=encoding] <data>
 
 - `<data>`: 需要打印的data，NSData类型
 - `--encoding/-e`: 编码类型，如果缺省默认为utf8，主要支持的类型有
-- 
+
 ```
 - ascii,
 - utf8,
