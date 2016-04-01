@@ -3,7 +3,7 @@ layout: post
 title: "SublimeText的snipptes使用"
 description: ""
 category: articles
-tags: [RAC]
+tags: [SublimeText]
 comments: true
 ---
 
