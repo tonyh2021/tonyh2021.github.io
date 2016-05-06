@@ -3,7 +3,7 @@ layout: post
 title: "Mac下iPhone录屏和共享iPhone屏幕"
 description: ""
 category: articles
-tags: [RAC]
+tags: [Mac]
 comments: true
 ---
 
