@@ -20,10 +20,10 @@ comments: true
 2. 在 Mac 电脑上找到并打开 `QuickTime Player` 应用程序。
 
 3. 第三步：在顶部菜单栏点击 `文件` > `新建影片录制`。
-![](http://7xr0hq.com1.z0.glb.clouddn.com/blog%2Fimage%2FiPhone-screen-share-1.png)
+![](https://lettleprince.github.io/images/iPhone-screen-share-1.png)
 
 4. `QuickTime Player` 窗口中选择，当然选择`来自 iPhone`。
-![](http://7xr0hq.com1.z0.glb.clouddn.com/blog%2Fimage%2FiPhone-screen-share-2.png)
+![](https://lettleprince.github.io/images/iPhone-screen-share-2.png)
 
 5. 点击录制就可以啦。当然如果只是想分享屏幕，这一步就可以不用了。
 
