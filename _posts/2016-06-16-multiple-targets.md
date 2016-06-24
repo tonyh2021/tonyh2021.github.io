@@ -20,35 +20,35 @@ comments: true
 1. 假设已经有一个项目`MultipleTargetTest`。此时会有默认的`target` `MultipleTargetTest`。相关的设置和操作不多说了。
 
 2. 右键`target` `MultipleTargetTest`，然后选择`Duplicate`。此时会复制出一个`target` `MultipleTargetTest-copy`和一个`plist` 文件 `MultipleTargetTest-copy-info.plist`。
-![targets1](https://lettleprince.github.io/images/multipletargets/targets1.png)
-![targets2](https://lettleprince.github.io/images/multipletargets/targets2.png)
+![targets1](https://lettleprince.github.io/images/20160616-multipletargets/targets1.png)
+![targets2](https://lettleprince.github.io/images/20160616-multipletargets/targets2.png)
 
 3. 分别重命名`target`和`plist`，并且`Choose Info.plist File...`，如图。
-![targets3](https://lettleprince.github.io/images/multipletargets/targets3.png)
+![targets3](https://lettleprince.github.io/images/20160616-multipletargets/targets3.png)
 
 4. 在`Manage Schemes`中修改`scheme`。
-![targets4](https://lettleprince.github.io/images/multipletargets/targets4.png)
-![targets5](https://lettleprince.github.io/images/multipletargets/targets5.png)
+![targets4](https://lettleprince.github.io/images/20160616-multipletargets/targets4.png)
+![targets5](https://lettleprince.github.io/images/20160616-multipletargets/targets5.png)
 
 5. 当然也要修改`Target_2`的`Bundle Identifier`。同时在`Build Settings`中也要确认相应的配置一致。
-![targets6](https://lettleprince.github.io/images/multipletargets/targets6.png)
-![targets7](https://lettleprince.github.io/images/multipletargets/targets7.png)
+![targets6](https://lettleprince.github.io/images/20160616-multipletargets/targets6.png)
+![targets7](https://lettleprince.github.io/images/20160616-multipletargets/targets7.png)
 
 6. `Build Settings`中搜索`Other C Flags`添加`-DMULTIPLE_TARGETS_TARGET2`。然后在代码中使用这个宏，来进行条件编译的操作了。具体看后面的代码。
-![targets8](https://lettleprince.github.io/images/multipletargets/targets8.png)
+![targets8](https://lettleprince.github.io/images/20160616-multipletargets/targets8.png)
 
 7. 根据需求修改`Target_2-Info.plist`文件。
-![targets9](http://7xr0hq.com1.z0.glb.clouddn.com/targets9.png)
+![targets9](https://lettleprince.github.io/images/20160616-multipletargets/targets9.png)
 此处需要注意：
 > 新添加的`LaunchScreenTarget2.storyboard`需要在`Build Phases`中添加，当然不需要的`LaunchScreen.storyboard`最好也移除。
-![targets10](https://lettleprince.github.io/images/multipletargets/targets10.png)
+![targets10](https://lettleprince.github.io/images/20160616-multipletargets/targets10.png)
 
 8. 可以修改`LaunchScreenTarget2.storyboard`然后选择不同的`target`进行调试。
 
 9. 对于应用中的图标和图片资源，可以新建资源目录。json文件复制过去就可以了。同样需要在`Build Phases`配置。推荐共同资源放在`Assets`中，然后不同`target`再包含不同的资源目录。
-![targets11](https://lettleprince.github.io/images/multipletargets/targets11.png)
-![targets12](https://lettleprince.github.io/images/multipletargets/targets12.png)
-![targets13](https://lettleprince.github.io/images/multipletargets/targets13.png)
+![targets11](https://lettleprince.github.io/images/20160616-multipletargets/targets11.png)
+![targets12](https://lettleprince.github.io/images/20160616-multipletargets/targets12.png)
+![targets13](https://lettleprince.github.io/images/20160616-multipletargets/targets13.png)
 
 10. 对于`Podfile`，可以这么配置。
 
