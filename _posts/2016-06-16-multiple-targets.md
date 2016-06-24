@@ -20,7 +20,7 @@ comments: true
 1. 假设已经有一个项目`MultipleTargetTest`。此时会有默认的`target` `MultipleTargetTest`。相关的设置和操作不多说了。
 
 2. 右键`target` `MultipleTargetTest`，然后选择`Duplicate`。此时会复制出一个`target` `MultipleTargetTest-copy`和一个`plist` 文件 `MultipleTargetTest-copy-info.plist`。
-![targets1](../_site/images/targets1.png)
+![targets1](../images/targets1.png)
 ![targets2](http://7xr0hq.com1.z0.glb.clouddn.com/targets2.png)
 
 3. 分别重命名`target`和`plist`，并且`Choose Info.plist File...`，如图。
