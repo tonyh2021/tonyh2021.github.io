@@ -17,7 +17,7 @@ comments: true
 
 在Finder中快捷键`cmd+shift+G`，然后输入`/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport`。将9.3复制到此目录下（需要管理员密码）。
 
-![png](http://7xr0hq.com1.z0.glb.clouddn.com/QQ20160429-0@2x.png)
+![png](https://lettleprince.github.io/images/20160429-DeveloperDiskImage/QQ20160429-0@2x.png)
 
 链接: [http://pan.baidu.com/s/1kU9mgE7](http://pan.baidu.com/s/1kU9mgE7) 密码: i6qp
 
