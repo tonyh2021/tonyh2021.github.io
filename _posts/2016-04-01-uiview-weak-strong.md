@@ -12,7 +12,7 @@ comments: true
 
 很多人在讲解weak和strong的区别时，只会说，weak用于视图的引用，strong用于模型的引用。慢慢的觉得这样的说法越来越不准确。strong用于强引用，很容易被理解；而weak设计的初衷是为了避免循环引用的问题，最典型的循环引用是来自于vc持有view属性而view的dataSource或delegate被设置为vc的情景。
 
-![strong-weak](http://7xr0hq.com1.z0.glb.clouddn.com/strong-weak-1.png)
+![strong-weak](https://lettleprince.github.io/images/20160401-uiview-weak-strong/strong-weak-1.png)
 
 在Apple的[文档](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/LoadingResources/CocoaNibs/CocoaNibs.html)中提到：
 
