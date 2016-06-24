@@ -55,7 +55,7 @@ Syntax: alamborder [--color=color] [--width=width]
 (lldb) 
 ```
 
-![01](http://7xr0hq.com1.z0.glb.clouddn.com/chisel01.png)
+![01](https://lettleprince.github.io/images/20160401-lldb-chisel/chisel01.png)
 
 只要有一个View存在`Ambiguous Layouts`，UIWindow的边框也会变为红色，这就有效的避免了宽度或者高度为0的`Ambiguous Layouts`不宜察觉的缺陷。
 
@@ -102,7 +102,7 @@ Syntax: pviews [--up] [--depth=depth] <aView>
 
 例如，打印一下应用的view层级：
 
-![02](http://7xr0hq.com1.z0.glb.clouddn.com/chisel02.png)
+![02](https://lettleprince.github.io/images/20160401-lldb-chisel/chisel02.png)
 
 ```
 <UIWindow: 0x136602cd0; frame = (0 0; 320 568); gestureRecognizers = <NSArray: 0x174050410>; layer = <UIWindowLayer: 0x17422a5c0>>
@@ -400,7 +400,7 @@ Syntax: vs <view>
 
 然后看看这么多个view到底哪个是我们想要找的view，相应的cell会变成粉红色：
 
-![03](http://7xr0hq.com1.z0.glb.clouddn.com/chisel03.png)
+![03](https://lettleprince.github.io/images/20160401-lldb-chisel/chisel03.png)
 
 ```
 (lldb) vs 0x14f617120
@@ -470,7 +470,7 @@ Syntax: border [--color=color] [--width=width] <viewOrLayer>
 (lldb) border 0x17418e860
 ```
 
-![04](http://7xr0hq.com1.z0.glb.clouddn.com/chisel04.png)
+![04](https://lettleprince.github.io/images/20160401-lldb-chisel/chisel04.png)
 
 ### unborder
 
