@@ -35,7 +35,7 @@ Cocoapods是比较好用的第三方框架管理工具。唯一蛋疼的是速�
 
 然后觉得与 `use_frameworks!` 有关，同时跟缓存有关，还有可能需要升级 `ReactiveCocoa` 和 `Masonry` 的版本。
 
-于是`cd /Users/hxt/Library/Developer/Xcode/DerivedData/`，然后删掉 `DerivedData` 下的目录。同时将 `ReactiveCocoa` 改为 `4.0.1` ，`Masonry` 版本改为 `~> 1.0.0`。注意`ReactiveCocoa` 的 `4.1` 版本将需要Xcode 7.3以上的支持。所以在此把版本定为 `4.0.1` 。同时需要注意此问题[4.0.1 possibly breaks semver? #2704](同时注意此问题 https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2704)
+于是`cd /Users/XXX/Library/Developer/Xcode/DerivedData/`，然后删掉 `DerivedData` 下的目录。同时将 `ReactiveCocoa` 改为 `4.0.1` ，`Masonry` 版本改为 `~> 1.0.0`。注意`ReactiveCocoa` 的 `4.1` 版本将需要Xcode 7.3以上的支持。所以在此把版本定为 `4.0.1` 。同时需要注意此问题[4.0.1 possibly breaks semver? #2704](同时注意此问题 https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2704)
 
 于是再次 `pod install` 然后构建便没有错误了。至此升级Cocoapods完美成功。
 
