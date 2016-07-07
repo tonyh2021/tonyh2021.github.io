@@ -131,7 +131,7 @@ int main(int argc, const char * argv[]) {
 
 [Beginning ARC in iOS 5 Tutorial](https://www.raywenderlich.com/5677/beginning-arc-in-ios-5-part-1)
 
-[]()
+[iOS 5 ARC完全指南](https://lettleprince.github.io/images/20160707-arc/iOS%205%20ARC%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97.pdf)
 
 注：Mac项目的内存管理和iOS项目不一样。
 
