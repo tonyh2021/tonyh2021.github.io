@@ -125,6 +125,20 @@ int main(int argc, const char * argv[]) {
 2016-07-07 14:33:05.615 toy[4918:1115753] __str2:I am str2
 ```
 
+## 补充:
+
+如果使用for循环，如下代码：
+
+```objc
+for (int i = 0; i < 12345678; i++) {
+    NSString *str = [[NSString alloc] initWithFormat:@"I am str"];
+    // NSString *str2 = [NSString stringWithFormat:@"%@", @"I am str2"];
+}
+```
+
+其中被注释的代码在循环多次的情况下会大量占用内存。解决方案：一是使用alloc方式初始化变量；二是用 `@autoreleasepool {}` 进行包裹；三是，如果可能的话，遍历时用 `enumerateObjectsUsingBlock` ，因为里面实现了autoreleasepool。
+
+
 ## 参考
 
 [AutomaticReferenceCounting](http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-inference)
@@ -133,7 +147,7 @@ int main(int argc, const char * argv[]) {
 
 [iOS 5 ARC完全指南](https://lettleprince.github.io/images/20160707-arc/iOS%205%20ARC%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97.pdf)
 
-注：Mac项目的内存管理和iOS项目不一样。
+注：Mac项目的内存管理和iOS项目不一样，这些讨论和结论都是针对在iOS的ARC环境下。
 
 
 
