@@ -19,7 +19,7 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 1.如何构造哈希函数
 2.如何处理冲突。
 
-### 哈希函数的构造方法
+#### 哈希函数的构造方法
 
 构造哈希函数的原则是：1.函数本身便于计算；2.计算出来的地址分布均匀，即对任一关键字k，f(k) 对应不同地址的概率相等，目的是尽可能减少冲突。
 下面介绍构造哈希函数常用的五种方法。
@@ -64,7 +64,7 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 - 关键字分布情况。
 - 记录查找频率
 
-### 处理冲突
+#### 处理冲突
 
 通过构造性能良好的哈希函数，可以减少冲突，但一般不可能完全避免冲突，因此解决冲突是哈希法的另一个关键问题。创建哈希表和查找哈希表都会遇到冲突，两种情况下解决冲突的方法应该一致。下面以创建哈希表为例，说明解决冲突的方法。常用的解决冲突方法有以下四种:
 
@@ -106,11 +106,19 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 
 ![hash-07](https://lettleprince.github.io/images/20160711-NSDictionary/hash-07.png)
 
-hash函数设计的好坏影响着数据的查找访问效率。数据在hash表中分布的越均匀，其访问效率越高。而在OC中，通常都是利用NSString 来作为键值，其内部使用的hash函数也是通过使用 NSString对象作为键值来保证数据的各个节点在hash表中均匀分布。
+## OC的hash
 
+苹果OC源代码的hash结构就是采用这种各大数据结构体教材中都会讲的类似于链地址的方式解决冲突的。不过它的链地址不是一个链表，而是一个数组结构，而且当出现冲突的时候，它通过释放原来的数组结构，并进行分配大一个数组结构来存放新的元素的。它的劣势很明显，如果冲突比较多会频繁的alloc和free，它的优势是不用二级指针的指向来找到元素，为了进一步优化，它对于一个和两个元素采用了oneOrMany的 union 结构，这样对一个的元素进行hashGet会减少一次二级指针的获取操作，这应该是预估了冲突一般情况下都很少发生才这样做的。整个Hash结构是一个大数组，数组的基地址是buckets。每一个bucket可以看成是一个小数组，它存储着具有相同hash值的冲突列表。
+
+到这里也就可以推断出，如果在NSDictionary存取时出现效率低下的情况，那么很可能是：
+1.频繁的扩容
+2.冲突过多
+
+更多的实现细节可以参考以下链接：
 
 ## 参考
 
 [哈希表以及解决冲突的方法](http://blog.csdn.net/it_bloggers/article/details/21334123?utm_source=tuicool&utm_medium=referral)
+[OC类和对象之四hash结构](http://blog.csdn.net/lpstudy/article/details/22087713?utm_source=tuicool&utm_medium=referral)
 [NSDictionary Class Reference](https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSDictionary_Class/index.html#//apple_ref/doc/uid/TP40003648)
 
