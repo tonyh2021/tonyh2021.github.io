@@ -31,27 +31,7 @@ stackoverflow上[Cannot install cocoa pods after uninstalling, results in error]
 
 在早期的`beta El Capitan`中可以通过`sudo nvram boot-args="rootless=0"; sudo reboot`关闭 `rootless` ，但是正式版中已经禁止（即便关闭好像也不起作用）。
 
-看到这里，我突然觉得隐隐的蛋疼，试了下gem命令，果然有问题，于是重装Homebrew。在此之前先google足够`10.11 Homebrew`的信息，包括stackoverflow。
-
-#### 重装Homebrew
-
-卸载Homebrew：
-
-```
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
-```
-
-安装Homebrew：
-
-```
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-上一步如果有权限问题：
-
-```
-sudo chown -R $(whoami):admin /usr/local
-```
+看到这里，我突然觉得隐隐的蛋疼，试了下gem命令，果然有问题，于是更新`RubyGems`:`gem update --system`。
 
 #### 关于rvm
 
@@ -83,7 +63,29 @@ $ where pod
 /Users/BloodLine/.rvm/gems/ruby-2.2.2/bin/pod
 ```
 
-将菜单中的GEM_PATH后添加`/Users/BloodLine/.rvm/gems/ruby-2.2.2/bin/pod`，再次选择`pod install`，成功。
+将菜单中的GEM_PATH后添加`~/.rvm/gems/ruby-2.2.2/bin`，再次选择`pod install`，成功。
+
+#### 重装Homebrew
+
+在此之前先google足够`10.11 Homebrew`的信息，包括stackoverflow。
+
+卸载Homebrew：
+
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+```
+
+安装Homebrew：
+
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+上一步如果有权限问题：
+
+```
+sudo chown -R $(whoami):admin /usr/local
+```
 
 ### 参考：
 
