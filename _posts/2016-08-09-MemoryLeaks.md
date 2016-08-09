@@ -37,6 +37,8 @@ comments: true
 
 ## 代码排查
 
+![06](https://lettleprince.github.io/images/20160809-MemoryLeaks/memoryleaks-06.png)
+
 这个内存泄露有点吓人，但是追查进去又是基础的网络库，所有有点怀疑是不是instruments误报。于是去找block循环引用相关的代码，后来还是不放心。于是跟踪了`AFHTTPSessionManager`的实例manager，在请求实例dealloc后，其中的manager的确没有被释放。
 
 于是在google搜索关键字`NSURLSession Memory Leaks`，还真找到了不少内容。
@@ -49,9 +51,13 @@ comments: true
 
 最主要就是说`NSURLSession`的代理是强引用，如果不主动调用废弃操作，会有内存泄露。
 
+![07](https://lettleprince.github.io/images/20160809-MemoryLeaks/memoryleaks-07.png)
+
 mattt说在使用AFNetworking时，要终止一个session，需要调用`invalidateSessionCancelingTasks:`方法。当然整个应用只用到一个session的话，不需要这样做。
 
 于是将manager作为实例变量，在dealloc时调用`invalidateSessionCancelingTasks:`方法，再次跑Leaks，就没有那么恐怖了。这是AFNetworking升级3.0版本的一个坑。
+
+![08](https://lettleprince.github.io/images/20160809-MemoryLeaks/memoryleaks-08.png)
 
 ### 参考：
 
