@@ -3,7 +3,7 @@ layout: post
 title: "升级Cocoapods 1.0的经历"
 description: ""
 category: articles
-tags: [Cocoapods]
+tags: [CocoaPods]
 comments: true
 ---
 
