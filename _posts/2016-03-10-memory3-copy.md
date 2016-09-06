@@ -134,16 +134,20 @@ NSArray *deepCopyArray=[[NSArray alloc] initWithArray:someArray copyItems:YES];
 
 > This technique applies to the other collections as well. Use the collection’s equivalent of initWithArray:copyItems: with YES as the second parameter.
 
+苹果认为这种复制不是真正的深复制，而是将其称为单层深复制(one-level-deep copy)。
+
 > If you need a true deep copy, such as when you have an array of arrays, you can archive and then unarchive the collection, provided the contents all conform to the NSCoding protocol. An example of this technique is shown in Listing 3.
 
 **Listing 3**  A true deep copy
+
+如果要实现真正的完全复制，则需要：
 
 ```objc
 NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
           [NSKeyedArchiver archivedDataWithRootObject:oldArray]];
 ```
 
-苹果认为这种复制不是真正的深复制，而是将其称为单层深复制(one-level-deep copy)。因此，网上有人对浅复制、深复制、单层深复制做了概念区分。
+小结：
 
 - 浅复制(shallow copy)：在浅复制操作时，对于被复制对象的每一层都是指针复制。
 
