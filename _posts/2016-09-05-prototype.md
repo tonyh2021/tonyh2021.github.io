@@ -23,6 +23,8 @@ comments: true
 
 ![prototype](https://lettleprince.github.io/images/20160905-prototype/prototype.png)
 
+`Prototype`声明了复制自身的接口。作为`Prototype`的实现，`ConcretePrototype`实现了复制自身的`clone`操作。这里的客户端是指使用了原型类实例的类。客户端通过`clone`创建了一个新的对象，即`prototype`的副本。
+
 ## 使用场景
 
 1.需要创建的对象应独立于其类型与创建方式。也就是说我们想要的对象并不能够直接通过初始化函数来创建出来，其创建过程不具有普遍性且复杂。
