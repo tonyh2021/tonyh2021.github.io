@@ -309,3 +309,7 @@ object.others = [NSKeyedUnarchiver unarchiveObjectWithData:
 
 [iOS的深复制与浅复制](http://ibloodline.com/articles/2016/03/10/memory3-copy.html)
 
+### 代码
+
+文章中的代码都可以从我的GitHub [`DesignPatterns`](https://github.com/lettleprince/DesignPatterns)找到。
+
