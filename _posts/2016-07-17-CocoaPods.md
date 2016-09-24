@@ -87,7 +87,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 sudo chown -R $(whoami):admin /usr/local
 ```
 
-### 参考：
+## 参考：
 
 [About OS X System Integrity Protection (SIP, Rootless)](https://zhuanlan.zhihu.com/p/20144279)
 
