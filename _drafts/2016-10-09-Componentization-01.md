@@ -54,6 +54,14 @@ iOS 客户端有A、B、C三个主要功能，除此之外所有的业务功能�
 
 #### 需要注意的地方：
 
+- 创建子工程的步骤：
+
+1. 创建子工程。
+![07](https://lettleprince.github.io/images/20161010-Componentization/07.png)
+2. 将子工程的 `.xcodeproj` 加入到主工程中。
+3. `Header Search Path`中添加头文件搜索目录。
+4. 添加 `Target Dependences`。
+![08](https://lettleprince.github.io/images/20161010-Componentization/08.png)
 
 - `Build Settings` 的 `Header Search Path` 中添加头文件搜索路径: `../../Library/ModuleA/inc`。
 
