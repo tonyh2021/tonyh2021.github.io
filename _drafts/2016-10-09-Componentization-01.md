@@ -30,17 +30,34 @@ iOS 客户端有A、B、C三个主要功能，除此之外所有的业务功能�
 
 ![01](https://lettleprince.github.io/images/20161010-Componentization/01.png)
 
+#### 主线项目
+
 先上图：
 
 ![02](https://lettleprince.github.io/images/20161010-Componentization/02.png)
 
-其中发布版本对应 `` 目录，其目录下的壳工程目录为：
+其中主线项目(`Release` 使用)对应 `Baseline` 目录，其目录下的壳工程目录为：
 
+![03](https://lettleprince.github.io/images/20161010-Componentization/03.png)
 
+主线项目中只包含 `AppDelegate` 和相应的资源文件、配置文件，对于底层功能和业务功能都退化为库的依赖。将来 `Release` 新版本时将以此项目为准。
 
-
+#### 功能模块子项目
 
 业务子项目使用组件化调用，其他子项目可以暴露头文件。也就是说 `ModuleA`、 `ModuleB`、 `ModuleC` 三个子项目不对外暴露头文件，`Work` 可以对外暴露头文件，从而达到强制解耦目的。
+
+![05](https://lettleprince.github.io/images/20161010-Componentization/05.png)
+
+#### 需要注意的地方：
+
+
+- `Build Settings` 的 `Header Search Path` 中添加头文件搜索路径: `../../Library/ModuleA/inc`。
+
+- `ld: library not found for -lModuleA...`: `Build Settings` 的 `Library Search Path` 中添加 `../../Library/ModuleA/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)`。
+
+- `Undefined symbols for architecture x86_64`: 
+
+![04](https://lettleprince.github.io/images/20161010-Componentization/04.png)
 
 ## Jenkins 集成
 
