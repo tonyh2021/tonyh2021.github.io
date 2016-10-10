@@ -48,6 +48,10 @@ iOS 客户端有A、B、C三个主要功能，除此之外所有的业务功能�
 
 ![05](https://lettleprince.github.io/images/20161010-Componentization/05.png)
 
+`ModuleA` 下有属于 `ModuleA` 业务组自己的壳工程，与主线项目(`Baseline`)不同的地方在于，业务项目会引用业务子项目，对其他业务项目和基础库则是引用库关系。
+
+![06](https://lettleprince.github.io/images/20161010-Componentization/06.png)
+
 #### 需要注意的地方：
 
 
