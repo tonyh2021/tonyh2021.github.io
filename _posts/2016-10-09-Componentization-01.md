@@ -30,6 +30,8 @@ iOS 客户端有A、B、C三个主要功能，除此之外所有的业务功能�
 
 ![01](https://lettleprince.github.io/images/20161010-Componentization/01.png)
 
+## 配置细节
+
 #### 主线项目
 
 先上图：
@@ -71,37 +73,10 @@ iOS 客户端有A、B、C三个主要功能，除此之外所有的业务功能�
 
 ![04](https://lettleprince.github.io/images/20161010-Componentization/04.png)
 
-## Jenkins 集成
+## 小结
 
-没有自动化构建的项目管理都是耍流氓，这里简单描述，暂不实验。基于以上的优化，可以在构建任务重添加构建脚本，主要是用于触发子工程的发布打包。代码参考：
-
-`auto_build_triger.py`
-
-```python
-
-import subprocess
-import os
-if __name__ == '__main__':
-    basePath = os.path.dirname(os.path.abspath('__file__')) + '/'
-
-    projs = ['ModuleA',
-             'ModuleB'
-             ]
-
-    for projectPath in projs:
-        os.chdir(basePath + projectPath)
-        subprocess.call('sh build_cp_to_pub.sh', shell=True)
-        os.chdir('../')
-
-```
-
-`build_cp_to_pub.sh`
-
-
-### 参考：
-
-[CocoaPods详解之----制作篇](http://blog.csdn.net/wzzvictory/article/details/20067595)
+至此，编译框架优化完毕，基本实现了初步的业务解耦和减少编译时间的目标。组件之间的调用、子工程的发布以及自动化构建的内容会在以后详细介绍。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`ImagePicker-Objective-C`](https://github.com/lettleprince/ImagePicker-Objective-C)找到。
+文章中的代码都可以从我的GitHub [`Componentization`](https://github.com/lettleprince/Componentization)找到。
 
