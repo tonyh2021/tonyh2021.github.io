@@ -3,7 +3,7 @@ layout: post
 title: "Find Memory Leaks"
 description: ""
 category: articles
-tags: [RAC]
+tags: [iOS]
 comments: true
 ---
 
