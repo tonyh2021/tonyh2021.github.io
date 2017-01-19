@@ -164,7 +164,151 @@ React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 此时运行会报错：
 ![03](https://lettleprince.github.io/images/20170119-react-in-project/03.png)
 
+原因是还没启动 node 服务。
+
+### 启动服务
+
+我们需要启动一个端口为 8081 的服务将 index.ios.js 打包成 index.ios.bundle 。然后我们的代码就可以加载了。
+
+在项目目录下运行命令：
+
+`(JS_DIR=`pwd`/react-component; cd Pods/React; npm run start -- --root $JS_DIR)
+`
+
+> 1.将新建的 react-component 文件夹目录赋值到JS_DIR上，需要全路径
+> 2.进入 Pods/React 目录
+> 3.绑定JS_DIR会监听ReactComponents文件夹下的文件，然后 npm run start 启动 node 服务
+> 4.三行命令用()包装起来，可以避免运行后定位到 Pods/React 目录下
+
+输出：
+
+```shell
+$ (JS_DIR=`pwd`/react-component; cd Pods/React; npm run start -- --root $JS_DIR)
+
+> react-native@0.11.0 start /Users/qd-hxt/Documents/gworkspace/react-in-project/Pods/React
+> ./packager/packager.sh || true "--root" "/Users/qd-hxt/Documents/gworkspace/react-in-project/react-component"
+
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │  Running packager on port 8081.                                            │
+ │                                                                            │
+ │  Keep this packager running while developing on any JS projects. Feel      │
+ │  free to close this tab and run your own packager instance if you          │
+ │  prefer.                                                                   │
+ │                                                                            │
+ │  https://github.com/facebook/react-native                                  │
+ │                                                                            │
+ └────────────────────────────────────────────────────────────────────────────┘
+Looking for JS files in
+   /Users/qd-hxt/Documents/gworkspace/react-in-project
+
+(node:56464) DeprecationWarning: os.tmpDir() is deprecated. Use os.tmpdir() instead.
+
+React packager ready.
+
+[14:35:55] <START> Building Dependency Graph
+[14:35:55] <START> Crawling File System
+[14:35:56] <END>   Crawling File System (1479ms)
+[14:35:56] <START> Building in-memory fs for JavaScript
+[14:35:57] <END>   Building in-memory fs for JavaScript (171ms)
+[14:35:57] <START> Building in-memory fs for Assets
+[14:35:57] <END>   Building in-memory fs for Assets (140ms)
+[14:35:57] <START> Building Haste Map
+[14:35:57] <START> Building (deprecated) Asset Map
+[14:35:57] <END>   Building (deprecated) Asset Map (20ms)
+[14:35:57] <END>   Building Haste Map (361ms)
+[14:35:57] <END>   Building Dependency Graph (2154ms)
+```
+
+用浏览器访问 http://localhost:8081/index.ios.bundle，会有如下错误：
+![04](https://lettleprince.github.io/images/20170119-react-in-project/04.png)
+
+其实是还没加载好。
+
+修改命令为：
+
+`(JS_DIR=`pwd`/react-component; cd Pods/React/packager; node packager.js --root $JS_DIR)`
+
+再次启动：
+
+```shell
+$ (JS_DIR=`pwd`/react-component; cd Pods/React/packager; node packager.js --root $JS_DIR)
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │  Running packager on port 8081.                                            │
+ │                                                                            │
+ │  Keep this packager running while developing on any JS projects. Feel      │
+ │  free to close this tab and run your own packager instance if you          │
+ │  prefer.                                                                   │
+ │                                                                            │
+ │  https://github.com/facebook/react-native                                  │
+ │                                                                            │
+ └────────────────────────────────────────────────────────────────────────────┘
+Looking for JS files in
+   /Users/qd-hxt/Documents/gworkspace/react-in-project
+   /Users/qd-hxt/Documents/gworkspace/react-in-project/react-component
+
+(node:56503) DeprecationWarning: os.tmpDir() is deprecated. Use os.tmpdir() instead.
+
+React packager ready.
+
+[14:40:21] <START> Building Dependency Graph
+[14:40:21] <START> Crawling File System
+[14:40:22] <END>   Crawling File System (811ms)
+[14:40:22] <START> Building in-memory fs for JavaScript
+[14:40:22] <END>   Building in-memory fs for JavaScript (256ms)
+[14:40:22] <START> Building in-memory fs for Assets
+[14:40:23] <END>   Building in-memory fs for Assets (137ms)
+[14:40:23] <START> Building Haste Map
+[14:40:23] <START> Building (deprecated) Asset Map
+[14:40:23] <END>   Building (deprecated) Asset Map (26ms)
+[14:40:23] <END>   Building Haste Map (323ms)
+[14:40:23] <END>   Building Dependency Graph (1527ms)
+transforming [===                                     ] 7% 20/303[14:40:51] <START> request:/index.ios.bundle
+[14:40:51] <START> find dependencies
+[14:40:51] <END>   find dependencies (243ms)
+[14:40:51] <START> transform
+transforming [========================================] 100% 303/303
+[14:40:58] <END>   transform (6784ms)
+[14:40:58] <END>   request:/index.ios.bundle (7062ms)
+```
+
+浏览器可以访问到，但是模拟器还是有错误。
+
+此时需要开启 http 的支持。
+
+### 开启 http
+
+项目的 Info.plist 文件中，加入：
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>localhost</key>
+        <dict>
+            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+        </dict>
+    </dict>
+</dict>
+```
+
+再次报错如下：
+![05](https://lettleprince.github.io/images/20170119-react-in-project/05.png)
+
+修改 Podfile，添加依赖库 `pod 'React/RCTWebSocket'`。执行命令 `pod update --no-repo-update`。
+
+再次运行项目，得到预期结果：
+![06](https://lettleprince.github.io/images/20170119-react-in-project/06.png)
+
+点击 `PUSH`：
+![07](https://lettleprince.github.io/images/20170119-react-in-project/07.png)
+
+需要进一步确认的是：
+
+1.怎么自定义加载的（服务器）地址，应该可以进行参数化，由业务的server 进行下发需要加载 bundle 的地址，然后客户端去加载。
+2.不同的页面需要加载不同的 bundle 时，怎么进行区分。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`ImagePicker-Objective-C`](https://github.com/lettleprince/ImagePicker-Objective-C)找到。
+文章中的代码都可以从我的GitHub [`react-in-project`](https://github.com/lettleprince/react-in-project)找到。
 
