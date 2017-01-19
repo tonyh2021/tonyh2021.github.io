@@ -100,8 +100,11 @@ React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 
 ### 项目中引用
 
-项目配置如图：
+项目页面如图：
 
+![01](https://lettleprince.github.io/images/20170119-react-in-project/01.png)
+
+![02](https://lettleprince.github.io/images/20170119-react-in-project/02.png)
 
 新建 `ReactView` 类：
 
@@ -135,6 +138,31 @@ React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 
 @end
 ```
+
+`RootViewController.m` 中：
+
+```OC
+#import "RootViewController.h"
+#import "ReactView.h"
+
+@interface RootViewController ()
+
+@property (weak, nonatomic) IBOutlet ReactView *reactView;
+
+@end
+
+@implementation RootViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+}
+
+@end
+```
+
+此时运行会报错：
+![03](https://lettleprince.github.io/images/20170119-react-in-project/03.png)
 
 
 ### 代码：
