@@ -13,7 +13,7 @@ comments: true
 
 ## 正文
 
-开始看RN的东西，HelloWorld的项目总是跑步起来，错误如下：
+开始看RN的东西，HelloWorld的项目总是跑不起来，错误如下：
 
 ```
 Error: *** Terminating app due to uncaught exception 'NSInternalInconsistencyException',
