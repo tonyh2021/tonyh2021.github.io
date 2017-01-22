@@ -3,7 +3,7 @@ layout: post
 title: "RN第一坑"
 description: ""
 category: articles
-tags: [RN]
+tags: [React Native]
 comments: true
 ---
 
