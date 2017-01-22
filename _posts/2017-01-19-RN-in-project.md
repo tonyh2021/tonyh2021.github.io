@@ -10,59 +10,11 @@ comments: true
 
 ## 前言
 
-使用 RN 难道要把整个项目都重构一遍么？教程那么多，但是很少能够有把怎么与当前项目结合起来的文章。自己摸索了一遍，记录下来。之后的 RN 之路就由此开始。
+使用 RN 难道要把整个项目都重构一遍么？教程那么多，但是很少能够有把怎么与当前项目结合起来的文章。自己摸索了一遍，记录下来。之后的 RN 之路就由此开始。需要注意的是，RN 的版本迭代相当快，不同版本的差别比较大，填坑时留意下版本。
 
 ## 集成 RN
 
 前提是 RN 相关环境已经搭建好。
-
-### 初始化 Pods
-
-推荐使用 CocoaPads 管理第三方库，同时方便集成 RN。
-
-新建 react-in-project 项目，并在项目目录下使用命令 `pod init` ，然后 Podfile 文件如下：
-
-```ruby
-# Uncomment the next line to define a global platform for your project
-platform :ios, '8.0'
-
-target 'react-in-project' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-
-  # Pods for react-in-project
-  pod 'React'
-  pod 'React/RCTText'
-
-  target 'react-in-projectTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-  target 'react-in-projectUITests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-end
-```
-
-再次执行 shell 命令 `pod install`。
-
-```shell
-$ pod install
-Analyzing dependencies
-Downloading dependencies
-Installing React (0.11.0)
-Generating Pods project
-Integrating client project
-
-[!] Please close any current Xcode sessions and use `react-in-project.xcworkspace` for this project from now on.
-Sending stats
-Pod installation complete! There are 2 dependencies from the Podfile and 1 total pod installed.
-
-[!] React has been deprecated
-```
 
 ### 创建组件
 
@@ -98,6 +50,70 @@ class SimpleApp extends React.Component {
 React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 ```
 
+在此目录下，执行：
+
+```shell
+npm install react
+npm install react-native@0.38.0
+```
+
+> 由于最近发布的 0.40.0 版本变化比较大，所以暂时使用 0.38.0 版本。所以 npm 制定升级 `npm install react-native@0.37.0`。具体查看：[升级
+](http://reactnative.cn/docs/0.40/upgrading.html#content)。
+
+### 初始化 Pods
+
+推荐使用 CocoaPads 管理第三方库，同时方便集成 RN。
+
+新建 react-in-project 项目，并在项目目录下使用命令 `pod init` ，然后 Podfile 文件如下：
+
+```ruby
+# Uncomment the next line to define a global platform for your project
+platform :ios, '8.0'
+
+target 'react-in-project' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+    use_frameworks!
+
+   # 取决于你的工程如何组织，你的node_modules文件夹可能会在别的地方。
+   # 请将:path后面的内容修改为正确的路径。
+    pod 'React', :path => './react-component/node_modules/react-native', :subspecs => [
+        'Core',
+        'RCTImage',
+        'RCTNetwork',
+        'RCTText',
+        'RCTWebSocket',
+    # 添加其他你想在工程中使用的依赖。
+    ]
+
+    target 'react-in-projectTests' do
+        inherit! :search_paths
+    # Pods for testing
+    end
+
+    target 'react-in-projectUITests' do
+        inherit! :search_paths
+        # Pods for testing
+    end
+
+end
+```
+
+> `pod 'React'`CocoaPods中 pod 版本已经远远落后于官方版本，所以官方推荐引用本地的方式。
+
+再次执行 shell 命令 `pod install`。
+
+```shell
+$ pod install
+Analyzing dependencies
+Fetching podspec for `React` from `./react-component/node_modules/react-native`
+Downloading dependencies
+Installing React 0.38.0 (was 0.40.0)
+Generating Pods project
+Integrating client project
+Sending stats
+Pod installation complete! There are 5 dependencies from the Podfile and 1 total pod installed.
+```
+
 ### 项目中引用
 
 项目页面如图：
@@ -111,7 +127,7 @@ React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 ```OC
 //ReactView.m
 #import "ReactView.h"
-#import <React/Base/RCTRootView.h>
+#import <React/RCTRootView.h>
 
 @interface ReactView()
 
@@ -172,22 +188,23 @@ React.AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
 
 在项目目录下运行命令：
 
-`(JS_DIR=`pwd`/react-component; cd Pods/React; npm run start -- --root $JS_DIR)
+`(JS_DIR=`pwd`/react-component; cd react-component/node_modules/react-native; npm run start -- --root $JS_DIR)
 `
 
 > 1.将新建的 react-component 文件夹目录赋值到JS_DIR上，需要全路径
 > 2.进入 Pods/React 目录
-> 3.绑定JS_DIR会监听ReactComponents文件夹下的文件，然后 npm run start 启动 node 服务
+> 3.绑定JS_DIR会监听react-component文件夹下的文件，然后 npm run start 启动 node 服务
 > 4.三行命令用()包装起来，可以避免运行后定位到 Pods/React 目录下
 
 输出：
 
 ```shell
-$ (JS_DIR=`pwd`/react-component; cd Pods/React; npm run start -- --root $JS_DIR)
+$ (JS_DIR=`pwd`/react-component; cd react-component/node_modules/react-native; npm run start -- --root $JS_DIR)
 
-> react-native@0.11.0 start /Users/qd-hxt/Documents/gworkspace/react-in-project/Pods/React
-> ./packager/packager.sh || true "--root" "/Users/qd-hxt/Documents/gworkspace/react-in-project/react-component"
+> react-native@0.38.0 start /Users/qd-hxt/Documents/gworkspace/react-in-project/react-component/node_modules/react-native
+> /usr/bin/env bash -c './packager/packager.sh "$@" || true' -- "--root" "/Users/qd-hxt/Documents/gworkspace/react-in-project/react-component"
 
+Scanning 640 folders for symlinks in /Users/qd-hxt/Documents/gworkspace/react-in-project/react-component/node_modules (8ms)
  ┌────────────────────────────────────────────────────────────────────────────┐
  │  Running packager on port 8081.                                            │
  │                                                                            │
@@ -199,79 +216,22 @@ $ (JS_DIR=`pwd`/react-component; cd Pods/React; npm run start -- --root $JS_DIR)
  │                                                                            │
  └────────────────────────────────────────────────────────────────────────────┘
 Looking for JS files in
-   /Users/qd-hxt/Documents/gworkspace/react-in-project
-
-(node:56464) DeprecationWarning: os.tmpDir() is deprecated. Use os.tmpdir() instead.
-
-React packager ready.
-
-[14:35:55] <START> Building Dependency Graph
-[14:35:55] <START> Crawling File System
-[14:35:56] <END>   Crawling File System (1479ms)
-[14:35:56] <START> Building in-memory fs for JavaScript
-[14:35:57] <END>   Building in-memory fs for JavaScript (171ms)
-[14:35:57] <START> Building in-memory fs for Assets
-[14:35:57] <END>   Building in-memory fs for Assets (140ms)
-[14:35:57] <START> Building Haste Map
-[14:35:57] <START> Building (deprecated) Asset Map
-[14:35:57] <END>   Building (deprecated) Asset Map (20ms)
-[14:35:57] <END>   Building Haste Map (361ms)
-[14:35:57] <END>   Building Dependency Graph (2154ms)
-```
-
-用浏览器访问 http://localhost:8081/index.ios.bundle，会有如下错误：
-![04](https://lettleprince.github.io/images/20170119-react-in-project/04.png)
-
-其实是还没加载好。
-
-修改命令为：
-
-`(JS_DIR=`pwd`/react-component; cd Pods/React/packager; node packager.js --root $JS_DIR)`
-
-再次启动：
-
-```shell
-$ (JS_DIR=`pwd`/react-component; cd Pods/React/packager; node packager.js --root $JS_DIR)
- ┌────────────────────────────────────────────────────────────────────────────┐
- │  Running packager on port 8081.                                            │
- │                                                                            │
- │  Keep this packager running while developing on any JS projects. Feel      │
- │  free to close this tab and run your own packager instance if you          │
- │  prefer.                                                                   │
- │                                                                            │
- │  https://github.com/facebook/react-native                                  │
- │                                                                            │
- └────────────────────────────────────────────────────────────────────────────┘
-Looking for JS files in
-   /Users/qd-hxt/Documents/gworkspace/react-in-project
+   /Users/qd-hxt/Documents/gworkspace/react-in-project/react-component
    /Users/qd-hxt/Documents/gworkspace/react-in-project/react-component
 
-(node:56503) DeprecationWarning: os.tmpDir() is deprecated. Use os.tmpdir() instead.
+[Hot Module Replacement] Server listening on /hot
 
 React packager ready.
 
-[14:40:21] <START> Building Dependency Graph
-[14:40:21] <START> Crawling File System
-[14:40:22] <END>   Crawling File System (811ms)
-[14:40:22] <START> Building in-memory fs for JavaScript
-[14:40:22] <END>   Building in-memory fs for JavaScript (256ms)
-[14:40:22] <START> Building in-memory fs for Assets
-[14:40:23] <END>   Building in-memory fs for Assets (137ms)
-[14:40:23] <START> Building Haste Map
-[14:40:23] <START> Building (deprecated) Asset Map
-[14:40:23] <END>   Building (deprecated) Asset Map (26ms)
-[14:40:23] <END>   Building Haste Map (323ms)
-[14:40:23] <END>   Building Dependency Graph (1527ms)
-transforming [===                                     ] 7% 20/303[14:40:51] <START> request:/index.ios.bundle
-[14:40:51] <START> find dependencies
-[14:40:51] <END>   find dependencies (243ms)
-[14:40:51] <START> transform
-transforming [========================================] 100% 303/303
-[14:40:58] <END>   transform (6784ms)
-[14:40:58] <END>   request:/index.ios.bundle (7062ms)
+[2017-1-22 18:04:19] <START> Initializing Packager
+[2017-1-22 18:04:19] <START> Building in-memory fs for JavaScript
+[2017-1-22 18:04:20] <END>   Building in-memory fs for JavaScript (151ms)
+[2017-1-22 18:04:20] <START> Building Haste Map
+[2017-1-22 18:04:20] <END>   Building Haste Map (462ms)
+[2017-1-22 18:04:20] <END>   Initializing Packager (662ms)
 ```
 
-浏览器可以访问到，但是模拟器还是有错误。
+用浏览器访问 http://localhost:8081/index.ios.bundle ，可以访问到，但是模拟器还是有错误。
 
 此时需要开启 http 的支持。
 
