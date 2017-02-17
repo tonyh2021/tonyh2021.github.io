@@ -188,8 +188,8 @@ Pod installation complete! There are 5 dependencies from the Podfile and 1 total
 
 在项目目录下运行命令：
 
-`(JS_DIR=`pwd`/react-component; cd react-component/node_modules/react-native; npm run start -- --root $JS_DIR)
-`
+```(JS_DIR=`pwd`/react-component; cd react-component/node_modules/react-native; npm run start -- --root $JS_DIR)
+```
 
 > 1.将新建的 react-component 文件夹目录赋值到JS_DIR上，需要全路径
 > 2.进入 Pods/React 目录
