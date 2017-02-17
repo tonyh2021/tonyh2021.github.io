@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Cocoapods 中的头文件"
+title: "CocoaPods 中的头文件"
 description: ""
 category: articles
-tags: [Cocoapods]
+tags: [CocoaPods]
 comments: true
 ---
 
