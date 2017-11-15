@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "构建 NetworkExtension 应用——背景相关"
+title: "构建 NetworkExtension 应用（一）"
 description: ""
 category: articles
 tags: [NetworkExtension]
@@ -11,7 +11,9 @@ comments: true
 
 个人水平实在有限，大多数时候只能依靠谷歌来解决编程中遇到的难题。可是国庆后各路科学上网工具逐一翻车，[蓝灯](https://github.com/getlantern/forum)(7 月份刚续费两年)整个十月份基本不可用，当前新版本可用但已经没有之前稳定、快速了。 Nydus 这种无良商家更是过分，整个团队直接消失（会员至少有一年多才到期）。中间试用过别的工具，也都并不稳定。
 
-于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。
+程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的
+
+以下链接可能存在墙内打不开的情况。
 
 ## 方案
 
@@ -57,20 +59,7 @@ SSH 本身基于 RSA 加密技术，GFW 无法从数据传输的过程中的加�
 
 不过关于 Shadowsocks 特征被识别的消息一直有，随时准备新的技术吧。
 
-向 [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
+最后向， [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
 
-## NetworkExtension 相关
-
-[NetworkExtension](https://developer.apple.com/documentation/networkextension)是苹果提供的用于配置 VPN 和定制、扩展核心网络功能的框架。NE 框架提供了可用于定制、扩展 iOS 和 MacOS 系统的核心网络功能的 API。[Potatso](https://github.com/Potatso/Potatso) 便是使用 NE 框架实现了 Shadowsocks 代理，遗憾的是由于[种种原因](https://sspai.com/post/38909)作者删除了开源代码。
-
-### 代码：
-文章中的代码都可以从我的GitHub [`ImagePicker-Objective-C`](https://github.com/lettleprince/ImagePicker-Objective-C)找到。
-
-
-1.Capabilities 设置
-2.网络权限申请
-
-
-Starty
-
-So, how did everything start?
+备注：
+[各种翻墙工具的个人浅见](https://xijie.wordpress.com/2016/05/23/%E5%90%84%E7%A7%8D%E7%BF%BB%E5%A2%99%E5%B7%A5%E5%85%B7%E7%9A%84%E4%B8%AA%E4%BA%BA%E6%B5%85%E8%A7%81/)
