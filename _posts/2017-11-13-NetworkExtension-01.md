@@ -49,17 +49,17 @@ comments: true
 
 SSH 本身基于 RSA 加密技术，GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，SSH 的特征明显。GFW 也不是吃素的，它会通过特征分析，识别出 SSH 隧道然后进行干扰。
 
-于是，[Shadowsocks](https://zh.wikipedia.org/wiki/Shadowsocks)诞生。
+于是，[Shadowsocks](https://zh.wikipedia.org/wiki/Shadowsocks) 诞生。
 
 ![whats-shadowsocks-04](https://lettleprince.github.io/images/20171113-NetworkExtension/whats-shadowsocks-04.png)
 
-- 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题。
-- ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的 TCP 包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密。
-- ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回。
+- 客户端发出的请求基于 Socks5 协议跟 SS-Local 端进行通讯，由于这个 SS-Local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题。
+- SS-Local 和 SS-Server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的 TCP 包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密。
+- SS-Server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回。
 
 不过关于 Shadowsocks 特征被识别的消息一直有，随时准备新的技术吧。
 
-最后向， [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
+最后，向 [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
 
 下篇将会开始我们的 iOS NetworkExtension 应用。
 
