@@ -35,8 +35,6 @@ comments: true
 
 ![whats-shadowsocks-01](https://lettleprince.github.io/images/20171113-NetworkExtension/whats-shadowsocks-01.png)
 
-![01](https://lettleprince.github.io/images/20171115-NetworkExtension/01.png)
-
 后来，[GFW](https://zh.wikipedia.org/wiki/%E9%98%B2%E7%81%AB%E9%95%BF%E5%9F%8E) 出现。
 
 ![whats-shadowsocks-02](https://lettleprince.github.io/images/20171113-NetworkExtension/whats-shadowsocks-02.png)
