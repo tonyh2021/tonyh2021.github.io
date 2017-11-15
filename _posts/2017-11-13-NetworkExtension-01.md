@@ -11,7 +11,7 @@ comments: true
 
 个人水平实在有限，大多数时候只能依靠谷歌来解决编程中遇到的难题。可是国庆后各路科学上网工具逐一翻车，[蓝灯](https://github.com/getlantern/forum)(7 月份刚续费两年)整个十月份基本不可用，当前新版本可用但已经没有之前稳定、快速了。 Nydus 这种无良商家更是过分，整个团队直接消失（会员至少有一年多才到期）。中间试用过别的工具，也都并不稳定。
 
-程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的
+程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的，后来觉得作为技术博客，还是介绍下技术原理比较好。
 
 以下链接可能存在墙内打不开的情况。
 
@@ -60,6 +60,8 @@ SSH 本身基于 RSA 加密技术，GFW 无法从数据传输的过程中的加�
 不过关于 Shadowsocks 特征被识别的消息一直有，随时准备新的技术吧。
 
 最后向， [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
+
+下篇将会开始我们的 iOS NetworkExtension 应用。
 
 备注：
 [各种翻墙工具的个人浅见](https://xijie.wordpress.com/2016/05/23/%E5%90%84%E7%A7%8D%E7%BF%BB%E5%A2%99%E5%B7%A5%E5%85%B7%E7%9A%84%E4%B8%AA%E4%BA%BA%E6%B5%85%E8%A7%81/)
