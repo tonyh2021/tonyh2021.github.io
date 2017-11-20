@@ -59,6 +59,27 @@ SSH 本身基于 RSA 加密技术，GFW 无法从数据传输的过程中的加�
 
 几乎没遇到坑。需要注意的是 Vultr 上只要建立了服务器，就会开始计费，无论是否在运行中，所以不用的服务器请直接删掉。另外 Tokyo 和 Los Angeles 的节点貌似容易被封掉，反正我建了一个节点是 ping 不通的。
 
+One more thing:
+在部署锐速时，可能会有以下提示：
+
+```shell
+...
+锐速暂不支持该内核，程序退出.自动安装判断比较严格，你可以到http://www.91yun.org/serverspeeder91yun手动下载安装文件尝试不同版本
+```
+
+这说明需要更换内核，过程很简单。因为我们部署的是 CentOS 6，所以执行命令：
+
+```shell
+rpm -ivh http://soft.91yun.org/ISO/Linux/CentOS/kernel/kernel-firmware-2.6.32-504.3.3.el6.noarch.rpm
+rpm -ivh http://soft.91yun.org/ISO/Linux/CentOS/kernel/kernel-2.6.32-504.3.3.el6.x86_64.rpm --force
+```
+
+然后再执行 `rpm -qa | grep kernel`，查看内核是否安装成功。如果显示里面有这个内核就对了。
+
+![05](https://lettleprince.github.io/images/20171113-NetworkExtension/05.png)
+
+重启服务器，重新执行 `wget -N --no-check-certificate https://raw.githubusercontent.com/91yun/serverspeeder/master/serverspeeder-all.sh && bash serverspeeder-all.sh` 即可。
+
 最后，向 [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
 
 下篇将会开始我们的 iOS NetworkExtension 应用。
