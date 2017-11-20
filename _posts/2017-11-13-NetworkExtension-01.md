@@ -20,6 +20,8 @@ comments: true
 方案一：
 [科学上网的终极姿势:在 Vultr VPS 上搭建 Shadowsocks](https://zoomyale.com/2016/vultr_and_ss/)
 
+需要注册的话，可以点[这个连接](https://www.vultr.com/?ref=7258410)（这个链接包含了我的 Vultr 邀请码，算是对我的支持吧，这样遇到问题请教我的时候，我也会很热情哒😆）。
+
 方案二：
 [使用 Linux 快照搭建 GFW.Press 服务器](https://gfw.press/blog/?p=30)
 
