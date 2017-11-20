@@ -11,21 +11,9 @@ comments: true
 
 个人水平实在有限，大多数时候只能依靠谷歌来解决编程中遇到的难题。可是国庆后各路科学上网工具逐一翻车，[蓝灯](https://github.com/getlantern/forum)(7 月份刚续费两年)整个十月份基本不可用，当前新版本可用但已经没有之前稳定、快速了。 Nydus 这种无良商家更是过分，整个团队直接消失（会员至少有一年多才到期）。中间试用过别的工具，也都并不稳定。
 
-程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的，后来觉得作为技术博客，还是介绍下技术原理比较好。
+程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的，后来觉得作为技术博客，还是介绍下技术原理比较好。知其然，更要知其所以然。
 
-以下链接可能存在墙内打不开的情况。墙内可访问的云服务商推荐 Vultr，可以点[这个连接](https://www.vultr.com/?ref=7258410)注册（这个链接包含了我的 Vultr 邀请码，算是对我的支持吧，这样遇到问题请教我的时候，我也会很热情哒😆）。
-
-## 方案
-
-方案一：
-[科学上网的终极姿势:在 Vultr VPS 上搭建 Shadowsocks](https://zoomyale.com/2016/vultr_and_ss/)
-
-方案二：
-[使用 Linux 快照搭建 GFW.Press 服务器](https://gfw.press/blog/?p=30)
-
-几乎没遇到坑。需要注意的是 Vultr 上只要建立了服务器，就会开始计费，无论是否在运行中，所以不用的服务器请直接删掉。另外 Tokyo 和 Los Angeles 的节点貌似容易被封掉，反正我建了一个节点是 ping 不通的。
-
-知其然，更要知其所以然。
+以下链接可能存在墙内打不开的情况。
 
 ## Shadowsocks 相关
 
@@ -58,6 +46,18 @@ SSH 本身基于 RSA 加密技术，GFW 无法从数据传输的过程中的加�
 - SS-Server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回。
 
 不过关于 Shadowsocks 特征被识别的消息一直有，随时准备新的技术吧。
+
+## 方案
+
+首先需要创建 SS-Server ，也就是创建墙外的那台服务器。VPS 提供商推荐 [Vultr](https://www.vultr.com/?ref=7258410) 或 [DigitalOcean](https://m.do.co/c/b91ffbfa4847)（这两个链接包含了我的邀请码，注册后我们都能有优惠，也算是对我的支持，这样遇到问题请教我的时候，我也会很热情哒😆）。
+
+方案一：
+[科学上网的终极姿势:在 Vultr VPS 上搭建 Shadowsocks](https://zoomyale.com/2016/vultr_and_ss/)
+
+方案二：
+[使用 Linux 快照搭建 GFW.Press 服务器](https://gfw.press/blog/?p=30)
+
+几乎没遇到坑。需要注意的是 Vultr 上只要建立了服务器，就会开始计费，无论是否在运行中，所以不用的服务器请直接删掉。另外 Tokyo 和 Los Angeles 的节点貌似容易被封掉，反正我建了一个节点是 ping 不通的。
 
 最后，向 [clowwindy](https://github.com/clowwindy) 及后续的维护人员致敬。
 
