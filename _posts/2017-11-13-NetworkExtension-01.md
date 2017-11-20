@@ -13,14 +13,12 @@ comments: true
 
 程序员的诉求很简单，编程中遇到问题的时候，能够顺利的搜索到原因和方案就可以了。于是决心[自己动手,丰衣足食](https://baike.baidu.com/item/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%EF%BC%8C%E4%B8%B0%E8%A1%A3%E8%B6%B3%E9%A3%9F)。本来想直接写 NetworkExtension 扩展项目的，后来觉得作为技术博客，还是介绍下技术原理比较好。
 
-以下链接可能存在墙内打不开的情况。
+以下链接可能存在墙内打不开的情况。墙内可访问的云服务商推荐 Vultr，可以点[这个连接](https://www.vultr.com/?ref=7258410)注册（这个链接包含了我的 Vultr 邀请码，算是对我的支持吧，这样遇到问题请教我的时候，我也会很热情哒😆）。
 
 ## 方案
 
 方案一：
 [科学上网的终极姿势:在 Vultr VPS 上搭建 Shadowsocks](https://zoomyale.com/2016/vultr_and_ss/)
-
-需要注册的话，可以点[这个连接](https://www.vultr.com/?ref=7258410)（这个链接包含了我的 Vultr 邀请码，算是对我的支持吧，这样遇到问题请教我的时候，我也会很热情哒😆）。
 
 方案二：
 [使用 Linux 快照搭建 GFW.Press 服务器](https://gfw.press/blog/?p=30)
