@@ -48,9 +48,26 @@ comments: true
 
 Personal VPN 和 Network Extensions（App Proxy、Content Filter、Packet Tunnel）也当然要开启。
 
-#### UI
+#### 第三方框架
+
+NEKit 推荐将项目拖入工程，或者使用 [Carthage](https://github.com/Carthage/Carthage) 集成。
+
+其他的第三方框架使用 Pod：
+
+- 
 
 
+#### 调试 Network Extension
+
+调试 App 的代码很简单，但是如何调试 Extension 中的代码呢？在已经完成 PacketTunnel 的代码情况下：
+
+1. 构建并运行应用。
+2. 停止运行。
+3. Xcode 菜单中 `Debug` -> `attach to process by PID or name`，填入 `PacketTunnel`，然后 `Attach`。
+![03](https://lettleprince.github.io/images/20171115-NetworkExtension/03.png)
+
+4. 在手机上运行（不要通过 Xcode）应用，点击连接的时候，进入了断点。
+![04](https://lettleprince.github.io/images/20171115-NetworkExtension/04.png)
 
 
 ### 代码：
