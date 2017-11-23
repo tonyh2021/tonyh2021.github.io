@@ -71,29 +71,29 @@ NEKit 推荐将项目拖入工程，或者使用 [Carthage](https://github.com/C
 1. 创建 vpn 配置
 
 ```swift
-    fileprivate func createProviderManager() -> NETunnelProviderManager {
-        let manager = NETunnelProviderManager()
-        manager.protocolConfiguration = NETunnelProviderProtocol()
-        return manager
-    }
+fileprivate func createProviderManager() -> NETunnelProviderManager {
+    let manager = NETunnelProviderManager()
+    manager.protocolConfiguration = NETunnelProviderProtocol()
+    return manager
+}
 ```
 
 2. 保存 vpn 配置
 
 ```swift
-    manager.saveToPreferences {
-        if let error = $0 {
-            complete(nil, error)
-        } else {
-            manager.loadFromPreferences(completionHandler: { (error) -> Void in
-                if let error = error {
-                    complete(nil, error)
-                } else {
-                    complete(manager, nil)
-                }
-            })
-        }
+manager.saveToPreferences {
+    if let error = $0 {
+        complete(nil, error)
+    } else {
+        manager.loadFromPreferences(completionHandler: { (error) -> Void in
+            if let error = error {
+                complete(nil, error)
+            } else {
+                complete(manager, nil)
+            }
+        })
     }
+}
 ```
 
 这段代码执行时会请求用户的授权，允许之后会添加一份 vpn 的配置。
@@ -101,77 +101,77 @@ NEKit 推荐将项目拖入工程，或者使用 [Carthage](https://github.com/C
 3. 开启和关闭 vpn
 
 ```swift
-    fileprivate func startVPNWithOptions(_ options: [String : NSObject]?, complete: ((NETunnelProviderManager?, Error?) -> Void)? = nil) {
-        // Load provider
-        loadAndCreateProviderManager { (manager, error) -> Void in
-            if let error = error {
-                complete?(nil, error)
-            } else {
-                guard let manager = manager else {
-                    complete?(nil, ManagerError.invalidProvider)
-                    return
-                }
-                if manager.connection.status == .disconnected || manager.connection.status == .invalid {
-                    do {
-                        try manager.connection.startVPNTunnel(options: options)
-                        self.addVPNStatusObserver()
-                        complete?(manager, nil)
-                    }catch {
-                        complete?(nil, error)
-                    }
-                } else {
-                    self.addVPNStatusObserver()
-                    complete?(manager, nil)
-                }
-            }
-        }
-    }
-
-    public func stopVPN() {
-        // Stop provider
-        loadProviderManager { (manager) -> Void in
+fileprivate func startVPNWithOptions(_ options: [String : NSObject]?, complete: ((NETunnelProviderManager?, Error?) -> Void)? = nil) {
+    // Load provider
+    loadAndCreateProviderManager { (manager, error) -> Void in
+        if let error = error {
+            complete?(nil, error)
+        } else {
             guard let manager = manager else {
+                complete?(nil, ManagerError.invalidProvider)
                 return
             }
-            manager.connection.stopVPNTunnel()
+            if manager.connection.status == .disconnected || manager.connection.status == .invalid {
+                do {
+                    try manager.connection.startVPNTunnel(options: options)
+                    self.addVPNStatusObserver()
+                    complete?(manager, nil)
+                }catch {
+                    complete?(nil, error)
+                }
+            } else {
+                self.addVPNStatusObserver()
+                complete?(manager, nil)
+            }
         }
     }
+}
+
+public func stopVPN() {
+    // Stop provider
+    loadProviderManager {
+        guard let manager = $0 else {
+            return
+        }
+        manager.connection.stopVPNTunnel()
+    }
+}
 ```
 
 4. 监听并更新 vpn 状态
 
 ```swift
-    /// 添加vpn的状态的监听
-    func addVPNStatusObserver() {
-        guard !observerDidAdd else {
-            return
-        }
-        loadProviderManager { [unowned self] (manager) -> Void in
-            if let manager = manager {
-                self.observerDidAdd = true
-                NotificationCenter.default.addObserver(forName: NSNotification.Name.NEVPNStatusDidChange, object: manager.connection, queue: OperationQueue.main, using: { [unowned self] (notification) -> Void in
-                    self.updateVPNStatus(manager)
-                })
-            }
+/// 添加vpn的状态的监听
+func addVPNStatusObserver() {
+    guard !observerDidAdd else {
+        return
+    }
+    loadProviderManager {
+        if let manager = $0 {
+            self.observerDidAdd = true
+            NotificationCenter.default.addObserver(forName: NSNotification.Name.NEVPNStatusDidChange, object: manager.connection, queue: OperationQueue.main, using: { [unowned self] (notification) -> Void in
+                self.updateVPNStatus(manager)
+            })
         }
     }
+}
+
+/// 更新vpn的连接状态
+///
+/// - Parameter manager: NEVPNManager
+func updateVPNStatus(_ manager: NEVPNManager) {
     
-    /// 更新vpn的连接状态
-    ///
-    /// - Parameter manager: NEVPNManager
-    func updateVPNStatus(_ manager: NEVPNManager) {
-        
-        switch manager.connection.status {
-        case .connected:
-            self.vpnStatus = .on
-        case .connecting, .reasserting:
-            self.vpnStatus = .connecting
-        case .disconnecting:
-            self.vpnStatus = .disconnecting
-        case .disconnected, .invalid:
-            self.vpnStatus = .off
-        }
+    switch manager.connection.status {
+    case .connected:
+        self.vpnStatus = .on
+    case .connecting, .reasserting:
+        self.vpnStatus = .connecting
+    case .disconnecting:
+        self.vpnStatus = .disconnecting
+    case .disconnected, .invalid:
+        self.vpnStatus = .off
     }
+}
 ```
 
 #### `NEPacketTunnelProvider`
@@ -179,11 +179,11 @@ NEKit 推荐将项目拖入工程，或者使用 [Carthage](https://github.com/C
 `NEPacketTunnelProvider`，是真正的 vpn 核心代码。项目中 `PacketTunnelProvider` 是其子类，并且以下两个方法必须实现。
 
 ```swift
-    @available(iOS 9.0, *)
-    open func startTunnel(options: [String : NSObject]? = nil, completionHandler: @escaping (Error?) -> Swift.Void)
+@available(iOS 9.0, *)
+open func startTunnel(options: [String : NSObject]? = nil, completionHandler: @escaping (Error?) -> Swift.Void)
 
-    @available(iOS 9.0, *)
-    open func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Swift.Void)
+@available(iOS 9.0, *)
+open func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Swift.Void)
 ```
 
 当 App 里的 `NETunnelProviderManager` 对象调用 `startVPNWithOptions` 时，控制流程就跳到 Extension 里的 `startTunnel` 方法。
