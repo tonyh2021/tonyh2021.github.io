@@ -26,12 +26,12 @@ Here’s to the crazy ones.The misfits. The rebels. The troublemakers. The round
 
 <p class="social-icons">
   <a href="https://github.com/lettleprince"><i class="fa fa-github fa-2x"></i></a>
-  <a href="https://plus.google.com/107331746441808864691?rel=author"><i class="fa fa-plus fa-2x"></i></a>
+  <!-- <a href="https://plus.google.com/107331746441808864691?rel=author"><i class="fa fa-plus fa-2x"></i></a> -->
   <a href="https://www.zhihu.com/people/ibloodline"><i class="fa fa-2x">知</i></a>
-  <a href="https://twitter.com/ibl00dline"><i class="fa fa-twitter fa-2x"></i></a>
-  <a href="https://www.facebook.com/ibloodline"><i class="fa fa-facebook fa-2x"></i></a>
+  <a href="https://twitter.com/gold3fat"><i class="fa fa-twitter fa-2x"></i></a>
   <a href="http://stackoverflow.com/users/4172900/tony-han"><i class="fa fa-stack-overflow fa-2x"></i></a>
-  <a href="https://bitbucket.org/Tony_Han"><i class="fa fa-bitbucket fa-2x"></i></a>
+  <a href="https://www.facebook.com/ibloodline"><i class="fa fa-facebook fa-2x"></i></a>
+  <!-- <a href="https://bitbucket.org/Tony_Han"><i class="fa fa-bitbucket fa-2x"></i></a> -->
   <!-- <a href="https://instagram.com/lettleprince/"><i class="fa fa-instagram fa-2x"></i></a> -->
 </p>
 
