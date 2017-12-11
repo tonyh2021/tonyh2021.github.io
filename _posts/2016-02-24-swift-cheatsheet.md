@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Swift 2.0快速参考手册"
+title: "Swift 4.0 快速参考手册"
 description: ""
 category: articles
 tags: [Swift]
@@ -9,13 +9,9 @@ comments: true
 
 ## 前言
 
-马马虎虎过了两遍Swift，语法还是容易忘，说明还是练得少。为了让练习的时候能够快速适应Swift的风格，根据`raywenderlich`的[Swift 2.0 Cheat Sheet and Quick Reference](http://cdn3.raywenderlich.com/wp-content/uploads/2014/06/RW-Swift-Cheatsheet-0_6.pdf)整理了一份Swift快速参考手册。当然不会涉及到详细的用法，详细的用法已经有不少资料了。
+马马虎虎过了两遍 Swift，语法还是容易忘，说明还是练得少。为了让练习的时候能够快速适应Swift的风格，根据 `raywenderlich` 的 [Swift 2.0 Cheat Sheet and Quick Reference](https://koenig-media.raywenderlich.com/uploads/2014/06/RW-Swift-Cheatsheet-0_8.pdf)整理了一份 Swift 快速参考手册。当然不会涉及到详细的用法，详细的用法已经有不少资料了。
 
-- [Let's Swift](http://letsswift.com/swift-group/)
-
-- [SwiftGuide](https://github.com/ipader/SwiftGuide)
-
-- [中文版 Apple 官方 Swift 教程](https://github.com/numbbbbb/the-swift-programming-language-in-chinese)
+更新：Swift 4.0 有几处更新。
 
 废话不多说，依次过一遍。
 
@@ -60,18 +56,19 @@ func doIt(a:Int, b:Int) -> Int {
 var a = MyClass()
 a.myProperty
 a.doIt()
-a.doIt(1)
-a.doIt(2, b:3)
+a.doIt(a:1)
+a.doIt(a:2, b:3)
 ```
 
 ## 枚举
 
 ```swift
+//4.0 中枚举中的 case 都变成了小写
 enum CollisionType: Int {
-	case Player = 1
-	case Enemy = 2
+    case player = 1
+    case enemy = 2
 }
-var type = CollisionType.Player
+var type = CollisionType.player
 ```
 
 ## 变量声明

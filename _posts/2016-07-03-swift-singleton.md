@@ -37,7 +37,7 @@ class Singleton {
 
 如果需要额外的初始化操作，你可以通过调用Block的方式来实现：
 
-```Swift
+```swift
 class Singleton {
     static let sharedInstance: Singleton = {
         let instance = Singleton()
