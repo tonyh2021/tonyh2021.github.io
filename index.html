@@ -26,7 +26,9 @@ og:
     {% if paginator.total_pages > 1 %}
 
 <div class="pagination">
+    {{ site.baseurl | inspect }}
   {% if paginator.previous_page %}
+  
       <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
   {% else %}
       <span>&laquo; Prev&nbsp;</span>
@@ -37,7 +39,7 @@ og:
         {% elsif page == 1 %}
           <a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}&nbsp;</a>
         {% else %}
-          {{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page | inspect }}
+          {{ site.baseurl | inspect }}
           <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}&nbsp;</a>
         {% endif %}
       {% endfor %}
