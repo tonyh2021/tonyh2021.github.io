@@ -248,7 +248,7 @@ scrapy shell https://stackoverflow.com/questions?page=1
 ['Stack']
 ```
 
-使用 `view(response)` 可以在浏览器中打开响应页面，然后通过调试来选择合适的 CSS 选择器（在我的 MBPR 上一直没有能够使用 Chrome 打开）。
+使用 `view(response)` 可以在浏览器中打开响应页面，然后通过调试来选择合适的 CSS 选择器。
 
 #### XPath
 
