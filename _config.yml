@@ -22,7 +22,7 @@ gems:
   - jekyll-paginate
 
 paginate: 10 # 指定每页多少条
-paginate_path: "blog/page:num" # 指定每页的url
+paginate_path: "/blog/page:num" # 指定每页的url
 
 sass:
     sass_dir: _sass
