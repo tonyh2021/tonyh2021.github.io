@@ -513,6 +513,9 @@ class TagSpider(scrapy.Spider):
 
 当然，上面的例子过于简单，Scrapy 还有很多其他功能，[这里](https://doc.scrapy.org/en/latest/index.html#section-basics)可以查看更多的内容。
 
+## 代码
+文章中的代码都可以从我的 GitHub [ScrapyDemo](https://github.com/lettleprince/ScrapyDemo) 找到。
+
 
 
 
