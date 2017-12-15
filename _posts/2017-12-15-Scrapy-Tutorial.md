@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Scrapy 体验"
+title: "Scrapy 教程"
 description: ""
 category: articles
 tags: [Python]
@@ -275,11 +275,243 @@ Scrapy 选择器实际是基于强大的 XPath 实现的。事实上，在底层
 执行命令：
 
 ```shell
->>> response.css("div.result-link")[0]
-<Selector xpath="descendant-or-self::div[@class and contains(concat(' ', normalize-space(@class), ' '), ' question-summary ')]" data='<div class="question-summary" id="questi'>
+>>> question = response.css("div.summary")[0]
 ```
 
+获取到第一个 question，然后执行：
 
+```shell
+>>> question_content = question.css("h3 a::text").extract_first()
+>>> question_content
+'How large can Protege import an Owl file?'
+```
+
+便获取到了第一个问题的内容。接着获取答案：
+
+```shell
+>>> answer = question.css("div.excerpt::text").extract_first()
+>>> answer
+"\r\n            I have a 2MB OWL file that I downloaded from the web. I tried to open it in Protege 5.2, it didn't report any issue or message, but simply load nothing in the UI. I suspect it might be due to the file ...\r\n        "
+```
+
+#### 在 spider 中解析数据
+
+我们把上面的命令集成到我们的代码中。通常情况下，Scrapy 的 spider 需要将从页面解析出来的内容生成为字典，所以我们使用 `yield` 关键字：
+
+```python
+class StackoverflowSpider(scrapy.Spider):
+    """Spider for Stackoverflow.
+    """
+    name = "stackoverflow"
+    start_urls = [
+        'https://stackoverflow.com/questions?page=1',
+        'https://stackoverflow.com/questions?page=2',
+    ]
+
+    def parse(self, response):
+        for question in response.css("div.summary"):
+            yield {
+                'question_content': question.css("h3 a::text").extract_first(),
+                #为了让内容简短一点，这里换成了问题的提问者
+                'user': question.css("div.user-details a::text").extract_first()
+            }
+```
+
+运行 spider，可以看到输出的内容中包含：
+
+```shell
+......
+2017-12-15 10:15:37 [scrapy.core.scraper] DEBUG: Scraped from <200 https://stackoverflow.com/questions?page=2>
+{'question_content': 'How can I get rid of this error in windows command prompt?', 'user': 'Leo Li'}
+2017-12-15 10:15:37 [scrapy.core.scraper] DEBUG: Scraped from <200 https://stackoverflow.com/questions?page=2>
+{'question_content': 'Accessing a node within a tempate called from within a for-each', 'user': 'RDay'}
+......
+```
+
+## 数据存储
+
+最简单的方式是 [Feed exports](https://doc.scrapy.org/en/latest/topics/feed-exports.html#topics-feed-exports)，使用以下命令：
+
+```shell
+$ scrapy crawl stackoverflow -o stackoverflow.json
+```
+
+在当前目录下会生成 [JSON](https://en.wikipedia.org/wiki/JSON) 文件 `stackoverflow.json`。由于历史原因，再次执行命令会进行内容追加，而不是覆盖，如果再次运行前没有进行移除，JSON 文件的格式将会被破坏。
+
+也可以使用其他格式，比如 [JSON Lines](http://jsonlines.org/)：
+
+```shell
+$ scrapy crawl stackoverflow -o stackoverflow.jl
+```
+
+这样多次执行并向文件中添加新的记录就不会有格式问题了。另外，由于每条记录都是单独一行，因此可以进行大文件处理而不必将所有的文件内容都读入内存中（可以使用类似 [JQ](https://stedolan.github.io/jq) 的命令行工具进行处理）。
+
+小型项目中以上的知识点应该就够用了。但是如果要需要更复杂的处理，就需要用到 [Item Pipeline](https://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline) 了。在项目初始化的时候已经默认建立了一个 Item Pipeline，`scrapydemo/pipelines.py`。
+
+## 后续爬取
+
+有时候我们还需要爬取后续的链接内容，可以看到页面中有这样的元素：
+
+```html
+<div class="pager fl">
+    <a href="/questions?page=2&amp;sort=newest" rel="next" title="go to page 2"> 
+        <span class="page-numbers next"> next</span> 
+    </a> 
+</div>
+```
+
+在 shell 中解析：
+
+```shell
+>>> response.css('div.pager a').extract_first()
+'<a href="/questions?page=2&amp;sort=newest" title="go to page 2"> <span class="page-numbers">2</span> </a>'
+```
+
+然后解析 `href` 属性：
+
+```shell
+>>> response.css('div.pager a::attr(href)').extract_first()
+'/questions?page=2&sort=newest'
+```
+
+可以修改 spider 的代码，从而可以解析下一页：
+
+```python
+class StackoverflowSpider(scrapy.Spider):
+    # Spider for Stackoverflow.
+
+    name = "stackoverflow"
+    start_urls = ['https://stackoverflow.com/questions?page=1&sort=newest']
+
+    def parse(self, response):
+        for question in response.css("div.summary"):
+            yield {
+                'question_content': question.css("h3 a::text").extract_first(),
+                # 为了让内容简短一点，这里换成了问题的提问者
+                'user':
+                question.css("div.user-details a::text").extract_first()
+            }
+        next_page = response.css(
+            'div.pager a:last-of-type::attr(href)').extract_first()
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
+```
+
+解析完数据之后，通过 `parse()` 方法解析出下一页面链接，再通过 [`urljoin()`](https://doc.scrapy.org/en/latest/topics/request-response.html#scrapy.http.Response.urljoin) 方法构建完整的 URL，返回下一页的抓取请求，并将 `parse()` 注册为回调方法，进行数据解析。这样便完成了对所有页面的抓取。
+
+Scrapy 内部原理为：当在回调方法中产生 request 后，Scrapy 将其放入队列并进行统一调度，并在 request 结束时执行之前所注册的回调方法。
+
+通过这种机制，我们可以通过自定义的规则构建复杂的抓取工具，并根据抓取到的页面解析不同类型的数据。这里由于数据太多，我没有等待爬虫抓取完成。
+
+#### 快速创建 Requests
+
+可以使用 [`response.follow`](https://doc.scrapy.org/en/latest/topics/request-response.html#scrapy.http.TextResponse.follow) 快速创建 Requests 对象：
+
+```python
+class StackoverflowSpider(scrapy.Spider):
+    # Spider for Stackoverflow.
+
+    name = "stackoverflow"
+    start_urls = ['https://stackoverflow.com/questions?page=1&sort=newest']
+
+    def parse(self, response):
+        for question in response.css("div.summary"):
+            yield {
+                'question_content': question.css("h3 a::text").extract_first(),
+                # 为了让内容简短一点，这里换成了问题的提问者
+                'user':
+                question.css("div.user-details a::text").extract_first()
+            }
+        next_page = response.css(
+            'div.pager a:last-of-type::attr(href)').extract_first()
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
+```
+
+`response.follow` 支持相对路径，并且直接返回 Requests 对象，只需要将 Requests 对象返回即可。`response.follow` 甚至可以不需要字符串，直接传入选择器就可以了。
+
+```python
+for href in response.css('div.pager a:last-of-type::attr(href)'):
+    yield response.follow(href, callback=self.parse)
+```
+
+对于 `<a>` 标签，还有更简单的做法：
+
+```python
+for href in response.css('div.pager a:last-of-type'):
+    yield response.follow(href, callback=self.parse)
+```
+
+> 注意：由于 `response.css('div.pager a:last-of-type')` 返回的是一个列表，所以 yield 需要进行 for 循环或者取第一个元素。
+
+
+#### 其他例子
+
+```python
+class UserSpider(scrapy.Spider):
+    # Spider for Stackoverflow users.
+
+    name = "user"
+    start_urls = ['https://stackoverflow.com/questions?page=1&sort=newest']
+
+    def parse(self, response):
+        for href in response.css("div.user-details a::attr(href)"):
+            yield response.follow(href, self.parse_user)
+        for href in response.css('div.pager a:last-of-type'):
+            yield response.follow(href, callback=self.parse)
+
+    def parse_user(self, response):
+        name = response.css("h2.user-card-name ::text").extract_first().strip()
+        bio = response.css("div.bio p::text").extract_first().strip()
+        yield {
+            'name': name,
+            'bio': bio,
+        }
+```
+
+上面的 spider 将会从主页开始然后针对每个提问的用户，进行用户页面内容的抓取。默认情况下，Scrapy 会将已经访问的 URL 进行重复性的过滤。这可以在 [`DUPEFILTER_CLASS`](https://doc.scrapy.org/en/latest/topics/settings.html#std:setting-DUPEFILTER_CLASS) 中设置。
+
+[CrawlSpider](https://doc.scrapy.org/en/latest/topics/spiders.html#scrapy.spiders.CrawlSpider) 是一个通用的 spider，可以基于这个类来编写抓取工具。
+
+此外，常见模式还有使用多个页面的数据构建一个项目，并用[此方法将额外的数据传递给回调函数](https://doc.scrapy.org/en/latest/topics/request-response.html#topics-request-response-ref-request-callback-arguments)。
+
+## spider 参数设置
+
+运行时，可以使用 -a 选项向 spider 传入命令行参数。这些参数将会被传入 spider 的 `__init__` 方法中，作为 spider 的默认参数。
+
+下面的例子中，我们执行的命令为 `$ scrapy crawl tag -o tag.jl -a tag=scrapy`，便可以在类中访问此属性。
+
+```python
+class TagSpider(scrapy.Spider):
+    # Spider for Stackoverflow Tag.
+
+    name = "tag"
+
+    def start_requests(self):
+        url = 'https://stackoverflow.com/questions/'
+        tag = getattr(self, 'tag', None)
+        if tag is not None:
+            url = url + 'tagged/' + tag + '?sort=frequent'
+        yield scrapy.Request(url, self.parse)
+
+    def parse(self, response):
+        for question in response.css("div.summary"):
+            yield {
+                'question_content': question.css("h3 a::text").extract_first(),
+                # 为了让内容简短一点，这里换成了问题的提问者
+                'user':
+                question.css("div.user-details a::text").extract_first()
+            }
+        for href in response.css('div.pager a:last-of-type'):
+            yield response.follow(href, callback=self.parse)
+```
+
+[这里](https://doc.scrapy.org/en/latest/topics/spiders.html#spiderargs)可以查看更多关于参数处理的内容。
+
+## 更进一步
+
+当然，上面的例子过于简单，Scrapy 还有很多其他功能，[这里](https://doc.scrapy.org/en/latest/index.html#section-basics)可以查看更多的内容。
 
 
 
