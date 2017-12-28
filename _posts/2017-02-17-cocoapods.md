@@ -18,6 +18,8 @@ comments: true
 
 在 podspec 的配置文件中，头文件默认为 project 的，若需要 public 或 private 的头文件，需要使用 `public_header_files` 和 `private_header_files` 来导出。
 
+注意：即便使用 `private_header_files`，也可以在项目中引用。所以要屏蔽引用，只需要默认的 `project` 即可。
+
 比如：
 ```ruby
 s.public_header_files = 'XXXSDK/Classes/Public/XXXHeader.h'

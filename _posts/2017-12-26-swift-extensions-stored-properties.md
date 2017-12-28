@@ -15,32 +15,10 @@ Swift `Extensions` 可以为现有的类添加方法、结构体、枚举或协�
 
 ## 目标
 
-举个例子，现在有协议 `ToggleProtocol`，包含一个方法 `toggle`。然后让 `UIButton` 实现此协议，根据切换的状态更改背景图像：
+举个例子，现在有扩展 `UISearchBar+QMUI`，需要存储属性 `qmui_usedAsTableHeaderView`，用来标记是否用作 `TableHeaderView`：
 
 ```swift
-protocol ToggleProtocol {
-    func toggle()
-}
- 
-enum ToggleState {
-    case on
-    case off
-}
- 
-extension UIButton: ToggleProtocol {
- 
-    private(set) var toggleState = ToggleState.off
- 
-    func toggle() {
-        toggleState = toggleState == .on ? .off : .on
- 
-        if toggleState == .on {
-            // Shows background for status on
-        } else {
-            // Shows background for status off
-        }
-    }
-}
+public var qmui_usedAsTableHeaderView: Bool?
 ```
 
 编译时会报错误：
@@ -49,11 +27,11 @@ extension UIButton: ToggleProtocol {
 Extensions may not contain stored properties
 ```
 
-很明显，Swift 不支持扩展中的存储属性。因此，无法使用 `toggleState` 属性来保持切换按钮的内部状态。
+很明显，Swift 不支持扩展中的存储属性。因此，无法使用 `qmui_usedAsTableHeaderView` 属性。
 
 ## 解决方案
 
-联系到 OC 中的关联对象，很容易想到，是不是有 `objc_getAssociatedObject` 和 `objc_setAssociatedObject` 可以用来存储与某个键相关联的对象。
+联系到 OC 中的关联对象，很容易想到，是不是可以用 `objc_getAssociatedObject` 和 `objc_setAssociatedObject` 来存储与某个键相关联的对象。
 
 #### [`objc_getAssociatedObject`](https://developer.apple.com/reference/objectivec/1418865-objc_getassociatedobject)
 
@@ -80,40 +58,17 @@ Extensions may not contain stored properties
 接下来看代码：
 
 ```swift
-struct AssociatedKeys {
-    static var toggleState: UInt8 = 0
+private struct AssociatedKeys {
+    static var kUsedAsTableHeaderView = "kUsedAsTableHeaderView"
 }
- 
-protocol ToggleProtocol {
-    func toggle()
-}
- 
-enum ToggleState {
-    case on
-    case off
-}
- 
-extension UIButton: ToggleProtocol {
- 
-    private(set) var toggleState: ToggleState {
-        get {
-            guard let value = objc_getAssociatedObject(self, &AssociatedKeys.toggleState) as? ToggleState else {
-                return .off
-            }
-            return value
-        }
-        set(newValue) {
-            objc_setAssociatedObject(self, &AssociatedKeys.toggleState, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
+
+public var qmui_usedAsTableHeaderView: Bool? {
+    get {
+        return objc_getAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView) as? Bool ?? false
     }
- 
-    func toggle() {
-        toggleState = toggleState == .on ? .off : .on
- 
-        if toggleState == .on {
-            // Shows background for status on
-        } else {
-            // Shows background for status off
+    set {
+        if let value = newValue {
+            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
         }
     }
 }
@@ -123,22 +78,21 @@ extension UIButton: ToggleProtocol {
 
 ```swift
 struct AssociatedKeys {
-    static var toggleState: UInt8 = 0
-    static var anotherState: UInt8 = 0
+    static var kUsedAsTableHeaderView = "kUsedAsTableHeaderView"
+    static var kAnotherProperty = "kAnotherProperty"
 }
  
-extension UIButton: ToggleProtocol {
+extension UISearchBar {
     // ...
  
-    private(set) var anotherState: ToggleState {
+    public var anotherProperty: Bool? {
         get {
-            guard let value = objc_getAssociatedObject(self, &AssociatedKeys.anotherState) as? ToggleState else {
-                return .off
-            }
-            return value
+            return objc_getAssociatedObject(self, &AssociatedKeys.kAnotherProperty) as? Bool
         }
-        set(newValue) {
-            objc_setAssociatedObject(self, &AssociatedKeys.anotherState, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        set {
+            if let value = newValue {
+                objc_setAssociatedObject(self, &AssociatedKeys.kAnotherProperty, value, .OBJC_ASSOCIATION_ASSIGN)
+            }
         }
     }
  
@@ -146,9 +100,11 @@ extension UIButton: ToggleProtocol {
 }
 ```
 
-由于参数必须是指针（`UnsafeRawPointer`），所以使用 `&` 获取 `AssociatedKeys.toggleState` 的地址。
+由于参数必须是指针（`UnsafeRawPointer`），所以使用 `&` 获取 `AssociatedKeys.kAnotherProperty` 的地址。
 
-另外，可以使用泛型方法和默认值对 `objc_getAssociatedObject` 稍加重构：
+一般情况下以上代码就算 OK 啦。
+
+不过，也可以使用泛型方法和默认值对 `objc_getAssociatedObject` 稍加重构：
 
 ```swift
 func getAssociatedObject(_ key: UnsafeRawPointer!, defaultValue: T) -> T {
@@ -162,12 +118,14 @@ func getAssociatedObject(_ key: UnsafeRawPointer!, defaultValue: T) -> T {
 于是代码变为：
 
 ```swift
-private var toggleState: ToggleState {
+public var qmui_usedAsTableHeaderView: Bool? {
     get {
-        return getAssociatedObject(&CustomProperties.toggleState, defaultValue: CustomProperties.toggleState)
+        return getAssociatedObject(&AssociatedKeys.kUsedAsTableHeaderView, defaultValue: false)
     }
     set {
-        return objc_setAssociatedObject(self, &CustomProperties.toggleState, newValue, .OBJC_ASSOCIATION_RETAIN)
+        if let value = newValue {
+            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
+        }
     }
 }
 ```
@@ -176,12 +134,12 @@ private var toggleState: ToggleState {
 
 ```swift
 protocol PropertyStoring {
- 
+
     associatedtype T
- 
+
     func getAssociatedObject(_ key: UnsafeRawPointer!, defaultValue: T) -> T
 }
- 
+
 extension PropertyStoring {
     func getAssociatedObject(_ key: UnsafeRawPointer!, defaultValue: T) -> T {
         guard let value = objc_getAssociatedObject(self, key) as? T else {
@@ -190,48 +148,26 @@ extension PropertyStoring {
         return value
     }
 }
- 
-protocol ToggleProtocol {
-    func toggle()
-}
- 
-enum ToggleState {
-    case on
-    case off
-}
- 
-extension UIButton: ToggleProtocol, PropertyStoring {
- 
-    typealias T = ToggleState
- 
-    private struct CustomProperties {
-        static var toggleState = ToggleState.off
+
+extension UISearchBar: PropertyStoring {
+
+    typealias T = Bool
+
+    private struct AssociatedKeys {
+        static var kUsedAsTableHeaderView = "kUsedAsTableHeaderView"
     }
- 
-    var toggleState: ToggleState {
+
+    public var qmui_usedAsTableHeaderView: Bool? {
         get {
-            return getAssociatedObject(&CustomProperties.toggleState, defaultValue: CustomProperties.toggleState)
+            return getAssociatedObject(&AssociatedKeys.kUsedAsTableHeaderView, defaultValue: false)
         }
         set {
-            return objc_setAssociatedObject(self, &CustomProperties.toggleState, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
- 
-    func toggle() {
-        toggleState = toggleState == .on ? .off : .on
- 
-        if toggleState == .on {
-            // Shows background for status on
-        } else {
-            // Shows background for status off
+            if let value = newValue {
+                objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
+            }
         }
     }
 }
- 
-let a = UIButton()
-print(a.toggleState)
-a.toggleState = .on
-print(a.toggleState)
 ```
 
 
