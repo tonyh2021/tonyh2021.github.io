@@ -173,4 +173,4 @@ DOWNLOADER_MIDDLEWARES = {
 
 这样就得用到 [Tor project](https://www.torproject.org/)。
 
-需要再开一篇来介绍 Tor。😓
+需要再开[一篇](http://ibloodline.com/articles/2017/12/30/tor.html)来介绍 Tor。😓

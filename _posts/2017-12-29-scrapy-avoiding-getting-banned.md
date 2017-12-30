@@ -160,7 +160,7 @@ DOWNLOAD_DELAY = 2
 
 国内可以使用[西刺代理](http://www.xicidaili.com/)，国外可以使用[Tor project](https://www.torproject.org/)，也可以使用开源项目[scrapoxy](http://scrapoxy.io/)。
 
-这个内容有点多，单独开一篇介绍。
+这个内容有点多，单独开[一篇](http://ibloodline.com/articles/2017/12/30/scrapy-proxy.html)介绍。
 
 ## 分布式爬虫
 
