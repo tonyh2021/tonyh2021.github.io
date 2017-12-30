@@ -118,6 +118,8 @@ class RandomUserAgentMiddleware(UserAgentMiddleware):
 `settings.py` 中：
 
 ```python
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
+            (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
 USER_AGENT_LIST = 'useragents.txt'
 
 ...
@@ -158,9 +160,7 @@ DOWNLOAD_DELAY = 2
 
 国内可以使用[西刺代理](http://www.xicidaili.com/)，国外可以使用[Tor project](https://www.torproject.org/)，也可以使用开源项目[scrapoxy](http://scrapoxy.io/)。
 
-```python
-# TODO 代码后面用到的事后再补上。
-```
+这个内容有点多，单独开一篇介绍。
 
 ## 分布式爬虫
 
