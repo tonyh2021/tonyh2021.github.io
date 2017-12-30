@@ -163,6 +163,7 @@ DOWNLOADER_MIDDLEWARES = {
 [https://proxy-list.org/english/index.php](https://proxy-list.org/english/index.php)
 [https://hidemy.name/en/proxy-list](https://hidemy.name/en/proxy-list)
 [http://www.cnproxy.com/proxy1.html](http://www.cnproxy.com/proxy1.html)
+[https://free-proxy-list.net/anonymous-proxy.html](https://free-proxy-list.net/anonymous-proxy.html)
 
 ## 集成 socks
 
@@ -171,3 +172,5 @@ DOWNLOADER_MIDDLEWARES = {
 初步解决方案是，在 scrapy 和 socks 之间设置一个 HTTP 代理，shadowsocks 客户端自带了这个功能，所以直接将 `proxies.txt` 改为 shadowsocks 提供的本地地理即可。但是部署 shadowsocks 服务器的 ip 被封掉怎么办？
 
 这样就得用到 [Tor project](https://www.torproject.org/)。
+
+需要再开一篇来介绍 Tor。😓
