@@ -77,6 +77,8 @@ comments: true
 
 也可以使用指针创建二叉树，即梅克尔树。
 
+![Hash-04](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/04.png)
+
 可以在 O(log n) 的时间内验证梅克尔树的隶属关系。
 
 可以在 O(log n) 的时间内验证经过已经规则排序之后的梅克尔树的非隶属关系。
