@@ -175,5 +175,5 @@ Alice 也可以用同样的方式新增一个 block，对信息和哈希指针�
 
 这样会使得守财奴权力过大，出现中心化的问题。
 
-[下一章节](decentralization.html)会讨论如何实现区中心化。
+[下一章节](../decentralization.html)会讨论如何实现区中心化。
 
