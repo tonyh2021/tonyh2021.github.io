@@ -7,6 +7,7 @@ tags: [BlockChain]
 comments: true
 ---
 
+> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/1)课程笔记。
 
 ## 2.1 Centralization vs. Decentralization
 
@@ -265,7 +266,7 @@ n 数值为 33 到 34 之间，说明大概在 2141 年和 2142 年之间。
 
 不能破解加密算法，也就无法偷币（Steal coins）。
 
-可以制造非法区块，把币支付到自己的地址，并在此区块上继续建造，甚至变成最长的区块，称为分叉。但是由于签名无法验证，其他诚实节点不会接受此链。
+压制某些交易。通过区块链，屏蔽地址的方式可以攻击。但是无法阻止交易在 P2P 网络中的传播。
 
 无法改变区块奖励。
 

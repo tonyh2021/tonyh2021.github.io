@@ -8,6 +8,9 @@ comments: true
 ---
 
 
+> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/1)课程笔记。
+
+
 ## 1.1 密码学中的哈希函数 (Cryptographic Hash function)
 
 #### 哈希函数三个一般特性：
@@ -149,13 +152,13 @@ Alice 也可以用同样的方式新增一个 block，对信息和哈希指针�
 
 ![Hash-11](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/11.png)
 
-交易种类：
+守财奴币中的交易种类：
 
-1. 造币，CreateCoins。在所有人都认定守财奴造币是合法的这一前提下，每个造币交易可以创建多个币。每个币都会有序号。
+1.造币，CreateCoins。在所有人都认定守财奴造币是合法的这一前提下，每个造币交易可以创建多个币。每个币都会有序号。
 
 ![Hash-12](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/12.png)
 
-2. 支付，PayCoins。过程为，消耗币的同时产生同价值的币，执行支付的人会对其进行签名，表明同意此交易。
+2.支付，PayCoins。过程为，消耗币的同时产生同价值的币，执行支付的人会对其进行签名，表明同意此交易。每次支付都需要一次签名。
 
 满足以下规则被认定交易有效：
 
