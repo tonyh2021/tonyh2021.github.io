@@ -7,7 +7,7 @@ tags: [BlockChain]
 comments: true
 ---
 
-> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/1)课程笔记。
+> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/3)课程笔记。
 
 比特币共识机制保证了：
 

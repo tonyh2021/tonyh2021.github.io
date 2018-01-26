@@ -7,7 +7,7 @@ tags: [BlockChain]
 comments: true
 ---
 
-> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/1)课程笔记。
+> 本文是对 coursera 的 [Bitcoin and Cryptocurrency Technologies](https://www.coursera.org/learn/cryptocurrency/home/week/2)课程笔记。
 
 ## 2.1 Centralization vs. Decentralization
 
