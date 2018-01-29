@@ -3,7 +3,7 @@ layout: post
 title: "区块链学习笔记(四)——比特币的存储和使用"
 description: ""
 category: articles
-tags: [BlockChain]
+tags: [Blockchain]
 comments: true
 ---
 

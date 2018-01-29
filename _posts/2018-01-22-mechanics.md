@@ -3,7 +3,7 @@ layout: post
 title: "区块链学习笔记(三)——比特币机制的原理"
 description: ""
 category: articles
-tags: [BlockChain]
+tags: [Blockchain]
 comments: true
 ---
 

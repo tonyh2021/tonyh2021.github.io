@@ -3,7 +3,7 @@ layout: post
 title: "精通比特币（第二版）"
 description: ""
 category: articles
-tags: [BlockChain]
+tags: [Blockchain]
 comments: true
 ---
 
@@ -58,26 +58,6 @@ comments: true
 - [附录7 隔离见证](../../../../assets/master-bitcoin/appdx-07-bx.html)([appdx-segwit](https://github.com/bitcoinbook/bitcoinbook/blob/second_edition/appdx-segwit.asciidoc))
 
 - [附录8 染色币](../../../../assets/master-bitcoin/appdx-08-colored_coins.html)([colored_coins](https://github.com/bitcoinbook/bitcoinbook/blob/second_edition/colored_coins.asciidoc))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Mastering Bitcoin - Second Edition by [Andreas M. Antonopoulos LLC](https://antonopoulos.com/) is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nc-nd/4.0/).

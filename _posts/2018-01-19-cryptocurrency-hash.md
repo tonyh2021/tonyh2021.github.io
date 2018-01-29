@@ -3,7 +3,7 @@ layout: post
 title: "区块链学习笔记(一)——加密货币简介"
 description: ""
 category: articles
-tags: [BlockChain]
+tags: [Blockchain]
 comments: true
 ---
 

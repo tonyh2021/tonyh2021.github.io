@@ -3,7 +3,7 @@ layout: post
 title: "区块链学习笔记(二)——比特币如何实现去中心化"
 description: ""
 category: articles
-tags: [BlockChain]
+tags: [Blockchain]
 comments: true
 ---
 
