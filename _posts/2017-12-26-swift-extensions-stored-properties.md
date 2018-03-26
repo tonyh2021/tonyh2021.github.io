@@ -55,6 +55,8 @@ Extensions may not contain stored properties
 
  - `OBJC_ASSOCIATION_COPY`：以原子方式复制对象。
 
+ 注意：如果使用 OBJC_ASSOCIATION_ASSIGN 关联策略时要注意，文档中指出是弱引用，但不完全等同于 weak，更像是 unsafe_unretained 引用，关联对象被释放后，关联属性仍然保留被释放的地址，如果不小心访问关联属性，就会造成野指针访问出错。
+
 接下来看代码：
 
 ```swift
@@ -68,7 +70,7 @@ public var qmui_usedAsTableHeaderView: Bool? {
     }
     set {
         if let value = newValue {
-            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
+            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .Bool OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
@@ -91,7 +93,7 @@ extension UISearchBar {
         }
         set {
             if let value = newValue {
-                objc_setAssociatedObject(self, &AssociatedKeys.kAnotherProperty, value, .OBJC_ASSOCIATION_ASSIGN)
+                objc_setAssociatedObject(self, &AssociatedKeys.kAnotherProperty, value, .Bool OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
         }
     }
@@ -124,7 +126,7 @@ public var qmui_usedAsTableHeaderView: Bool? {
     }
     set {
         if let value = newValue {
-            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
+            objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .Bool OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
@@ -163,7 +165,7 @@ extension UISearchBar: PropertyStoring {
         }
         set {
             if let value = newValue {
-                objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_ASSIGN)
+                objc_setAssociatedObject(self, &AssociatedKeys.kUsedAsTableHeaderView, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
         }
     }
