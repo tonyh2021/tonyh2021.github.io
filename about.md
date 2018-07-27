@@ -4,7 +4,7 @@ title: About
 ---
 
 
-<p>Hi. I'm Bloodline. </p> 
+<p>Hi. I'm Bloodline.  </p> 
 
 <p>习惯于对世界保持好奇和怀疑的态度，讨厌所有重复毫无创造性的事情。如果有什么有趣的新奇事物，请一定告诉我。</p>
 
