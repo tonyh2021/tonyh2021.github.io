@@ -1,0 +1,25 @@
+cp /etc/shadowsocks.json /etc/shadowsocks.json.bak
+
+vi /etc/shadowsocks.json
+
+/etc/init.d/shadowsocks restart
+
+iptables常用命令：
+
+查看状态：
+
+/etc/init.d/iptables status
+
+添加新端口：
+
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 新端口号 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m udp -p udp --dport 新端口号 -j ACCEPT
+
+保存并重启：
+
+/etc/init.d/iptables save
+/etc/init.d/iptables restart
+
+确认端口添加成功：
+
+iptables -L -n
