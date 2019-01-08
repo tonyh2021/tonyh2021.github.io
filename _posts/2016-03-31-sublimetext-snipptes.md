@@ -11,7 +11,7 @@ Xcode 下的 snipptes 经常使用，但是新建 Podfile 时也想省事儿，�
 
 ST3 怎么会没有这种懒人功能呢。`Tools > New Snipptes...`
 
-![](http://7xr0hq.com1.z0.glb.clouddn.com/sublimetext-snipptes.png)
+![](https://lettleprince.github.io/images/old_images/sublimetext-snipptes.png)
 
 可以看到新建的snipptes文件：
 

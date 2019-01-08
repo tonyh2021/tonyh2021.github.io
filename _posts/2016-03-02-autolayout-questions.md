@@ -47,13 +47,13 @@ The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in
 > 3.选择`Add Symbolic Breakpoint`  
 > 4.在`Symbol`添加`UIViewAlertForUnsatisfiableConstraints`
 
-![添加symbolic breakpoint](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/UIViewAlertForUnsatisfiableConstraints.png)
+![添加symbolic breakpoint](https://lettleprince.github.io/images/old_images/UIViewAlertForUnsatisfiableConstraints.png)
 
 再次调试的时候就可以通过LLDB来调试了，然并卵，如果你不知道LLDB的话。
 
 所以交给你一个小技巧，添加`po [[UIWindow keyWindow] _autolayoutTrace]`（OC项目）或`expr -l objc++ -O -- [[UIWindow keyWindow] _autolayoutTrace]`（Swift项目）。
 
-![](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/UIViewAlertForUnsatisfiableConstraints2.png)
+![](https://lettleprince.github.io/images/old_images/UIViewAlertForUnsatisfiableConstraints2.png)
 
 这样就可以直接看到输出：
 
@@ -239,11 +239,11 @@ for (int i = 0; i < 10; i++) {
 
 **约束添加注解：**
 
-![约束添加](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_1.png)
+![约束添加](https://lettleprince.github.io/images/old_images/SizeClass_1.png)
 
-![约束添加](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_2.png)
+![约束添加](https://lettleprince.github.io/images/old_images/SizeClass_2.png)
 
 **SizeClass注解：**
 
-![SizeClass](http://7xr0hq.com1.z0.glb.clouddn.com/blog/image/SizeClass_3.png)
+![SizeClass](https://lettleprince.github.io/images/old_images/SizeClass_3.png)
 
