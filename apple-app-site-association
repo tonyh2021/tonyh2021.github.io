@@ -5,25 +5,25 @@
       {
         "appID": "L2L3MG83L7.org.gsuite.getter",
         "paths": [
-          "*",
           "NOT /privacy",
-          "NOT /terms"
+          "NOT /terms",
+          "*"
         ]
       },
       {
         "appID": "D9WB242935.org.app.getter",
         "paths": [
-          "*",
           "NOT /privacy",
-          "NOT /terms"
+          "NOT /terms",
+          "*"
         ]
       },
       {
         "appID": "D9WB242935.com.gettr.gettr",
         "paths": [
-          "*",
           "NOT /privacy",
-          "NOT /terms"
+          "NOT /terms",
+          "*"
         ]
       }
     ]
