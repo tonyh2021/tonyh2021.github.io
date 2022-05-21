@@ -1,7 +1,7 @@
 title: Bloodline's Blog
 url: 'http://www.ibloodline.com'
 description: 'Notes and thoughts from Bloodline'
-baseurl : '/'
+baseurl : ''
 exclude: [Gemfile, Gemfile.lock, README.md]
 
 # Conversion
@@ -30,6 +30,6 @@ sass:
 
 disqus_shortname : ibloodline
 
-timezone: Asia/Shanghai
+timezone: Toronto
 
 encoding : utf-8
