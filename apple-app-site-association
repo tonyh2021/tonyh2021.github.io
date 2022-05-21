@@ -1,0 +1,19 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "L2L3MG83L7.org.gsuite.getter",
+                "paths": ["*"]
+            },
+            {
+                "appID": "D9WB242935.org.app.getter",
+                "paths": ["*"]
+            },
+            {
+                "appID": "D9WB242935.com.gettr.gettr",
+                "paths": ["*"]
+            }
+        ]
+    }
+}
