@@ -1,5 +1,5 @@
-title: Bloodline's Blog
-url: 'http://www.ibloodline.com'
+title: Tony's Blog
+url: 'https://tonyh2021.github.io/'
 description: 'Notes and thoughts from Bloodline'
 baseurl : ''
 exclude: [Gemfile, Gemfile.lock, README.md]
@@ -12,7 +12,7 @@ kramdown:
   extensions: [ "fenced_code_blocks", "hard_wrap","autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify","no_intra_emphasis"]
 
 author: 'Tony Han'
-disqus_shortname: Bloodline
+disqus_shortname: Tony
 google_analytics: UA-73798612-1
 
 plugins:
@@ -28,7 +28,7 @@ sass:
     sass_dir: _sass
     style: :compressed
 
-disqus_shortname : ibloodline
+disqus_shortname : tony
 
 timezone: Toronto
 
