@@ -54,16 +54,16 @@ sudo bundle update
 
 ```shell
 $ bundle exec jekyll serve
-Configuration file: /Users/qd-hxt/Documents/gworkspace/lettleprince.github.io/_config.yml
+Configuration file: /Users/qd-hxt/Documents/gworkspace/tonyh2021.github.io/_config.yml
        Deprecation: The 'gems' configuration option has been renamed to 'plugins'. Please update your config file accordingly.
-            Source: /Users/qd-hxt/Documents/gworkspace/lettleprince.github.io
-       Destination: /Users/qd-hxt/Documents/gworkspace/lettleprince.github.io/_site
+            Source: /Users/qd-hxt/Documents/gworkspace/tonyh2021.github.io
+       Destination: /Users/qd-hxt/Documents/gworkspace/tonyh2021.github.io/_site
  Incremental build: disabled. Enable with --incremental
       Generating...
    GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
     Liquid Warning: Liquid syntax error (line 8): Expected end_of_string but found close_round in "tag in tag_words)" in tags.html
                     done in 9.032 seconds.
- Auto-regeneration: enabled for '/Users/qd-hxt/Documents/gworkspace/lettleprince.github.io'
+ Auto-regeneration: enabled for '/Users/qd-hxt/Documents/gworkspace/tonyh2021.github.io'
     Server address: http://127.0.0.1:4000//
   Server running... press ctrl-c to stop.
 ```

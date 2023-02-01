@@ -231,7 +231,7 @@ JSVirtualMachine为整个JavaScriptCore的执行提供资源，所以当将一�
 ```
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
+文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/tonyh2021/JavaScriptCoreDemo)找到。
 
 ### 参考资料：
 

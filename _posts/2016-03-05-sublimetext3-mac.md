@@ -123,8 +123,8 @@ JSON美化，快捷键是`command+control+J`。
 {
     "attr": {
         "author": "Tony Han" ,
-        "email": "tong.decula@163.com",
-        "link": "http://www.ibloodline.com"
+        "email": "tong.decula@gmail.com",
+        "link": "https://tonyh2021.github.io"
     }
 }
 ```

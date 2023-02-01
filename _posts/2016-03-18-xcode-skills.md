@@ -14,7 +14,7 @@ comments: true
 
 ### Xcode界面的区域划分：
 
-![Xcode界面的区域划分](https://lettleprince.github.io/images/old_images/EditArea.png)
+![Xcode界面的区域划分](https://tonyh2021.github.io/images/old_images/EditArea.png)
 
 - The Toolbar(工具栏): 你选择视图、运行app，在不同布局界面切换的地方。
 
@@ -52,7 +52,7 @@ comments: true
 
 - `control 1~ 6`: 在`Jump bar`的不同标签页的跳转。
 
-![快捷键](https://lettleprince.github.io/images/old_images/key.png)
+![快捷键](https://tonyh2021.github.io/images/old_images/key.png)
 
 另外还有：
 
@@ -70,11 +70,11 @@ comments: true
 
 单屏幕时的设置：
 
-![](https://lettleprince.github.io/images/old_images/onescreendebug.png)
+![](https://tonyh2021.github.io/images/old_images/onescreendebug.png)
 
 双屏幕时，此时可以将调试区放到第二块屏幕上：
 
-![](https://lettleprince.github.io/images/old_images/secondscreendebug.png)
+![](https://tonyh2021.github.io/images/old_images/secondscreendebug.png)
 
 ### Custom
 
@@ -84,13 +84,13 @@ comments: true
 
 `command + shift + X`的时候，会进入全屏编辑模式。
 
-![](https://lettleprince.github.io/images/old_images/Editing.png)
+![](https://tonyh2021.github.io/images/old_images/Editing.png)
 
 #### Navigating
 
 `command + control + X`的时候，会退出全屏编辑模式，显示出各个工具栏。
 
-![](https://lettleprince.github.io/images/old_images/Navigating.png)
+![](https://tonyh2021.github.io/images/old_images/Navigating.png)
 
 赶紧实验下吧，炫酷到没朋友！😂
 

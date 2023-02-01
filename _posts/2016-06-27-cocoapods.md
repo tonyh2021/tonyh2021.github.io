@@ -20,7 +20,7 @@ Cocoapods是比较好用的第三方框架管理工具。唯一蛋疼的是速�
 
 当然，升级后 `podfile` 文件的格式需要修改，这点就看文档好了。
 升级完成当然要“作一下”。`pod install`一下的确比较快。然后构建下却发现有错误。如图：
-![cocoapods01](https://lettleprince.github.io/images/20160627-cocoapods/cocoapods01.png)
+![cocoapods01](https://tonyh2021.github.io/images/20160627-cocoapods/cocoapods01.png)
 
 即便在这里改了，在 `ReactiveCocoa` 和 `Masonry` 库中的代码依然会报错。
 

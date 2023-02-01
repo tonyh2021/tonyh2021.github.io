@@ -155,7 +155,7 @@ self.syncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 }
 ```
 
-![01](https://lettleprince.github.io/images/20160902-Multithread/01.png)
+![01](https://tonyh2021.github.io/images/20160902-Multithread/01.png)
 
 上图表示一个并发队列，读取操作是用普通的块来实现的，而写入操作使用栅栏块实现的。读取操作可以并行，但是写入操作必须单独执行。
 

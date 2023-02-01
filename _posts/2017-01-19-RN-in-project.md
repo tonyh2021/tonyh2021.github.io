@@ -118,9 +118,9 @@ Pod installation complete! There are 5 dependencies from the Podfile and 1 total
 
 项目页面如图：
 
-![01](https://lettleprince.github.io/images/20170119-react-in-project/01.png)
+![01](https://tonyh2021.github.io/images/20170119-react-in-project/01.png)
 
-![02](https://lettleprince.github.io/images/20170119-react-in-project/02.png)
+![02](https://tonyh2021.github.io/images/20170119-react-in-project/02.png)
 
 新建 `ReactView` 类：
 
@@ -178,7 +178,7 @@ Pod installation complete! There are 5 dependencies from the Podfile and 1 total
 ```
 
 此时运行会报错：
-![03](https://lettleprince.github.io/images/20170119-react-in-project/03.png)
+![03](https://tonyh2021.github.io/images/20170119-react-in-project/03.png)
 
 原因是还没启动 node 服务。
 
@@ -254,15 +254,15 @@ React packager ready.
 ```
 
 再次报错如下：
-![05](https://lettleprince.github.io/images/20170119-react-in-project/05.png)
+![05](https://tonyh2021.github.io/images/20170119-react-in-project/05.png)
 
 修改 Podfile，添加依赖库 `pod 'React/RCTWebSocket'`。执行命令 `pod update --no-repo-update`。
 
 再次运行项目，得到预期结果：
-![06](https://lettleprince.github.io/images/20170119-react-in-project/06.png)
+![06](https://tonyh2021.github.io/images/20170119-react-in-project/06.png)
 
 点击 `PUSH`：
-![07](https://lettleprince.github.io/images/20170119-react-in-project/07.png)
+![07](https://tonyh2021.github.io/images/20170119-react-in-project/07.png)
 
 需要进一步确认的是：
 
@@ -270,5 +270,5 @@ React packager ready.
 2.不同的页面需要加载不同的 bundle 时，怎么进行区分。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`react-in-project`](https://github.com/lettleprince/react-in-project)找到。
+文章中的代码都可以从我的GitHub [`react-in-project`](https://github.com/tonyh2021/react-in-project)找到。
 

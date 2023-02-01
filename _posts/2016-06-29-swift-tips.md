@@ -76,7 +76,7 @@ convenience init() {
 在 `stackoverflow` 上回答问题的时候，正好遇到一个在 `Controller0(OC)` 中使用 `RACObserve` 观察 `ViewModel(Swift)` 属性变化的问题。我知道 `RACObserve` 实际是使用KVO实现，而Swift的对象想享受KVO则必须继承于 `NSObject` ，于是就用英文给回了。但是楼主的确是继承了 `NSObject` 。大晚上的开了电脑试验下，的确不行。正好另外个人回答必须用 `dynamic` 修饰。加了 `dynamic` 之后果然OK。当然回答没有被采纳，不过还得看下Swift对于动态性的继承。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`SwiftTipsDemo`](https://github.com/lettleprince/SwiftTipsDemo)找到。
+文章中的代码都可以从我的GitHub [`SwiftTipsDemo`](https://github.com/tonyh2021/SwiftTipsDemo)找到。
 
 
 

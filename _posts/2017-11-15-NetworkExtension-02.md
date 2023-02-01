@@ -10,7 +10,7 @@ comments: true
 
 ## 前言
 
-之前介绍了[关于科学上网的一些知识](http://ibloodline.com/articles/2017/11/13/NetworkExtension-01.html)，这章会先介绍下 NetworkExtension，以及相关的一些 iOS 平台的开源项目。最后再开始我们自己的项目。
+之前介绍了[关于科学上网的一些知识](https://tonyh2021.github.io/articles/2017/11/13/NetworkExtension-01.html)，这章会先介绍下 NetworkExtension，以及相关的一些 iOS 平台的开源项目。最后再开始我们自己的项目。
 
 实际上，我们自己的 NetworkExtension 应用，其实就是扮演 SS-Local 的角色。
 
@@ -20,7 +20,7 @@ comments: true
 
 Network Extension 最早出现在 iOS 8，不过那个版本不支持虚拟网卡，只能简单调用 iOS 系统自带的 IPSec 和 IKEv2 协议的 VPN。在 iOS 9 中，开发者可以用 NETunnelProvider 扩展核心网络层，从而实现非标准化的私密VPN技术。最重要的两个类是 `NETunnelProviderManager` 和 `NEPacketTunnelProvider`。
 
-[Potatso](https://github.com/Potatso/Potatso) 便是使用 NE 框架实现了 Shadowsocks 代理，遗憾的是由于[种种原因](https://sspai.com/post/38909)作者删除了开源代码。GitHub 上有不少人维护了其分支，但也都更新很慢，最近发现的一个可运行版本是[这个](https://github.com/haxpor/Potatso)，但我之前升级了 Xcode 9，所以也要进行一系列改动。最后终于改出一个可在 Xcode 9 上编译运行的[版本](https://github.com/lettleprince/Potatso)，但是也并没有改动的很完美。大家凑合学习吧。
+[Potatso](https://github.com/Potatso/Potatso) 便是使用 NE 框架实现了 Shadowsocks 代理，遗憾的是由于[种种原因](https://sspai.com/post/38909)作者删除了开源代码。GitHub 上有不少人维护了其分支，但也都更新很慢，最近发现的一个可运行版本是[这个](https://github.com/haxpor/Potatso)，但我之前升级了 Xcode 9，所以也要进行一系列改动。最后终于改出一个可在 Xcode 9 上编译运行的[版本](https://github.com/tonyh2021/Potatso)，但是也并没有改动的很完美。大家凑合学习吧。
 
 ## NEKit 相关
 
@@ -40,11 +40,11 @@ Network Extension 最早出现在 iOS 8，不过那个版本不支持虚拟网�
 
 新建 Target，选择 Network Extension。
 
-![01](https://lettleprince.github.io/images/20171115-NetworkExtension/01.png)
+![01](https://tonyh2021.github.io/images/20171115-NetworkExtension/01.png)
 
 然后选择 Provider Type 为 PacketTunnel。
 
-![02](https://lettleprince.github.io/images/20171115-NetworkExtension/02.png)
+![02](https://tonyh2021.github.io/images/20171115-NetworkExtension/02.png)
 
 #### 申请 entitlements
 
@@ -201,10 +201,10 @@ open func stopTunnel(with reason: NEProviderStopReason, completionHandler: @esca
 1. 构建并运行应用。
 2. 停止运行。
 3. Xcode 菜单中 `Debug` -> `attach to process by PID or name`，填入 `PacketTunnel`，然后 `Attach`。
-![03](https://lettleprince.github.io/images/20171115-NetworkExtension/03.png)
+![03](https://tonyh2021.github.io/images/20171115-NetworkExtension/03.png)
 
 4. 在手机上运行（不要通过 Xcode）应用，点击连接的时候，进入了断点。
-![04](https://lettleprince.github.io/images/20171115-NetworkExtension/04.png)
+![04](https://tonyh2021.github.io/images/20171115-NetworkExtension/04.png)
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`QLadder`](https://github.com/lettleprince/QLadder)找到。
+文章中的代码都可以从我的GitHub [`QLadder`](https://github.com/tonyh2021/QLadder)找到。

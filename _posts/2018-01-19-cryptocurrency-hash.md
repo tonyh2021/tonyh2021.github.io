@@ -53,7 +53,7 @@ comments: true
 
 比特币使用 SHA-256 进行加密。
 
-![Hash-01](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/01.JPG)
+![Hash-01](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/01.JPG)
 
 上述过程大概为：首先将要加密的信息分割成 512 bit 的数据块（block），如果最后一个数据块不足 512 bit 则进行 Padding 补足，直到可被 512 整除。将 256 bit 的初始向量与第一个 512 bit 的数据块（一共 768 bit）输入到 c 函数中，得到 256 位的输出，然后再跟第二块数据块结合作为 c 函数的输入，一直循环到所有的数据块都处理完，得到的 256 bit 数据即为 SHA-256 的结果。
 
@@ -64,13 +64,13 @@ comments: true
 
 哈希指针存储了数据存储的位置，以及数据的 hash 值。我们可以在找到数据的同时，通过 hash 值对其进行校验。
 
-![Hash-02](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/02.JPG)
+![Hash-02](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/02.JPG)
 
 #### 区块链 (Block chain)
 
 使用哈希指针可以构建如下的数据结构：
 
-![Hash-03](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/03.JPG)
+![Hash-03](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/03.JPG)
 
 上面的数据结构就可以称作区块链。每个元素使用哈希指针指向前一个元素。
 
@@ -80,7 +80,7 @@ comments: true
 
 也可以使用指针创建二叉树，即梅克尔树。
 
-![Hash-04](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/04.png)
+![Hash-04](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/04.png)
 
 可以在 O(log n) 的时间内验证梅克尔树的隶属关系。
 
@@ -98,15 +98,15 @@ comments: true
 
 1. 生成 sk 和 pk，sk 用于加密签名，pk 用于公开验证。如下：
 
-![Hash-05](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/05.JPG)
+![Hash-05](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/05.JPG)
 
 2. 将 sk 和 message 作为输入，生成电子签名（signature）：
 
-![Hash-06](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/06.JPG)
+![Hash-06](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/06.JPG)
 
 3. 将 signature 和 pk 公布，让他人可验证。
 
-![Hash-07](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/07.JPG)
+![Hash-07](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/07.JPG)
 
 #### 方案要求
 
@@ -136,27 +136,27 @@ Goofy 创造一枚唯一编号的货币，使用私钥对其进行数字签名�
 
 这个过程需要创造一个声明，表示“将此币支付给 Alice”：“此币”即哈希指针，指向前一个区块 block，也就是“Goofy 创造钱币”；“Alice”即身份，也就是公钥。Goofy 会将这个信息和哈希指针进行签名，用来证明这个币的确已经转给了 Alice。
 
-![Hash-08](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/08.png)
+![Hash-08](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/08.png)
 
 Alice 也可以用同样的方式新增一个 block，对信息和哈希指针签名，将此币转给 Bob。
 
-![Hash-09](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/09.png)
+![Hash-09](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/09.png)
 
 这样会有双重支付 (Double-spending attack) 的问题，Alice 可以同时新增另一个 block，声明将此币转给了 Chuck。
 
-![Hash-10](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/10.png)
+![Hash-10](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/10.png)
 
 #### 守财奴币 (ScroogeCoin)
 
 守财奴币新增了标识交易顺序的 id，守财奴 Scrooge 将公布所有的交易的记录。通过区块链的数据结构，只需要两个人通过对比各自最后获取到的哈希指针便可以验证守财奴有没有篡改过交易记录。
 
-![Hash-11](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/11.png)
+![Hash-11](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/11.png)
 
 守财奴币中的交易种类：
 
 1.造币，CreateCoins。在所有人都认定守财奴造币是合法的这一前提下，每个造币交易可以创建多个币。每个币都会有序号。
 
-![Hash-12](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/12.png)
+![Hash-12](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/12.png)
 
 2.支付，PayCoins。过程为，消耗币的同时产生同价值的币，执行支付的人会对其进行签名，表明同意此交易。每次支付都需要一次签名。
 
@@ -170,7 +170,7 @@ Alice 也可以用同样的方式新增一个 block，对信息和哈希指针�
 
 - 被消耗的币被其所有者签名认同。
 
-![Hash-13](https://lettleprince.github.io/images/20180119-cryptocurrency-hash/13.png)
+![Hash-13](https://tonyh2021.github.io/images/20180119-cryptocurrency-hash/13.png)
 
 注意此过程中币是不可变的，只能被消耗和创造。支付的过程是消耗旧币，创造新币，声明他人拥有新币的过程。这个特性是理解比特币的支付的关键。
 

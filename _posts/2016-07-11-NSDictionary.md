@@ -33,12 +33,12 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 当无法确定关键字中哪几位分布较均匀时，可以先求出关键字的平方值，然后按需要取平方值的中间几位作为哈希地址。这是因为：平方后中间几位和关键字中每一位都相关，故不同关键字会以较高的概率产生不同的哈希地址。
 例：我们把英文字母在字母表中的位置序号作为该英文字母的内部编码。例如K的内部编码为11，E的内部编码为05，Y的内部编码为25，A的内部编码为01, B的内部编码为02。由此组成关键字“KEYA”的内部代码为11052501，同理我们可以得到关键字“KYAB”、“AKEY”、“BKEY”的内部编码。之后对关键字进行平方运算后，取出第7到第9位作为该关键字哈希地址，如图：
 
-![hash-01](https://lettleprince.github.io/images/20160711-NSDictionary/hash-01.png)
+![hash-01](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-01.png)
 
 3.分段叠加法
 这种方法是按哈希表地址位数将关键字分成位数相等的几部分（最后一部分可以较短），然后将这几部分相加，舍弃最高进位后的结果就是该关键字的哈希地址。具体方法有折叠法与移位法。移位法是将分割后的每部分低位对齐相加，折叠法是从一端向另一端沿分割界来回折叠（奇数段为正序，偶数段为倒序），然后将各段相加。例如：key=12360324711202065，哈希表长度为1000，则应把关键字分成3位一段，在此舍去最低的两位65，分别进行移位叠加和折叠叠加，求得哈希地址为105和907，如图：
 
-![hash-02](https://lettleprince.github.io/images/20160711-NSDictionary/hash-02.png)
+![hash-02](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-02.png)
 
 4.除留余数法
 假设哈希表长为m，p为小于等于m的最大素数，则哈希函数为 `h(k)= k%p` ，其中%为模p取余运算。
@@ -52,7 +52,7 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
     h(46)=46 % 13=7
 此时没有冲突，如图：
 
-![hash-03](https://lettleprince.github.io/images/20160711-NSDictionary/hash-03.png)
+![hash-03](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-03.png)
 
 5.伪随机数法
 采用一个伪随机函数做哈希函数，即h(key)=random(key)。
@@ -87,15 +87,15 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 
 如果用线性探测再散列处理冲突，下一个哈希地址为H1=(3 + 1)% 11 = 4，仍然冲突，再找下一个哈希地址为H2=(3 + 2)% 11 = 5，还是冲突，继续找下一个哈希地址为H3=(3 + 3)% 11 = 6，此时不再冲突，将69填入5号单元，如图：
 
-![hash-04](https://lettleprince.github.io/images/20160711-NSDictionary/hash-04.png)
+![hash-04](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-04.png)
 
 如果用二次探测再散列处理冲突，下一个哈希地址为H1=(3 + 12)% 11 = 4，仍然冲突，再找下一个哈希地址为H2=(3 - 12)% 11 = 2，此时不再冲突，将69填入2号单元，如图：
 
-![hash-05](https://lettleprince.github.io/images/20160711-NSDictionary/hash-05.png)
+![hash-05](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-05.png)
 
 如果用伪随机探测再散列处理冲突，且伪随机数序列为：2，5，9，……..，则下一个哈希地址为H1=（3 + 2）% 11 = 5，仍然冲突，再找下一个哈希地址为H2=（3 + 5）% 11 = 8，此时不再冲突，将69填入8号单元，如图：
 
-![hash-06](https://lettleprince.github.io/images/20160711-NSDictionary/hash-06.png)
+![hash-06](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-06.png)
 
 从上述例子可以看出，线性探测再散列容易产生“二次聚集”，即在处理同义词的冲突时又导致非同义词的冲突。例如，当表中i, i+1 ,i+2三个单元已满时，下一个哈希地址为i, 或i+1 ,或i+2，或i+3的元素，都将填入i+3这同一个单元，而这四个元素并非同义词。线性探测再散列的优点是：只要哈希表不满，就一定能找到一个不冲突的哈希地址，而二次探测再散列和伪随机探测再散列则不一定。
 
@@ -104,7 +104,7 @@ NSDictionary（字典）是使用 hash表来实现key和value之间的映射和�
 3.链地址法。这种方法的基本思想是将所有哈希地址为 i 的元素构成一个称为同义词链的单链表 ，并将单链表的头指针存在哈希表的第 i 个单元中，因而查找、插入和删除主要在同义词链中进行。链地址法适用于经常进行插入和删除的情况。
 例如，已知一组关键字（32，40，36，53，16，46，71，27，42，24，49，64），哈希表长度为13，哈希函数为：H（key）= key % 13，则用链地址法处理冲突的结果。
 
-![hash-07](https://lettleprince.github.io/images/20160711-NSDictionary/hash-07.png)
+![hash-07](https://tonyh2021.github.io/images/20160711-NSDictionary/hash-07.png)
 
 ## OC的hash
 

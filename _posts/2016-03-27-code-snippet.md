@@ -70,5 +70,5 @@ done
 具体可以安装后查看。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`MyCodeSnippet`](https://github.com/lettleprince/MyCodeSnippet)找到。
+文章中的代码都可以从我的GitHub [`MyCodeSnippet`](https://github.com/tonyh2021/MyCodeSnippet)找到。
 

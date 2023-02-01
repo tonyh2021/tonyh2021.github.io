@@ -43,7 +43,7 @@ comments: true
 
 JSValue则可以说是JavaScript和Object-C之间互换的桥梁，它提供了多种方法可以方便地把JavaScript数据类型转换成Objective-C，或者是转换过去。对应关系如下：
 
-![数据类型](https://lettleprince.github.io/images/old_images/javascriptcore.png)
+![数据类型](https://tonyh2021.github.io/images/old_images/javascriptcore.png)
 
 ### 基本类型转换
 
@@ -271,7 +271,7 @@ JSContext并不能让Objective-C和JavaScript的对象直接转换，毕竟两�
 ```
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/lettleprince/JavaScriptCoreDemo)找到。
+文章中的代码都可以从我的GitHub [`JavaScriptCoreDemo`](https://github.com/tonyh2021/JavaScriptCoreDemo)找到。
 
 ### 参考资料：
 

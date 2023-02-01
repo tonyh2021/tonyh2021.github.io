@@ -17,11 +17,11 @@ comments: true
 
 **原型模式（`Prototype`）**：是指使用原型实例指定创建对象的种类，并通过复制这个原型创建新的对象。说人话：OC中可以通过深复制来快速而方便的创建一个新对象。
 
-> [iOS的深复制与浅复制](http://ibloodline.com/articles/2016/03/10/memory3-copy.html)
+> [iOS的深复制与浅复制](https://tonyh2021.github.io/articles/2016/03/10/memory3-copy.html)
 
 ## 类图
 
-![prototype](https://lettleprince.github.io/images/20160905-prototype/prototype.png)
+![prototype](https://tonyh2021.github.io/images/20160905-prototype/prototype.png)
 
 `Prototype`声明了复制自身的接口。作为`Prototype`的实现，`ConcretePrototype`实现了复制自身的`clone`操作。这里的客户端是指使用了原型类实例的类。客户端通过`clone`创建了一个新的对象，即`prototype`的副本。
 
@@ -303,13 +303,13 @@ object.others = [NSKeyedUnarchiver unarchiveObjectWithData:
 
 ## Cocoa中原型的体现
 
-除了上面提到个各种`copy`之外，其实还有一个比较典型的实现，就是僵尸对象（`NSZombie Object`）了。虽然拷贝的是类对象，但是既然OC中类也是特殊的对象，使用原型模式来理解也应该是OK的。具体可以查看[使用僵尸对象辅助调试](http://ibloodline.com/articles/2016/09/01/NSZombie.html)。
+除了上面提到个各种`copy`之外，其实还有一个比较典型的实现，就是僵尸对象（`NSZombie Object`）了。虽然拷贝的是类对象，但是既然OC中类也是特殊的对象，使用原型模式来理解也应该是OK的。具体可以查看[使用僵尸对象辅助调试](https://tonyh2021.github.io/articles/2016/09/01/NSZombie.html)。
 
 ### 参考：
 
-[iOS的深复制与浅复制](http://ibloodline.com/articles/2016/03/10/memory3-copy.html)
+[iOS的深复制与浅复制](https://tonyh2021.github.io/articles/2016/03/10/memory3-copy.html)
 
 ### 代码
 
-文章中的代码都可以从我的GitHub [`DesignPatterns`](https://github.com/lettleprince/DesignPatterns)找到。
+文章中的代码都可以从我的GitHub [`DesignPatterns`](https://github.com/tonyh2021/DesignPatterns)找到。
 

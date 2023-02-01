@@ -99,7 +99,7 @@ struct objc_class : objc_object {
 由此可见，结构体`objc_class`也是继承`objc_object`，说明Class在设计中本身也是一个对象。
 
 其实`Meta Class`也是一个Class，那么它也跟其他Class一样有自己的isa和`super_class`指针，关系如下：
-![继承关系](https://lettleprince.github.io/images/old_images/class-diagram.jpg)
+![继承关系](https://tonyh2021.github.io/images/old_images/class-diagram.jpg)
 
 上图实线是`super_class`指针，虚线是`isa`指针。有几个关键点需要解释以下：
 
@@ -223,5 +223,5 @@ Cache其实就是一个存储Method的链表，主要是为了优化方法调用
 > 所有的元类最终继承一个根元类，根元类isa指针指向本身，形成一个封闭的内循环。
 
 ### 代码：
-文章中的代码都可以从我的GitHub [`runtime_demo `](https://github.com/lettleprince/runtime_demo)找到。
+文章中的代码都可以从我的GitHub [`runtime_demo `](https://github.com/tonyh2021/runtime_demo)找到。
 

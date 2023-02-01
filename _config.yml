@@ -1,6 +1,6 @@
 title: Tony's Blog
 url: 'https://tonyh2021.github.io/'
-description: 'Notes and thoughts from Bloodline'
+description: 'Notes and thoughts from Tony'
 baseurl : ''
 exclude: [Gemfile, Gemfile.lock, README.md]
 

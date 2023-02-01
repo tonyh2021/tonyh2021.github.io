@@ -16,7 +16,7 @@ comments: true
 
 下图主要展示了 Scrapy 的架构，以及组件间的数据（红色箭头）流动。下面将对这些组件以及数据流进行简要介绍。
 
-![scrapy_architecture_01](https://lettleprince.github.io/images/20171214-scrapy_architecture/scrapy_architecture_01.png)
+![scrapy_architecture_01](https://tonyh2021.github.io/images/20171214-scrapy_architecture/scrapy_architecture_01.png)
 
 在 Scrapy 中，数据流由执行引擎控制，主要步骤有：
 

@@ -9,7 +9,7 @@ comments: true
 
 ## 前言
 
-如果你只想快速搭建一个`github`的静态网站, 而暂时没有时间来研究`jekyll`语法的话,建议直接`fork`[我的这个](https://github.com/lettleprince/lettleprince.github.io)。
+如果你只想快速搭建一个`github`的静态网站, 而暂时没有时间来研究`jekyll`语法的话,建议直接`fork`[我的这个](https://github.com/tonyh2021/tonyh2021.github.io)。
 
 具体官方文档地址请参考[官方文档](http://jekyllrb.com/docs/home/)。
 这里只介绍关于`jekyll`的语法，不介绍其他内容。关于如何搭建博客，可以参考[这个]()。
@@ -71,7 +71,7 @@ _data
 
 ```
 - name: Tony Han
-  github: lettleprince
+  github: tonyh2021
   nick : Tony
 ```
  
