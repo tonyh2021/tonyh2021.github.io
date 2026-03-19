@@ -42,4 +42,8 @@ validation-report.json
 node_modules
 bower_components
 
+# Next.js
+.next/
+out/
+
 *.pem
