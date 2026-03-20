@@ -14,14 +14,11 @@ interface Props {
 }
 
 export default function MacOSApp({ posts, enPosts }: Props) {
-  const { initDark, login, booting, sleeping, restarting, setBooting } = useStore(
+  const { initDark, systemPhase, setSystemPhase } = useStore(
     useShallow((s) => ({
       initDark: s.initDark,
-      login: s.login,
-      booting: s.booting,
-      sleeping: s.sleeping,
-      restarting: s.restarting,
-      setBooting: s.setBooting,
+      systemPhase: s.systemPhase,
+      setSystemPhase: s.setSystemPhase,
     }))
   );
 
@@ -32,7 +29,7 @@ export default function MacOSApp({ posts, enPosts }: Props) {
 
   return (
     <>
-      {login ? (
+      {systemPhase === "desktop" ? (
         <MacDesktop posts={posts} enPosts={enPosts} />
       ) : (
         <Login />
@@ -40,11 +37,21 @@ export default function MacOSApp({ posts, enPosts }: Props) {
 
       {/* Boot overlay */}
       <div
-        className={`fixed inset-0 z-99999 transition-opacity duration-500 ${booting ? "" : "pointer-events-none"}`}
-        style={{ opacity: booting ? 1 : 0 }}
+        className={`fixed inset-0 z-99999 transition-opacity duration-500 ${
+          systemPhase !== "desktop" && systemPhase !== "login"
+            ? ""
+            : "pointer-events-none"
+        }`}
+        style={{
+          opacity:
+            systemPhase !== "desktop" && systemPhase !== "login" ? 1 : 0,
+        }}
       >
-        {booting && (
-          <Boot restart={restarting} sleep={sleeping} setBooting={setBooting} />
+        {systemPhase !== "desktop" && systemPhase !== "login" && (
+          <Boot
+            systemPhase={systemPhase}
+            setSystemPhase={setSystemPhase}
+          />
         )}
       </div>
     </>

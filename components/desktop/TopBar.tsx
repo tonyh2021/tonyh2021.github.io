@@ -71,13 +71,13 @@ export default function TopBar({
   const [showWifi, setShowWifi] = useState(false);
   const [showCC, setShowCC] = useState(false);
 
-  const { wifi, volume, brightness, setLogin, shutdown, sleep, restart } =
+  const { wifi, volume, brightness, setSystemPhase, shutdown, sleep, restart } =
     useStore(
       useShallow((s) => ({
         wifi: s.wifi,
         volume: s.volume,
         brightness: s.brightness,
-        setLogin: s.setLogin,
+        setSystemPhase: s.setSystemPhase,
         shutdown: s.shutdown,
         sleep: s.sleep,
         restart: s.restart,
@@ -117,7 +117,7 @@ export default function TopBar({
 
   const handleLogout = () => {
     audioControls.pause();
-    setLogin(false);
+    setSystemPhase("login");
   };
   const handleShutdown = () => {
     audioControls.pause();

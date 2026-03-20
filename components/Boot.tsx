@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useInterval } from "@/hooks/useInterval";
 import { useWallpaper } from "@/hooks/useWallpaper";
+import type { SystemPhase } from "@/store/slices/system";
 
 interface Props {
-  restart: boolean;
-  sleep: boolean;
-  setBooting: (v: boolean) => void;
+  systemPhase: SystemPhase;
+  setSystemPhase: (p: SystemPhase) => void;
 }
 
 /* ── Sleep / screensaver ──────────────────────────────────────── */
@@ -82,39 +82,33 @@ function ShutdownScreen({ onWake }: { onWake: () => void }) {
 
 /* ── Boot animation ───────────────────────────────────────────── */
 function BootAnimation({
-  restart,
-  setBooting,
+  mode,
+  setSystemPhase,
 }: {
-  restart: boolean;
-  setBooting: (v: boolean) => void;
+  mode: "restart" | "shutdown";
+  setSystemPhase: (p: SystemPhase) => void;
 }) {
   const [percent, setPercent] = useState(0);
-  const [shutdownReady, setShutdownReady] = useState(false);
+  const didFinishRef = useRef(false);
 
   useInterval(() => {
-    if (shutdownReady) return;
+    if (didFinishRef.current) return;
     const next = percent + 0.15;
     if (next >= 100) {
-      if (restart) {
-        setTimeout(() => setBooting(false), 500);
-      } else {
-        // shutdown: stop on a black screen inside the overlay and exit after the user wakes it
-        setShutdownReady(true);
-      }
+      didFinishRef.current = true;
+      if (mode === "restart")
+        setTimeout(() => setSystemPhase("login"), 500);
+      else setSystemPhase("shutdownWait");
     } else {
       setPercent(next);
     }
   }, 1);
 
-  if (shutdownReady && !restart) {
-    return <ShutdownScreen onWake={() => setBooting(false)} />;
-  }
-
   return (
     <div
       className="w-screen h-screen bg-black flex flex-col items-center justify-center cursor-default select-none"
       onClick={() => {
-        if (restart) window.location.reload();
+        if (mode === "restart") window.location.reload();
       }}
     >
       <svg viewBox="0 0 814 1000" width="80" height="80" fill="white">
@@ -131,11 +125,26 @@ function BootAnimation({
 }
 
 /* ── Entry point ──────────────────────────────────────────────── */
-export default function Boot({ restart, sleep, setBooting }: Props) {
-  if (sleep) {
-    return <SleepScreen onWake={() => setBooting(false)} />;
-  }
+export default function Boot({
+  systemPhase,
+  setSystemPhase,
+}: Props) {
+  if (systemPhase === "sleep")
+    return <SleepScreen onWake={() => setSystemPhase("login")} />;
+  if (systemPhase === "shutdownWait")
+    return <ShutdownScreen onWake={() => setSystemPhase("login")} />;
 
-  // restart / shutdown: show the boot animation for both (click to reload when restart=true)
-  return <BootAnimation restart={restart} setBooting={setBooting} />;
+  if (systemPhase === "bootRestart")
+    return (
+      <BootAnimation mode="restart" setSystemPhase={setSystemPhase} />
+    );
+  if (systemPhase === "bootShutdown")
+    return (
+      <BootAnimation
+        mode="shutdown"
+        setSystemPhase={setSystemPhase}
+      />
+    );
+
+  return null;
 }

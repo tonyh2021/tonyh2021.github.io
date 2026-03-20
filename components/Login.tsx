@@ -7,9 +7,9 @@ import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 
 export default function Login() {
-  const { setLogin, sleep, restart, shutdown } = useStore(
+  const { setSystemPhase, sleep, restart, shutdown } = useStore(
     useShallow((s) => ({
-      setLogin: s.setLogin,
+      setSystemPhase: s.setSystemPhase,
       sleep: s.sleep,
       restart: s.restart,
       shutdown: s.shutdown,
@@ -26,7 +26,7 @@ export default function Login() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      onClick={() => setLogin(true)}
+      onClick={() => setSystemPhase("desktop")}
     >
       {video && (
         <video

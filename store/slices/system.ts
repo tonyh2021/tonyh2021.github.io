@@ -1,6 +1,14 @@
 import type { StateCreator } from "zustand";
 import { enterFullScreen, exitFullScreen } from "@/lib/screen";
 
+export type SystemPhase =
+  | "desktop"
+  | "login"
+  | "bootRestart"
+  | "bootShutdown"
+  | "sleep"
+  | "shutdownWait";
+
 export interface SystemSlice {
   dark: boolean;
   brightness: number;
@@ -9,10 +17,7 @@ export interface SystemSlice {
   bluetooth: boolean;
   airdrop: boolean;
   fullscreen: boolean;
-  login: boolean;
-  booting: boolean;
-  sleeping: boolean;
-  restarting: boolean;
+  systemPhase: SystemPhase;
   toggleDark: () => void;
   initDark: () => void;
   setBrightness: (v: number) => void;
@@ -21,8 +26,7 @@ export interface SystemSlice {
   toggleBluetooth: () => void;
   toggleAirdrop: () => void;
   toggleFullScreen: (v: boolean) => void;
-  setLogin: (v: boolean) => void;
-  setBooting: (v: boolean) => void;
+  setSystemPhase: (p: SystemPhase) => void;
   shutdown: () => void;
   sleep: () => void;
   restart: () => void;
@@ -36,18 +40,12 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
   bluetooth: true,
   airdrop: true,
   fullscreen: false,
-  login: false,
-  booting: true,
-  sleeping: false,
-  restarting: true,
-  setLogin: (v) => set({ login: v }),
-  setBooting: (v) => set({ booting: v }),
-  shutdown: () =>
-    set({ restarting: false, sleeping: false, login: false, booting: true }),
-  sleep: () =>
-    set({ restarting: false, sleeping: true, login: false, booting: true }),
-  restart: () =>
-    set({ restarting: true, sleeping: false, login: false, booting: true }),
+  // Start with a "restart boot" animation, then end up on the login screen.
+  systemPhase: "bootRestart",
+  setSystemPhase: (p) => set({ systemPhase: p }),
+  shutdown: () => set({ systemPhase: "bootShutdown" }),
+  sleep: () => set({ systemPhase: "sleep" }),
+  restart: () => set({ systemPhase: "bootRestart" }),
   toggleDark: () =>
     set((state) => {
       if (typeof document !== "undefined") {
