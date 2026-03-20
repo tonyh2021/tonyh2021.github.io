@@ -1,14 +1,17 @@
-import { getAllTags } from '@/lib/posts';
+import { getAllTags } from "@/lib/posts";
 
 export const metadata = {
-  title: "Tags | Tony's Blog",
-  description: 'An archive of posts sorted by tag.',
+  title: "Tags | Tony's Portfolio",
+  description: "An archive of posts sorted by tag.",
 };
 
 function formatDate(dateStr: string): string {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export default function TagsPage() {
@@ -16,36 +19,70 @@ export default function TagsPage() {
   const sortedTags = Object.keys(tagMap).sort();
 
   return (
-    <div className="page">
-      <h1 className="page-title">Tags</h1>
-      <p>An archive of posts sorted by tag.</p>
+    <div className="min-h-screen bg-gray-950 text-gray-200">
+      <header className="sticky top-0 z-10 h-10 flex items-center px-4 bg-gray-900/80 backdrop-blur border-b border-gray-800 text-sm">
+        <a
+          href="/"
+          className="text-gray-400 hover:text-white transition-colors"
+        >
+          ← Back to Desktop
+        </a>
+      </header>
 
-      {/* Tag cloud */}
-      <ul className="tag-box inline">
-        {sortedTags.map((tag) => (
-          <li key={tag}>
-            <a href={`#${encodeURIComponent(tag)}`}>
-              {tag} <span>{tagMap[tag].length}</span>
+      <div className="max-w-2xl mx-auto px-6 py-10">
+        <h1 className="text-2xl font-bold mb-2 text-white">Tags</h1>
+        <p className="text-sm text-gray-400 mb-8">
+          An archive of posts sorted by tag.
+        </p>
+
+        {/* Tag cloud */}
+        <div className="flex flex-wrap gap-2 mb-10">
+          {sortedTags.map((tag) => (
+            <a
+              key={tag}
+              href={`#${encodeURIComponent(tag)}`}
+              className="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+            >
+              {tag}
+              <span className="ml-1.5 text-xs text-gray-500">
+                {tagMap[tag].length}
+              </span>
             </a>
-          </li>
-        ))}
-      </ul>
-
-      {/* Posts grouped by tag */}
-      {sortedTags.map((tag) => (
-        <div key={tag} id={encodeURIComponent(tag)}>
-          <h2>{tag}</h2>
-          <ul>
-            {tagMap[tag].map((post) => (
-              <li key={post.slug}>
-                <span>{formatDate(post.frontMatter.date)}</span>
-                {' — '}
-                <a href={`/blog/${post.slug}/`}>{post.frontMatter.title}</a>
-              </li>
-            ))}
-          </ul>
+          ))}
         </div>
-      ))}
+
+        {/* Posts grouped by tag */}
+        <div className="space-y-8">
+          {sortedTags.map((tag) => (
+            <section key={tag} id={encodeURIComponent(tag)}>
+              <h2 className="text-base font-semibold text-gray-300 mb-3 pb-1.5 border-b border-gray-800">
+                #{tag}
+                <span className="ml-2 text-xs font-normal text-gray-500">
+                  {tagMap[tag].length}
+                </span>
+              </h2>
+              <ul className="space-y-1.5">
+                {tagMap[tag].map((post) => (
+                  <li
+                    key={post.slug}
+                    className="flex items-baseline gap-3 text-sm"
+                  >
+                    <span className="text-gray-500 tabular-nums shrink-0">
+                      {formatDate(post.frontMatter.date)}
+                    </span>
+                    <a
+                      href={`/blog/${post.slug}/`}
+                      className="text-gray-300 hover:text-blue-400 transition-colors"
+                    >
+                      {post.frontMatter.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

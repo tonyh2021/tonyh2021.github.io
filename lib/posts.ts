@@ -2,12 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import type { Post, PostFrontMatter } from './types';
+import { normalizeTags } from './utils';
+
+export { normalizeTags };
+
+export type Locale = 'zh' | 'en';
 
 const POSTS_DIR = path.join(process.cwd(), '_posts');
-const POSTS_PER_PAGE = 10;
 
 function fileNameToSlug(fileName: string): string {
   return fileName
+    .replace(/_en\.mdx?$/, '')   // strip _en before extension
     .replace(/\.mdx?$/, '')
     .replace(/\s+/g, '-')
     .toLowerCase();
@@ -18,52 +23,75 @@ function extractDateFromFileName(fileName: string): string {
   return match ? match[1] : '';
 }
 
-export function normalizeTags(tags: string | string[] | undefined): string[] {
-  if (!tags) return [];
-  if (Array.isArray(tags)) return tags;
-  return [tags];
+function isEnFile(fileName: string): boolean {
+  return /_en\.mdx?$/.test(fileName);
 }
 
-export function getAllPosts(): Post[] {
-  const files = fs.readdirSync(POSTS_DIR);
+function getAllPostFiles(locale: Locale = 'zh'): { filePath: string; fileName: string }[] {
+  const entries = fs.readdirSync(POSTS_DIR, { withFileTypes: true });
+  const result: { filePath: string; fileName: string }[] = [];
 
-  const posts = files
-    .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
-    .map((fileName) => {
-      const slug = fileNameToSlug(fileName);
-      const date = extractDateFromFileName(fileName);
-      const raw = fs.readFileSync(path.join(POSTS_DIR, fileName), 'utf-8');
-      const { data, content } = matter(raw);
-      const frontMatter: PostFrontMatter = {
-        ...(data as Omit<PostFrontMatter, 'date'>),
-        date,
-      };
-      return { slug, frontMatter, content };
-    });
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      const yearDir = path.join(POSTS_DIR, entry.name);
+      const yearFiles = fs.readdirSync(yearDir);
+      for (const fileName of yearFiles) {
+        if (!(fileName.endsWith('.md') || fileName.endsWith('.mdx'))) continue;
+        const isEn = isEnFile(fileName);
+        if (locale === 'en' && isEn) result.push({ filePath: path.join(yearDir, fileName), fileName });
+        if (locale === 'zh' && !isEn) result.push({ filePath: path.join(yearDir, fileName), fileName });
+      }
+    } else {
+      const fileName = entry.name;
+      if (!(fileName.endsWith('.md') || fileName.endsWith('.mdx'))) continue;
+      const isEn = isEnFile(fileName);
+      if (locale === 'en' && isEn) result.push({ filePath: path.join(POSTS_DIR, fileName), fileName });
+      if (locale === 'zh' && !isEn) result.push({ filePath: path.join(POSTS_DIR, fileName), fileName });
+    }
+  }
+
+  return result;
+}
+
+export function getAllPosts(locale: Locale = 'zh'): Post[] {
+  const files = getAllPostFiles(locale);
+
+  const posts = files.map(({ filePath, fileName }) => {
+    const slug = fileNameToSlug(fileName);
+    const date = extractDateFromFileName(fileName);
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const { data, content } = matter(raw);
+    const frontMatter: PostFrontMatter = {
+      ...(data as Omit<PostFrontMatter, 'date'>),
+      date,
+    };
+    return { slug, frontMatter, content };
+  });
 
   return posts.sort((a, b) => b.frontMatter.date.localeCompare(a.frontMatter.date));
 }
 
 export function getAllSlugs(): string[] {
-  return getAllPosts().map((p) => p.slug);
+  return getAllPosts('zh').map((p) => p.slug);
 }
 
-export function getPostBySlug(slug: string): Post {
-  const posts = getAllPosts();
+export function getPostBySlug(slug: string, locale: Locale = 'zh'): Post {
+  const posts = getAllPosts(locale);
   const post = posts.find((p) => p.slug === slug);
-  if (!post) throw new Error(`Post not found: ${slug}`);
-  return post;
+  if (post) return post;
+
+  // Fallback to Chinese if English version not found
+  if (locale === 'en') {
+    const zhPosts = getAllPosts('zh');
+    const zhPost = zhPosts.find((p) => p.slug === slug);
+    if (zhPost) return zhPost;
+  }
+
+  throw new Error(`Post not found: ${slug}`);
 }
 
-export function getPaginatedPosts(page: number) {
-  const all = getAllPosts();
-  const totalPages = Math.ceil(all.length / POSTS_PER_PAGE);
-  const posts = all.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
-  return { posts, totalPages, currentPage: page };
-}
-
-export function getAllTags(): Record<string, Post[]> {
-  const posts = getAllPosts();
+export function getAllTags(locale: Locale = 'zh'): Record<string, Post[]> {
+  const posts = getAllPosts(locale);
   const tagMap: Record<string, Post[]> = {};
 
   for (const post of posts) {
@@ -75,4 +103,9 @@ export function getAllTags(): Record<string, Post[]> {
   }
 
   return tagMap;
+}
+
+export function detectLocale(acceptLanguage: string | null): Locale {
+  if (!acceptLanguage) return 'zh';
+  return acceptLanguage.toLowerCase().startsWith('zh') ? 'zh' : 'en';
 }

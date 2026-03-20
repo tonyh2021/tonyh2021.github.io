@@ -1,8 +1,28 @@
-# Tony's Blog
+# Tony's Portfolio
 
-Source for [https://tonyh2021.github.io/](https://tonyh2021.github.io/)
+A macOS-style interactive desktop portfolio, live at [https://tonyh2021.github.io/](https://tonyh2021.github.io/).
 
-Built with [Next.js 14](https://nextjs.org/) (App Router) and [React Markdown](https://github.com/remarkjs/react-markdown), styled with the [Lanyon](http://lanyon.getpoole.com/) theme. Deployed to GitHub Pages via GitHub Actions.
+## Features
+
+- macOS desktop simulation with draggable, resizable windows
+- Dock with Launchpad, genie minimize animation
+- Top bar with Apple menu, Wi-Fi toggle, Control Center (brightness, volume, dark mode, music player), Spotlight search
+- **Blog** — markdown posts with tag filtering and full rendering
+- **About** — personal intro
+- **Safari** — in-app browser with favorites
+- **VSCode** — embedded code viewer via github1s
+- **Terminal** — interactive terminal emulator
+- Light / Dark mode
+
+## Tech Stack
+
+- [Next.js 14](https://nextjs.org/) (App Router)
+- [React 18](https://react.dev/)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/) — dock magnification & animations
+- [Zustand](https://zustand-demo.pmnd.rs/) — global state
+- [react-rnd](https://github.com/bokuweb/react-rnd) — draggable/resizable windows
+- [React Markdown](https://github.com/remarkjs/react-markdown) + remark-gfm + rehype-highlight
 
 ## Development
 
@@ -21,7 +41,9 @@ Static output is generated in `./out/`.
 
 ## Deployment
 
-Pushing to `master` triggers a GitHub Actions workflow that builds the site and deploys the `./out/` directory to the `gh-pages` branch. Configure GitHub Pages in repo Settings → Pages → Source: `gh-pages` branch.
+Pushing to `master` triggers a GitHub Actions workflow that builds the site and deploys the `./out/` directory to the `gh-pages` branch.
+
+Configure GitHub Pages: Settings → Pages → Source: `gh-pages` branch.
 
 ## License
 

@@ -1,38 +1,66 @@
 export const metadata = {
-  title: "About | Tony's Blog",
+  title: "About | Tony's Portfolio",
 };
 
 export default function AboutPage() {
   return (
-    <div className="page">
-      <h1 className="page-title">About</h1>
-
-      <p>{"Hi. I'm Tony."}</p>
-
-      <p>习惯于对世界保持好奇和怀疑的态度，讨厌所有重复毫无创造性的事情。如果有什么有趣的新奇事物，请一定告诉我。</p>
-
-      <blockquote>
-        <p>And one more thing...</p>
-      </blockquote>
-
-      <p>
-        {`We're here to put a dent in the universe. Otherwise why else even be here?`}
-      </p>
-
-      <p>
-        {`Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things differently. They're not fond of rules. And they have no respect for the status quo. You can quote them, disagree with them, glorify or vilify them. About the only thing you can't do is ignore them. Because they change things. They push the human race forward. And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.`}
-      </p>
-
-      <p style={{ textAlign: 'right' }}>-- Steve Jobs</p>
-
-      <p className="social-icons">
-        <a href="https://github.com/tonyh2021">
-          <i className="fa fa-github fa-2x"></i>
+    <div className="min-h-screen bg-gray-950 text-gray-200">
+      <header className="sticky top-0 z-10 h-10 flex items-center px-4 bg-gray-900/80 backdrop-blur border-b border-gray-800 text-sm">
+        <a
+          href="/"
+          className="text-gray-400 hover:text-white transition-colors"
+        >
+          ← Back to Desktop
         </a>
-        <a href="https://stackoverflow.com/users/4172900/tony">
-          <i className="fa fa-stack-overflow fa-2x"></i>
-        </a>
-      </p>
+      </header>
+
+      <div className="max-w-lg mx-auto px-6 py-10">
+        <h1 className="text-2xl font-bold mb-6 text-white">About</h1>
+
+        <p className="mb-4 leading-relaxed">{"Hi. I'm Tony."}</p>
+
+        <p className="mb-4 leading-relaxed text-gray-300">
+          I’m naturally curious and a little skeptical about the world.
+          Repetitive things or anything that lacks creativity lose my interest
+          pretty quickly. I’m always drawn to ideas, technologies, or
+          perspectives that feel fresh and a bit different. If you ever come
+          across something genuinely interesting or new, feel free to share it
+          with me.{" "}
+        </p>
+
+        <blockquote className="my-6 pl-4 border-l-4 border-indigo-500 italic text-gray-400">
+          And one more thing…
+        </blockquote>
+
+        <p className="mb-4 leading-relaxed text-gray-300">
+          {`We're here to put a dent in the universe. Otherwise why else even be here?`}
+        </p>
+
+        <p className="mb-4 text-sm leading-relaxed text-gray-400">
+          {`Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things differently. They're not fond of rules. And they have no respect for the status quo. You can quote them, disagree with them, glorify or vilify them. About the only thing you can't do is ignore them. Because they change things. They push the human race forward. And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.`}
+        </p>
+
+        <p className="text-sm text-right text-gray-500 mb-8">— Steve Jobs</p>
+
+        <div className="flex gap-3">
+          <a
+            href="https://github.com/tonyh2021"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 text-white text-sm hover:bg-gray-700 transition-colors"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://stackoverflow.com/users/4172900/tony"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-600 text-white text-sm hover:bg-orange-500 transition-colors"
+          >
+            Stack Overflow
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
