@@ -134,7 +134,7 @@ export default function TopBar({
 
   return (
     <div
-      className={`w-full h-8 px-2 fixed top-0 flex items-center justify-between ${hide ? "z-0" : "z-9999"} text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition-all select-none`}
+      className={`w-full h-8 px-2 fixed top-0 hidden sm:flex items-center justify-between ${hide ? "z-0" : "z-9999"} text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition-all select-none`}
     >
       {/* Left side */}
       <div className="flex items-center gap-0.5">

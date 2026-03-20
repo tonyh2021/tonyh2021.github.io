@@ -6,6 +6,7 @@ import { useShallow } from "zustand/shallow";
 import Boot from "./Boot";
 import Login from "./Login";
 import MacDesktop from "./desktop/MacDesktop";
+import { useMobile } from "@/hooks/useMobile";
 import type { Post } from "@/lib/types";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function MacOSApp({ posts, enPosts }: Props) {
+  const isMobile = useMobile();
   const { initDark, systemPhase, setSystemPhase } = useStore(
     useShallow((s) => ({
       initDark: s.initDark,
@@ -26,6 +28,13 @@ export default function MacOSApp({ posts, enPosts }: Props) {
     initDark();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Mobile: skip all non-desktop phases, go straight to desktop
+  useEffect(() => {
+    if (isMobile && systemPhase !== "desktop") {
+      setSystemPhase("desktop");
+    }
+  }, [isMobile, systemPhase, setSystemPhase]);
 
   return (
     <>

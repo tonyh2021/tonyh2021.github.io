@@ -3,6 +3,7 @@
 import { useState, useEffect, memo, type ReactNode } from "react";
 import { Rnd } from "react-rnd";
 import type { AppId } from "@/configs/apps";
+import { useMobile } from "@/hooks/useMobile";
 
 const TOP_BAR_H = 32;
 const DOCK_H = 76;
@@ -82,6 +83,7 @@ const AppWindow = memo(function AppWindow({
   focus,
   children,
 }: Props) {
+  const isMobile = useMobile();
   const [vw, setVw] = useState(1280);
   const [vh, setVh] = useState(800);
 
@@ -113,6 +115,27 @@ const AppWindow = memo(function AppWindow({
 
   const round = max ? "rounded-none" : "rounded-lg";
   const border = max ? "" : "border border-gray-500/30";
+
+  // ── Mobile: fullscreen fixed panel, no drag/resize ───────────────────────
+  if (isMobile) {
+    return (
+      <div
+        id={`window-${id}`}
+        className="fixed inset-0 flex flex-col bg-white dark:bg-gray-900"
+        style={{ zIndex: z }}
+        onClick={() => focus(id)}
+      >
+        {/* Mobile nav bar */}
+        <div className="flex items-center justify-center h-11 px-4 bg-gray-200/80 dark:bg-gray-800/80 backdrop-blur shrink-0 border-b border-gray-300/50 dark:border-gray-600/50">
+          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+            {title}
+          </span>
+        </div>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <Rnd

@@ -8,6 +8,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
+import { useMobile } from '@/hooks/useMobile';
 
 // ─── Distance-based magnification ─────────────────────────────────────────────
 // Mirrors playground-macos/src/components/dock/DockItem.tsx
@@ -48,6 +49,7 @@ function useDockHoverAnimation(
   const width = useTransform(widthPx, (w) => `${w / 16}rem`);
 
   useEffect(() => {
+    if (mouseX === null) return; // mobile: skip rAF loop entirely
     let raf: number;
     const loop = () => {
       const el = ref.current;
@@ -86,9 +88,35 @@ export default function DockItem({
   id, title, img, desktop, link, isOpen, openApp,
   mouseX, dockSize, dockMag,
 }: Props) {
+  const isMobile = useMobile();
   const imgRef = useRef<HTMLImageElement>(null);
   const { width } = useDockHoverAnimation(mouseX, imgRef, dockSize, dockMag);
 
+  // Mobile: plain static icon, no motion/animation
+  if (isMobile) {
+    const iconEl = (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={img}
+        alt={title}
+        draggable={false}
+        style={{ width: dockSize, height: dockSize }}
+        className="object-contain"
+      />
+    );
+    return (
+      <li
+        id={`dock-${id}`}
+        className="relative flex flex-col items-center justify-end mb-1"
+        onClick={desktop || id === 'launchpad' ? openApp : undefined}
+      >
+        {link ? <a href={link} target="_blank" rel="noreferrer">{iconEl}</a> : iconEl}
+        <div className={`w-1 h-1 mt-0.5 rounded-full bg-white/80 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0'}`} />
+      </li>
+    );
+  }
+
+  // Desktop: magnification animation
   const imgEl = (
     <motion.img
       ref={imgRef}
