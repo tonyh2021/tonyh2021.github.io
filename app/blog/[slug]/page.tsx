@@ -1,7 +1,4 @@
-import { getAllSlugs, getPostBySlug, normalizeTags, detectLocale } from "@/lib/posts";
-import { headers } from "next/headers";
-
-export const dynamic = 'force-dynamic';
+import { getAllSlugs, getPostBySlug, normalizeTags } from "@/lib/posts";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -15,10 +12,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const locale = detectLocale(headers().get('accept-language'));
-  const post = getPostBySlug(params.slug, locale);
+  const { slug } = await params;
+  const post = getPostBySlug(slug, 'zh');
   return {
     title: `${post.frontMatter.title} | Tony's Portfolio`,
     description: post.frontMatter.description ?? "",
@@ -34,9 +31,9 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
-  const locale = detectLocale(headers().get('accept-language'));
-  const post = getPostBySlug(params.slug, locale);
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug, 'zh');
   const tags = normalizeTags(post.frontMatter.tags);
 
   return (
@@ -46,12 +43,8 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
       />
 
-      {/* Top bar */}
       <header className="sticky top-0 z-10 h-10 flex items-center px-4 bg-gray-900/80 backdrop-blur border-b border-gray-800 text-sm">
-        <a
-          href="/"
-          className="text-gray-400 hover:text-white transition-colors"
-        >
+        <a href="/" className="text-gray-400 hover:text-white transition-colors">
           ← Back to Desktop
         </a>
       </header>
