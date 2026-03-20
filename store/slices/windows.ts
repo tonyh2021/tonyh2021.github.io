@@ -1,5 +1,5 @@
-import type { StateCreator } from 'zustand';
-import type { AppId } from '@/configs/apps';
+import type { StateCreator } from "zustand";
+import type { AppId } from "@/configs/apps";
 
 export interface WinState {
   open: boolean;
@@ -23,7 +23,7 @@ export interface WindowsSlice {
 export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
   wins: {},
   maxZ: 2,
-  currentApp: 'blog',
+  currentApp: "blog",
   openWin: (id) =>
     set((state) => {
       const newZ = state.maxZ + 1;
@@ -91,7 +91,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
         ids.map((id) => [
           id,
           { open: false, z: 2, minimized: false, maximized: false },
-        ])
+        ]),
       ),
     })),
 });

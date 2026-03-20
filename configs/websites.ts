@@ -46,16 +46,16 @@ export const websites: { favorites: SiteSection; freq: SiteSection } = {
         link: "https://google.com",
       },
       {
-        id: "openai",
-        title: "OpenAI",
+        id: "chatgpt",
+        title: "ChatGPT",
         img: "/images/apps/openai.png",
-        link: "https://openai.com",
+        link: "https://chatgpt.com",
       },
       {
         id: "anthropic",
-        title: "Anthropic",
+        title: "Claude",
         img: "/images/apps/anthropic.png",
-        link: "https://anthropic.com",
+        link: "https://claude.ai/new",
       },
       {
         id: "stackoverflow",

@@ -102,7 +102,7 @@ export const appConfigs = [
     show: true,
     link: "https://github.com/tonyh2021",
   },
-  ] as const satisfies readonly AppConfig[];
+] as const satisfies readonly AppConfig[];
 
 export type AppId = (typeof appConfigs)[number]["id"];
 

@@ -25,6 +25,12 @@ export const launchpadApps: LaunchpadItem[] = [
     link: "https://stackoverflow.com/users/4172900/tony",
   },
   {
+    id: "chatgpt",
+    title: "ChatGPT",
+    img: "/images/apps/openai.png",
+    link: "https://chatgpt.com",
+  },
+  {
     id: "figma",
     title: "Figma",
     img: "/images/apps/figma.png",
