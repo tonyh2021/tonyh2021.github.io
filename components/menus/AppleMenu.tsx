@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useStore } from "@/store";
 import { MenuItem, MenuItemGroup } from "./MenuItem";
 import { user } from "@/configs/user";
 
@@ -24,11 +25,20 @@ export default function AppleMenu({
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   useClickOutside(ref, close, [btnRef]);
+  const openWin = useStore((s) => s.openWin);
 
   return (
     <div ref={ref} className="menu-box menu-box-surface left-2 w-56">
       <MenuItemGroup>
-        <MenuItem>About This Mac</MenuItem>
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            openWin("about");
+            close();
+          }}
+        >
+          About This Mac
+        </MenuItem>
       </MenuItemGroup>
       <MenuItemGroup>
         <MenuItem>System Preferences…</MenuItem>

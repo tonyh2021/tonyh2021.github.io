@@ -69,7 +69,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
     safari:   <Safari />,
     vscode:   <VSCode />,
     terminal: <Terminal />,
-  }), [posts]);
+  }), [posts, enPosts]);
 
   const getWindowMeta = (id: string) => {
     const cfg = appConfigs.find((a) => a.id === id);

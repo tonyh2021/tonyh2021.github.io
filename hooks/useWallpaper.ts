@@ -32,17 +32,31 @@ function getLightWallpaper(): Wallpaper {
   return new Date().getHours() < 12 ? Wallpapers.morning : Wallpapers.sunrise;
 }
 
+function msUntilNoon(): number {
+  const now = new Date();
+  const noon = new Date(now);
+  noon.setHours(12, 0, 0, 0);
+  if (now >= noon) noon.setDate(noon.getDate() + 1);
+  return noon.getTime() - now.getTime();
+}
+
 export function useWallpaper(): WallpaperInfo {
   const dark = useStore((s) => s.dark);
   const [lightWallpaper, setLightWallpaper] = useState<Wallpaper | null>(null);
 
   useEffect(() => {
     setLightWallpaper(getLightWallpaper());
-    const timer = setInterval(
-      () => setLightWallpaper(getLightWallpaper()),
-      60_000,
-    );
-    return () => clearInterval(timer);
+
+    // Schedule a single update at the next noon transition instead of polling every 60s
+    let timer: ReturnType<typeof setTimeout>;
+    const scheduleNext = () => {
+      timer = setTimeout(() => {
+        setLightWallpaper(getLightWallpaper());
+        scheduleNext();
+      }, msUntilNoon());
+    };
+    scheduleNext();
+    return () => clearTimeout(timer);
   }, []);
 
   if (lightWallpaper === null) return { image: null, video: null };

@@ -22,7 +22,7 @@ export interface WindowsSlice {
 export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
   wins: {},
   maxZ: 2,
-  currentApp: 'Blog',
+  currentApp: 'blog',
   openWin: (id) =>
     set((state) => {
       const newZ = state.maxZ + 1;

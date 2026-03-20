@@ -61,8 +61,10 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
       const prefersDark =
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
+      if (typeof document !== "undefined") {
+        if (prefersDark) document.documentElement.classList.add("dark");
+        else document.documentElement.classList.remove("dark");
+      }
       return { dark: prefersDark };
     }),
   setBrightness: (v) => set({ brightness: v }),

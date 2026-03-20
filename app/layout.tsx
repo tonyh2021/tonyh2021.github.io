@@ -22,20 +22,6 @@ export default function RootLayout({
             __html: `(function(){if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}})();`,
           }}
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'UA-73798612-1');
-            `,
-          }}
-        />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-73798612-1"
-        />
       </head>
       <body className="h-screen overflow-hidden bg-black">{children}</body>
     </html>

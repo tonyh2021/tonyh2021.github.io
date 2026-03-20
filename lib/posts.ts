@@ -82,8 +82,7 @@ export function getPostBySlug(slug: string, locale: Locale = 'zh'): Post {
 
   // Fallback to Chinese if English version not found
   if (locale === 'en') {
-    const zhPosts = getAllPosts('zh');
-    const zhPost = zhPosts.find((p) => p.slug === slug);
+    const zhPost = getAllPosts('zh').find((p) => p.slug === slug);
     if (zhPost) return zhPost;
   }
 
