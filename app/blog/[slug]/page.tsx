@@ -1,9 +1,17 @@
-import { getAllSlugs, getPostBySlug, normalizeTags } from "@/lib/posts";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
+import { getAllSlugs, getPostBySlug } from "@/lib/posts";
+import { notFound } from "next/navigation";
+import PostLocaleContent from "@/components/apps/PostLocaleContent";
+import type { Metadata } from "next";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+function getPostSafe(slug: string, locale: "zh" | "en") {
+  try {
+    return getPostBySlug(slug, locale);
+  } catch {
+    return null;
+  }
+}
 
 export async function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -13,69 +21,91 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug, 'zh');
+  const post = getPostSafe(slug, "en") ?? getPostSafe(slug, "zh");
+  const canonicalPath = `/blog/${slug}/`;
+  if (!post) {
+    return {
+      title: "Post Not Found",
+      description: "",
+      robots: { index: false, follow: false },
+      alternates: { canonical: canonicalPath },
+    };
+  }
   return {
-    title: `${post.frontMatter.title} | Tony's Portfolio`,
+    title: post.frontMatter.title,
     description: post.frontMatter.description ?? "",
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        "zh-CN": canonicalPath,
+        "en-US": canonicalPath,
+        "x-default": canonicalPath,
+      },
+    },
+    openGraph: {
+      type: "article",
+      url: canonicalPath,
+      title: post.frontMatter.title,
+      description: post.frontMatter.description ?? "",
+      publishedTime: post.frontMatter.date,
+      tags:
+        typeof post.frontMatter.tags === "string"
+          ? [post.frontMatter.tags]
+          : (post.frontMatter.tags ?? []),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.frontMatter.title,
+      description: post.frontMatter.description ?? "",
+    },
   };
 }
 
-function formatDate(dateStr: string): string {
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
-  const post = getPostBySlug(slug, 'zh');
-  const tags = normalizeTags(post.frontMatter.tags);
+  const zhPost = getPostSafe(slug, "zh");
+  const enPost = getPostSafe(slug, "en");
+  if (!zhPost && !enPost) notFound();
+  const seoPost = enPost ?? zhPost!;
+  const canonicalUrl = `${SITE_URL}/blog/${slug}/`;
+  const keywords =
+    typeof seoPost.frontMatter.tags === "string"
+      ? [seoPost.frontMatter.tags]
+      : (seoPost.frontMatter.tags ?? []);
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: seoPost.frontMatter.title,
+    description: seoPost.frontMatter.description ?? "",
+    datePublished: seoPost.frontMatter.date,
+    dateModified: seoPost.frontMatter.date,
+    mainEntityOfPage: canonicalUrl,
+    url: canonicalUrl,
+    inLanguage: enPost ? "en-US" : "zh-CN",
+    author: {
+      "@type": "Person",
+      name: "Tony Han",
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Tony Han",
+    },
+    keywords,
+  };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-200">
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    <div className="min-h-screen h-dvh overflow-y-auto bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-
-      <header className="sticky top-0 z-10 h-10 flex items-center px-4 bg-gray-900/80 backdrop-blur border-b border-gray-800 text-sm">
-        <a href="/" className="text-gray-400 hover:text-white transition-colors">
-          ← Back to Desktop
-        </a>
-      </header>
-
-      <article className="max-w-2xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold mb-3 text-white leading-snug">
-          {post.frontMatter.title}
-        </h1>
-
-        <div className="flex items-center flex-wrap gap-2 mb-8 text-sm text-gray-400">
-          <time>{formatDate(post.frontMatter.date)}</time>
-          {tags.map((tag) => (
-            <a
-              key={tag}
-              href={`/tags/#${encodeURIComponent(tag)}`}
-              className="px-2 py-0.5 bg-blue-900/40 text-blue-400 rounded text-xs hover:bg-blue-800/60 transition-colors"
-            >
-              {tag}
-            </a>
-          ))}
-        </div>
-
-        <div className="md-body">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeSlug, rehypeHighlight]}
-          >
-            {post.content}
-          </ReactMarkdown>
-        </div>
-      </article>
+      <PostLocaleContent zhPost={zhPost} enPost={enPost} />
     </div>
   );
 }

@@ -126,8 +126,8 @@ const AppWindow = memo(function AppWindow({
         onClick={() => focus(id)}
       >
         {/* Mobile nav bar */}
-        <div className="flex items-center justify-center h-11 px-4 bg-gray-200/80 dark:bg-gray-800/80 backdrop-blur shrink-0 border-b border-gray-300/50 dark:border-gray-600/50">
-          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+        <div className="relative flex items-center justify-center h-11 px-2 bg-gray-200/80 dark:bg-gray-800/80 backdrop-blur shrink-0 border-b border-gray-300/50 dark:border-gray-600/50">
+          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate max-w-[60%]">
             {title}
           </span>
         </div>

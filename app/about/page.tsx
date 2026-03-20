@@ -5,15 +5,6 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-200">
-      <header className="sticky top-0 z-10 h-10 flex items-center px-4 bg-gray-900/80 backdrop-blur border-b border-gray-800 text-sm">
-        <a
-          href="/"
-          className="text-gray-400 hover:text-white transition-colors"
-        >
-          ← Back to Desktop
-        </a>
-      </header>
-
       <div className="max-w-lg mx-auto px-6 py-10">
         <h1 className="text-2xl font-bold mb-6 text-white">About</h1>
 

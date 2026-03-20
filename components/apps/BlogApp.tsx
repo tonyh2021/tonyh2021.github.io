@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
+import { useRouter } from "next/navigation";
 import { normalizeTags } from "@/lib/utils";
 import type { Post } from "@/lib/types";
 import { useMobile } from "@/hooks/useMobile";
+import { usePostLocale } from "@/hooks/usePostLocale";
+import ArticleContent from "@/components/apps/ArticleContent";
 
 function stripMd(text: string): string {
   return text
@@ -36,20 +35,25 @@ interface Props {
   enPosts: Post[];
 }
 
-type FilterType = { kind: 'all' } | { kind: 'tag'; value: string } | { kind: 'year'; value: string };
+type FilterType =
+  | { kind: "all" }
+  | { kind: "tag"; value: string }
+  | { kind: "year"; value: string };
 
 export default function BlogApp({ posts, enPosts }: Props) {
   const isMobile = useMobile();
-  const [activePosts, setActivePosts] = useState(posts);
-  useEffect(() => {
-    if (!navigator.language.toLowerCase().startsWith('zh')) setActivePosts(enPosts);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const router = useRouter();
+  const locale = usePostLocale("en");
+  posts = locale === "zh" ? posts : enPosts;
+  const [filter, setFilter] = useState<FilterType>({ kind: "all" });
+  const [selectedPost, setSelectedPost] = useState<Post | null>(
+    posts[0] ?? null,
+  );
 
-  posts = activePosts;
-  const [filter, setFilter] = useState<FilterType>({ kind: 'all' });
-  const [selectedPost, setSelectedPost] = useState<Post | null>(posts[0] ?? null);
-  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
+  useEffect(() => {
+    setFilter({ kind: "all" });
+    setSelectedPost(posts[0] ?? null);
+  }, [locale, posts]);
 
   // Build tag map
   const tagCounts: Record<string, number> = {};
@@ -58,7 +62,9 @@ export default function BlogApp({ posts, enPosts }: Props) {
       tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
     }
   }
-  const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+  const tags = Object.keys(tagCounts).sort(
+    (a, b) => tagCounts[b] - tagCounts[a],
+  );
 
   // Build year map
   const yearCounts: Record<string, number> = {};
@@ -69,20 +75,24 @@ export default function BlogApp({ posts, enPosts }: Props) {
   const years = Object.keys(yearCounts).sort((a, b) => Number(b) - Number(a));
 
   const filteredPosts =
-    filter.kind === 'all'
+    filter.kind === "all"
       ? posts
-      : filter.kind === 'tag'
-      ? posts.filter((p) => normalizeTags(p.frontMatter.tags).includes(filter.value))
-      : posts.filter((p) => p.frontMatter.date.startsWith(filter.value));
+      : filter.kind === "tag"
+        ? posts.filter((p) =>
+            normalizeTags(p.frontMatter.tags).includes(filter.value),
+          )
+        : posts.filter((p) => p.frontMatter.date.startsWith(filter.value));
 
   const applyFilter = (f: FilterType) => {
     setFilter(f);
     const first =
-      f.kind === 'all'
+      f.kind === "all"
         ? posts[0]
-        : f.kind === 'tag'
-        ? posts.find((p) => normalizeTags(p.frontMatter.tags).includes(f.value))
-        : posts.find((p) => p.frontMatter.date.startsWith(f.value));
+        : f.kind === "tag"
+          ? posts.find((p) =>
+              normalizeTags(p.frontMatter.tags).includes(f.value),
+            )
+          : posts.find((p) => p.frontMatter.date.startsWith(f.value));
     setSelectedPost(first ?? null);
   };
 
@@ -90,108 +100,65 @@ export default function BlogApp({ posts, enPosts }: Props) {
   if (isMobile) {
     return (
       <div className="flex flex-col h-full select-none bg-gray-50 dark:bg-gray-800">
-        {mobileView === 'list' ? (
-          <>
-            {/* Filter chips */}
-            <div className="flex gap-2 px-3 py-2 overflow-x-auto shrink-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700" style={{ scrollbarWidth: 'none' }}>
-              <button
-                className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-                onClick={() => applyFilter({ kind: 'all' })}
-              >
-                All ({posts.length})
-              </button>
-              {years.map((year) => (
-                <button
-                  key={year}
-                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === 'year' && filter.value === year ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-                  onClick={() => applyFilter({ kind: 'year', value: year })}
-                >
-                  {year}
-                </button>
-              ))}
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === 'tag' && filter.value === tag ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-                  onClick={() => applyFilter({ kind: 'tag', value: tag })}
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
+        {/* Filter chips */}
+        <div
+          className="flex gap-2 px-3 py-2 overflow-x-auto shrink-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700"
+          style={{ scrollbarWidth: "none" }}
+        >
+          <button
+            className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === "all" ? "bg-orange-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}
+            onClick={() => applyFilter({ kind: "all" })}
+          >
+            All ({posts.length})
+          </button>
+          {years.map((year) => (
+            <button
+              key={year}
+              className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === "year" && filter.value === year ? "bg-orange-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}
+              onClick={() => applyFilter({ kind: "year", value: year })}
+            >
+              {year}
+            </button>
+          ))}
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter.kind === "tag" && filter.value === tag ? "bg-orange-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}
+              onClick={() => applyFilter({ kind: "tag", value: tag })}
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
 
-            {/* Post list */}
-            <ul className="flex-1 overflow-y-auto">
-              {filteredPosts.map((post) => {
-                const excerpt = stripMd(post.content).slice(0, 80);
-                return (
-                  <li
-                    key={post.slug}
-                    className="flex flex-col px-4 py-3 border-b border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700/50"
-                    onClick={() => { setSelectedPost(post); setMobileView('detail'); }}
-                  >
-                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-snug mb-1">
-                      {post.frontMatter.title}
-                    </span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500 mb-1">
-                      {formatDate(post.frontMatter.date)}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-snug">
-                      {excerpt || '—'}
-                    </span>
-                  </li>
-                );
-              })}
-              {filteredPosts.length === 0 && (
-                <li className="flex items-center justify-center h-24 text-xs text-gray-400">No posts</li>
-              )}
-            </ul>
-          </>
-        ) : (
-          <>
-            {/* Back nav */}
-            <div className="flex items-center h-11 px-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shrink-0">
-              <button
-                className="flex items-center gap-1 px-1 text-orange-500 active:opacity-50"
-                onClick={() => setMobileView('list')}
+        {/* Post list */}
+        <ul className="flex-1 overflow-y-auto">
+          {filteredPosts.map((post) => {
+            const excerpt = stripMd(post.content).slice(0, 80);
+            return (
+              <li
+                key={post.slug}
+                className="flex flex-col px-4 py-3 border-b border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700/50"
+                onClick={() => router.push(`/blog/${post.slug}`)}
               >
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-                <span className="text-sm">Posts</span>
-              </button>
-            </div>
-
-            {/* Article */}
-            <div className="flex-1 overflow-y-auto select-text">
-              {selectedPost && (
-                <>
-                  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
-                  <article className="px-4 py-6 text-gray-800 dark:text-gray-200">
-                    <h1 className="text-xl font-bold mb-2 text-gray-900 dark:text-white leading-tight">
-                      {selectedPost.frontMatter.title}
-                    </h1>
-                    <div className="flex items-center gap-2 mb-6 text-sm flex-wrap">
-                      <time className="text-gray-400 dark:text-gray-500">
-                        {formatDate(selectedPost.frontMatter.date)}
-                      </time>
-                      {normalizeTags(selectedPost.frontMatter.tags).map((tag) => (
-                        <span key={tag} className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded text-xs">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="md-body">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeHighlight]}>
-                        {selectedPost.content}
-                      </ReactMarkdown>
-                    </div>
-                  </article>
-                </>
-              )}
-            </div>
-          </>
-        )}
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-snug mb-1">
+                  {post.frontMatter.title}
+                </span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 mb-1">
+                  {formatDate(post.frontMatter.date)}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-snug">
+                  {excerpt || "—"}
+                </span>
+              </li>
+            );
+          })}
+          {filteredPosts.length === 0 && (
+            <li className="flex items-center justify-center h-24 text-xs text-gray-400">
+              No posts
+            </li>
+          )}
+        </ul>
       </div>
     );
   }
@@ -204,14 +171,16 @@ export default function BlogApp({ posts, enPosts }: Props) {
         <ul className="pt-1">
           <li
             className={`pl-4 h-8 flex items-center gap-2 cursor-default transition-colors ${
-              filter.kind === 'all' ? "bg-orange-500 text-white" : "hover:bg-gray-300 dark:hover:bg-gray-600"
+              filter.kind === "all"
+                ? "bg-orange-500 text-white"
+                : "hover:bg-gray-300 dark:hover:bg-gray-600"
             }`}
-            onClick={() => applyFilter({ kind: 'all' })}
+            onClick={() => applyFilter({ kind: "all" })}
           >
             <span>📚</span>
             <span className="truncate">Blogs</span>
             <span
-              className={`ml-auto pr-2 text-xs ${filter.kind === 'all' ? "text-white/70" : "text-gray-500 dark:text-gray-500"}`}
+              className={`ml-auto pr-2 text-xs ${filter.kind === "all" ? "text-white/70" : "text-gray-500 dark:text-gray-500"}`}
             >
               {posts.length}
             </span>
@@ -227,14 +196,16 @@ export default function BlogApp({ posts, enPosts }: Props) {
             <li
               key={year}
               className={`pl-4 h-8 flex items-center cursor-default transition-colors ${
-                filter.kind === 'year' && filter.value === year ? "bg-orange-500 text-white" : "hover:bg-gray-300 dark:hover:bg-gray-600"
+                filter.kind === "year" && filter.value === year
+                  ? "bg-orange-500 text-white"
+                  : "hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
-              onClick={() => applyFilter({ kind: 'year', value: year })}
+              onClick={() => applyFilter({ kind: "year", value: year })}
             >
               <span className="text-gray-400 text-xs mr-1.5">📅</span>
               <span className="truncate flex-1">{year}</span>
               <span
-                className={`ml-auto pr-2 text-xs shrink-0 ${filter.kind === 'year' && filter.value === year ? "text-white/70" : "text-gray-500"}`}
+                className={`ml-auto pr-2 text-xs shrink-0 ${filter.kind === "year" && filter.value === year ? "text-white/70" : "text-gray-500"}`}
               >
                 {yearCounts[year]}
               </span>
@@ -251,14 +222,16 @@ export default function BlogApp({ posts, enPosts }: Props) {
             <li
               key={tag}
               className={`pl-4 h-8 flex items-center cursor-default transition-colors ${
-                filter.kind === 'tag' && filter.value === tag ? "bg-orange-500 text-white" : "hover:bg-gray-300 dark:hover:bg-gray-600"
+                filter.kind === "tag" && filter.value === tag
+                  ? "bg-orange-500 text-white"
+                  : "hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
-              onClick={() => applyFilter({ kind: 'tag', value: tag })}
+              onClick={() => applyFilter({ kind: "tag", value: tag })}
             >
               <span className="text-gray-400 text-xs mr-1.5">#</span>
               <span className="truncate flex-1">{tag}</span>
               <span
-                className={`ml-auto pr-2 text-xs shrink-0 ${filter.kind === 'tag' && filter.value === tag ? "text-white/70" : "text-gray-500"}`}
+                className={`ml-auto pr-2 text-xs shrink-0 ${filter.kind === "tag" && filter.value === tag ? "text-white/70" : "text-gray-500"}`}
               >
                 {tagCounts[tag]}
               </span>
@@ -324,36 +297,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
       <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 select-text">
         {selectedPost ? (
           <>
-            <link
-              rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
-            />
-            <article className="max-w-2xl mx-auto px-8 py-8 text-gray-800 dark:text-gray-200">
-              <h1 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white leading-tight">
-                {selectedPost.frontMatter.title}
-              </h1>
-              <div className="flex items-center gap-2 mb-8 text-sm flex-wrap">
-                <time className="text-gray-400 dark:text-gray-500">
-                  {formatDate(selectedPost.frontMatter.date)}
-                </time>
-                {normalizeTags(selectedPost.frontMatter.tags).map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded text-xs"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-              <div className="md-body">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                >
-                  {selectedPost.content}
-                </ReactMarkdown>
-              </div>
-            </article>
+            <ArticleContent post={selectedPost} />
           </>
         ) : (
           <div className="flex items-center justify-center h-full text-sm text-gray-400 dark:text-gray-600">

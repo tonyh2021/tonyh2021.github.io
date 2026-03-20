@@ -21,7 +21,7 @@ export default function MacOSApp({ posts, enPosts }: Props) {
       initDark: s.initDark,
       systemPhase: s.systemPhase,
       setSystemPhase: s.setSystemPhase,
-    }))
+    })),
   );
 
   useEffect(() => {
@@ -52,15 +52,11 @@ export default function MacOSApp({ posts, enPosts }: Props) {
             : "pointer-events-none"
         }`}
         style={{
-          opacity:
-            systemPhase !== "desktop" && systemPhase !== "login" ? 1 : 0,
+          opacity: systemPhase !== "desktop" && systemPhase !== "login" ? 1 : 0,
         }}
       >
         {systemPhase !== "desktop" && systemPhase !== "login" && (
-          <Boot
-            systemPhase={systemPhase}
-            setSystemPhase={setSystemPhase}
-          />
+          <Boot systemPhase={systemPhase} setSystemPhase={setSystemPhase} />
         )}
       </div>
     </>

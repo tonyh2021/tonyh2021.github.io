@@ -1,9 +1,38 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Tony's Portfolio",
-  description: "Tony's Portfolio",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Tony's Portfolio",
+    template: "%s | Tony's Portfolio",
+  },
+  description: "Tony Han's portfolio and technical blog.",
+  applicationName: "Tony's Portfolio",
+  authors: [{ name: "Tony Han" }],
+  creator: "Tony Han",
+  publisher: "Tony Han",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Tony's Portfolio",
+    title: "Tony's Portfolio",
+    description: "Tony Han's portfolio and technical blog.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tony's Portfolio",
+    description: "Tony Han's portfolio and technical blog.",
+  },
 };
 
 export default function RootLayout({
@@ -23,7 +52,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="h-screen overflow-hidden bg-black">{children}</body>
+      <body className="min-h-screen overflow-hidden bg-black">{children}</body>
     </html>
   );
 }
