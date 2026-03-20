@@ -3,16 +3,26 @@
 import { useRef, useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { appConfigs } from "@/configs/apps";
+import { appConfigs, type AppId } from "@/configs/apps";
 import { launchpadApps } from "@/configs/launchpad";
 
-type Item = {
+type AppItem = {
+  id: AppId;
+  title: string;
+  img?: string;
+  link?: undefined;
+  type: "app";
+};
+
+type PortfolioItem = {
   id: string;
   title: string;
   img?: string;
   link?: string;
-  type: "app" | "portfolio";
+  type: "portfolio";
 };
+
+type Item = AppItem | PortfolioItem;
 
 const ALL_ITEMS: Item[] = [
   ...appConfigs
@@ -26,7 +36,7 @@ const rand = (min: number, max: number) =>
 const randDate = () => format(new Date(rand(0, Date.now())), "MM/dd/yyyy");
 
 interface Props {
-  openApp: (id: string) => void;
+  openApp: (id: AppId) => void;
   toggleLaunchpad: (v: boolean) => void;
   close: () => void;
   btnRef: React.RefObject<HTMLDivElement>;
@@ -70,7 +80,7 @@ export default function Spotlight({
       close();
       return;
     }
-    openApp(item.id);
+    if (item.type === "app") openApp(item.id);
     close();
   };
 

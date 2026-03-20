@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useStore } from '@/store';
 import { useShallow } from 'zustand/shallow';
-import { appConfigs, ALL_WIN_IDS } from '@/configs/apps';
+import { appConfigs, ALL_WIN_IDS, type AppId } from '@/configs/apps';
 import { useWallpaper } from '@/hooks/useWallpaper';
 import TopBar from './TopBar';
 import Dock from './Dock';
@@ -71,14 +71,18 @@ export default function MacDesktop({ posts, enPosts }: Props) {
     terminal: <Terminal />,
   }), [posts, enPosts]);
 
-  const getWindowMeta = (id: string) => {
+  const getWindowMeta = (id: AppId) => {
     const cfg = appConfigs.find((a) => a.id === id);
+    const width = cfg && "width" in cfg ? cfg.width : undefined;
+    const height = cfg && "height" in cfg ? cfg.height : undefined;
+    const minWidth = cfg && "minWidth" in cfg ? cfg.minWidth : undefined;
+    const minHeight = cfg && "minHeight" in cfg ? cfg.minHeight : undefined;
     return {
       title: cfg?.title ?? id,
-      width: cfg?.width ?? 640,
-      height: cfg?.height ?? 420,
-      minWidth: cfg?.minWidth ?? 320,
-      minHeight: cfg?.minHeight ?? 200,
+      width: width ?? 640,
+      height: height ?? 420,
+      minWidth: minWidth ?? 320,
+      minHeight: minHeight ?? 200,
     };
   };
 
@@ -87,7 +91,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
    * Store the window's current screen position as CSS custom properties so we
    * can restore it later (same trick as playground-macos setWindowPosition).
    */
-  const saveWindowPosition = (id: string) => {
+  const saveWindowPosition = (id: AppId) => {
     const el = document.querySelector(`#window-${id}`) as HTMLElement | null;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -99,7 +103,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
    * Fly the window to its dock icon and mark it minimized — mirrors
    * playground-macos minimizeApp().
    */
-  const minimizeApp = (id: string) => {
+  const minimizeApp = (id: AppId) => {
     const winEl  = document.querySelector(`#window-${id}`) as HTMLElement | null;
     const dockEl = document.querySelector(`#dock-${id}`)  as HTMLElement | null;
     if (!winEl || !dockEl) { minimizeWin(id); return; }
@@ -122,7 +126,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
   /**
    * Open (or restore) a window — mirrors playground-macos openApp().
    */
-  const openApp = (id: string) => {
+  const openApp = (id: AppId) => {
     const win = wins[id];
     if (win?.minimized) {
       const winEl = document.querySelector(`#window-${id}`) as HTMLElement | null;

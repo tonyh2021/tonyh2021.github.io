@@ -13,7 +13,7 @@ export interface AppConfig {
   minHeight?: number;
 }
 
-export const appConfigs: AppConfig[] = [
+export const appConfigs = [
   {
     id: "blog",
     title: "Blogs",
@@ -34,6 +34,7 @@ export const appConfigs: AppConfig[] = [
     icon: "🙋",
     iconBg: "bg-blue-500",
     desktop: true,
+    show: true,
     width: 860,
     height: 680,
     minWidth: 320,
@@ -59,6 +60,7 @@ export const appConfigs: AppConfig[] = [
     icon: "🧭",
     iconBg: "bg-blue-400",
     desktop: true,
+    show: true,
     width: 900,
     height: 620,
     minWidth: 400,
@@ -71,6 +73,7 @@ export const appConfigs: AppConfig[] = [
     icon: "💙",
     iconBg: "bg-blue-600",
     desktop: true,
+    show: true,
     width: 900,
     height: 600,
     minWidth: 400,
@@ -83,6 +86,7 @@ export const appConfigs: AppConfig[] = [
     icon: "💻",
     iconBg: "bg-gray-800",
     desktop: true,
+    show: true,
     width: 680,
     height: 460,
     minWidth: 360,
@@ -95,9 +99,14 @@ export const appConfigs: AppConfig[] = [
     icon: "🐙",
     iconBg: "bg-gray-700",
     desktop: false,
+    show: true,
     link: "https://github.com/tonyh2021",
   },
-];
+  ] as const satisfies readonly AppConfig[];
+
+export type AppId = (typeof appConfigs)[number]["id"];
 
 /** All desktop window IDs */
-export const ALL_WIN_IDS = appConfigs.filter((a) => a.desktop).map((a) => a.id);
+export const ALL_WIN_IDS = appConfigs
+  .filter((a) => a.desktop)
+  .map((a) => a.id) as AppId[];

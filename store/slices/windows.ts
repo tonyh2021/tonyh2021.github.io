@@ -1,4 +1,5 @@
 import type { StateCreator } from 'zustand';
+import type { AppId } from '@/configs/apps';
 
 export interface WinState {
   open: boolean;
@@ -8,15 +9,15 @@ export interface WinState {
 }
 
 export interface WindowsSlice {
-  wins: Record<string, WinState>;
+  wins: Partial<Record<AppId, WinState>>;
   maxZ: number;
-  currentApp: string;
-  openWin: (id: string) => void;
-  closeWin: (id: string) => void;
-  minimizeWin: (id: string) => void;
-  toggleMaxWin: (id: string, target?: boolean) => void;
-  focusWin: (id: string) => void;
-  initWins: (ids: string[]) => void;
+  currentApp: AppId;
+  openWin: (id: AppId) => void;
+  closeWin: (id: AppId) => void;
+  minimizeWin: (id: AppId) => void;
+  toggleMaxWin: (id: AppId, target?: boolean) => void;
+  focusWin: (id: AppId) => void;
+  initWins: (ids: AppId[]) => void;
 }
 
 export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
@@ -29,7 +30,12 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
       return {
         wins: {
           ...state.wins,
-          [id]: { ...(state.wins[id] || {}), open: true, minimized: false, z: newZ },
+          [id]: {
+            ...(state.wins[id] ?? {}),
+            open: true,
+            minimized: false,
+            z: newZ,
+          },
         },
         maxZ: newZ,
         currentApp: id,
@@ -39,14 +45,19 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
     set((state) => ({
       wins: {
         ...state.wins,
-        [id]: { ...state.wins[id], open: false, minimized: false, maximized: false },
+        [id]: {
+          ...(state.wins[id] ?? {}),
+          open: false,
+          minimized: false,
+          maximized: false,
+        },
       },
     })),
   minimizeWin: (id) =>
     set((state) => ({
       wins: {
         ...state.wins,
-        [id]: { ...state.wins[id], minimized: true },
+        [id]: { ...(state.wins[id] ?? {}), minimized: true },
       },
     })),
   toggleMaxWin: (id, target) =>
@@ -55,7 +66,10 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
       return {
         wins: {
           ...state.wins,
-          [id]: { ...state.wins[id], maximized: target !== undefined ? target : !cur },
+          [id]: {
+            ...(state.wins[id] ?? {}),
+            maximized: target !== undefined ? target : !cur,
+          },
         },
       };
     }),
@@ -65,7 +79,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
       return {
         wins: {
           ...state.wins,
-          [id]: { ...state.wins[id], z: newZ },
+          [id]: { ...(state.wins[id] ?? {}), z: newZ },
         },
         maxZ: newZ,
         currentApp: id,
@@ -74,7 +88,10 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
   initWins: (ids) =>
     set(() => ({
       wins: Object.fromEntries(
-        ids.map((id) => [id, { open: false, z: 2, minimized: false, maximized: false }])
+        ids.map((id) => [
+          id,
+          { open: false, z: 2, minimized: false, maximized: false },
+        ])
       ),
     })),
 });

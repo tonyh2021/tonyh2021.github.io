@@ -1,7 +1,7 @@
 "use client";
 
 import { useMotionValue } from "framer-motion";
-import { appConfigs } from "@/configs/apps";
+import { appConfigs, type AppId } from "@/configs/apps";
 import DockItem from "./DockItem";
 import type { WinState } from "@/store/slices/windows";
 
@@ -9,8 +9,8 @@ const DOCK_SIZE = 50;
 const DOCK_MAG = 2;
 
 interface Props {
-  openWin: (id: string) => void;
-  wins: Record<string, WinState>;
+  openWin: (id: AppId) => void;
+  wins: Partial<Record<AppId, WinState>>;
   hide: boolean;
   toggleLaunchpad: (v: boolean) => void;
   showLaunchpad: boolean;
@@ -32,7 +32,9 @@ export default function Dock({
 }: Props) {
   const mouseX = useMotionValue<number | null>(null);
 
-  const handleOpen = (id: string) => {
+  type DockItemId = AppId | "launchpad";
+
+  const handleOpen = (id: DockItemId) => {
     if (id === "launchpad") {
       toggleLaunchpad(!showLaunchpad);
     } else {
@@ -69,21 +71,23 @@ export default function Dock({
           <div className="w-px h-10 bg-white/20 rounded-full" />
         </li>
 
-        {appConfigs.filter((app) => app.show !== false).map((app) => (
-          <DockItem
-            key={app.id}
-            id={app.id}
-            title={app.title}
-            img={app.img}
-            desktop={app.desktop}
-            link={app.link}
-            isOpen={app.desktop ? !!wins[app.id]?.open : false}
-            openApp={() => handleOpen(app.id)}
-            mouseX={mouseX}
-            dockSize={DOCK_SIZE}
-            dockMag={DOCK_MAG}
-          />
-        ))}
+        {appConfigs
+          .filter((app) => app.show !== false)
+          .map((app) => (
+            <DockItem
+              key={app.id}
+              id={app.id}
+              title={app.title}
+              img={app.img}
+              desktop={app.desktop}
+              link={"link" in app ? app.link : undefined}
+              isOpen={app.desktop ? !!wins[app.id]?.open : false}
+              openApp={() => handleOpen(app.id)}
+              mouseX={mouseX}
+              dockSize={DOCK_SIZE}
+              dockMag={DOCK_MAG}
+            />
+          ))}
       </ul>
     </div>
   );

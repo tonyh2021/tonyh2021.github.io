@@ -2,13 +2,14 @@
 
 import { useState, useEffect, memo, type ReactNode } from "react";
 import { Rnd } from "react-rnd";
+import type { AppId } from "@/configs/apps";
 
 const TOP_BAR_H = 32;
 const DOCK_H = 76;
 const MARGIN = 8;
 
 interface Props {
-  id: string;
+  id: AppId;
   title: string;
   width: number;
   height: number;
@@ -17,10 +18,10 @@ interface Props {
   z: number;
   max: boolean;
   min: boolean;
-  close: (id: string) => void;
-  setMax: (id: string, target?: boolean) => void;
-  setMin: (id: string) => void;
-  focus: (id: string) => void;
+  close: (id: AppId) => void;
+  setMax: (id: AppId, target?: boolean) => void;
+  setMin: (id: AppId) => void;
+  focus: (id: AppId) => void;
   children: ReactNode;
 }
 
