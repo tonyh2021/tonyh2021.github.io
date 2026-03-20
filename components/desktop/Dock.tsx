@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useMotionValue } from "framer-motion";
 import { appConfigs, type AppId } from "@/configs/apps";
 import DockItem from "./DockItem";
@@ -35,6 +36,29 @@ export default function Dock({
 }: Props) {
   const isMobile = useMobile();
   const mouseX = useMotionValue<number | null>(null);
+  const [dockVisible, setDockVisible] = useState(true);
+  const touchStartY = useRef(0);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const diff = touchStartY.current - e.touches[0].clientY;
+      if (diff > 8) setDockVisible(false);
+      else if (diff < -8) setDockVisible(true);
+    };
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [isMobile]);
 
   type DockItemId = AppId | "launchpad";
 
@@ -55,8 +79,11 @@ export default function Dock({
 
     return (
       <div
-        className={`fixed inset-x-0 bottom-0 ${hide ? "z-0" : "z-9999"}`}
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        className={`fixed inset-x-0 bottom-0 ${hide ? "z-0" : "z-9999"} transition-transform duration-300`}
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom)",
+          transform: dockVisible ? "translateY(0)" : "translateY(110%)",
+        }}
       >
         <div className="mx-3 mb-2 rounded-3xl backdrop-blur-2xl bg-white/25 dark:bg-black/35 border border-white/30 dark:border-white/10 shadow-2xl">
           <ul className="flex items-center justify-around px-2 py-2">
