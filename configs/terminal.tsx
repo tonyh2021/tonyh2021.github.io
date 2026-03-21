@@ -73,7 +73,7 @@ const terminalData: TerminalEntry[] = [
           {"{"}{" "}
         </div>
         <div className="ml-8">
-          <span className="text-green-300">// keep building cool things</span>
+          <span className="text-green-300">{`// keep building cool things`}</span>
         </div>
         <div>{"}"}</div>
       </div>
