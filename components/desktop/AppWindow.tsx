@@ -36,6 +36,9 @@ interface Props {
 const AppWindow = memo(function AppWindow(props: Props) {
   const isMobile = useMobile();
   const { id, title, z, focus, children } = props;
+  const titleClassName = isMobile
+    ? "max-w-[60%] truncate text-lg font-semibold text-gray-800 dark:text-gray-100"
+    : "max-w-[60%] truncate text-sm font-semibold text-gray-800 dark:text-gray-100";
 
   if (isMobile) {
     return (
@@ -46,9 +49,7 @@ const AppWindow = memo(function AppWindow(props: Props) {
         onClick={() => focus(id)}
       >
         <div className="relative flex h-11 shrink-0 items-center justify-center border-b border-gray-300/50 bg-gray-200/80 px-2 backdrop-blur dark:border-gray-600/50 dark:bg-gray-800/80">
-          <span className="max-w-[60%] truncate text-sm font-semibold text-gray-800 dark:text-gray-100">
-            {title}
-          </span>
+          <span className={titleClassName}>{title}</span>
         </div>
         <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
