@@ -77,9 +77,8 @@ export default function MacDesktop() {
   const [mounted, setMounted] = useState(false);
   const [showLaunchpad, setShowLaunchpad] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
-  const [spotlightBtnRef, setSpotlightBtnRef] = useState<React.RefObject<HTMLDivElement> | null>(
-    null,
-  );
+  const [spotlightBtnRef, setSpotlightBtnRef] =
+    useState<React.RefObject<HTMLDivElement | null> | null>(null);
 
   const anyMaximized = Object.values(wins).some((w) => w?.open && w.maximized);
 

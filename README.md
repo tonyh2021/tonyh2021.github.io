@@ -4,7 +4,7 @@ macOS-style interactive desktop — [tonyh2021.github.io](https://tonyh2021.gith
 
 ## Stack
 
-Next.js 14 (App Router), React 18, Tailwind v4, Framer Motion, Zustand, react-rnd, React Markdown (remark-gfm, rehype-highlight).
+Next.js 15 (App Router), React 19, Tailwind v4, Framer Motion, Zustand, react-rnd, React Markdown (remark-gfm, rehype-highlight).
 
 ## Features
 

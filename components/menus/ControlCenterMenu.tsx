@@ -14,7 +14,7 @@ interface Props {
   setVolume: (v: number) => void;
   setBrightness: (v: number) => void;
   close: () => void;
-  btnRef: React.RefObject<HTMLDivElement>;
+  btnRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function Tile({

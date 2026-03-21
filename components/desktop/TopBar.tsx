@@ -17,7 +17,7 @@ interface Props {
   currentApp: string;
   hide: boolean;
   toggleSpotlight: () => void;
-  setSpotlightBtnRef: (ref: React.RefObject<HTMLDivElement>) => void;
+  setSpotlightBtnRef: (ref: React.RefObject<HTMLDivElement | null>) => void;
 }
 
 const TopItem = React.forwardRef<

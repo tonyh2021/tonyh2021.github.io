@@ -38,7 +38,7 @@ interface Props {
   openApp: (id: AppId) => void;
   toggleLaunchpad: (v: boolean) => void;
   close: () => void;
-  btnRef: React.RefObject<HTMLDivElement>;
+  btnRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function Spotlight({ openApp, toggleLaunchpad, close, btnRef }: Props) {

@@ -12,7 +12,7 @@ interface Props {
   restart: () => void;
   sleep: () => void;
   close: () => void;
-  btnRef: React.RefObject<HTMLDivElement>;
+  btnRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function AppleMenu({ logout, shutdown, restart, sleep, close, btnRef }: Props) {

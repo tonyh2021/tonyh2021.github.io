@@ -6,7 +6,7 @@ import { useStore } from "@/store";
 
 interface Props {
   close: () => void;
-  btnRef: React.RefObject<HTMLDivElement>;
+  btnRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function WifiMenu({ close, btnRef }: Props) {
