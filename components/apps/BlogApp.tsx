@@ -153,7 +153,7 @@ export default function BlogApp() {
               <li
                 key={post.slug}
                 className="flex flex-col border-b border-gray-200 px-4 py-3 active:bg-gray-100 dark:border-gray-700 dark:active:bg-gray-700/50"
-                onClick={() => router.push(`/blog/${post.slug}`)}
+                onClick={() => router.push(`/blog/${post.slug}/`)}
               >
                 <span className="mb-1 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
                   {post.frontMatter.title}

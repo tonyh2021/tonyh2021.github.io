@@ -19,7 +19,7 @@ pnpm install && pnpm dev
 - `pnpm typecheck` — `tsc --noEmit`
 - `pnpm format` / `pnpm format:check` — Prettier (ESLint uses `eslint-config-prettier`)
 
-**`NEXT_PUBLIC_SITE_URL`** — copy `.env.example` → `.env.local`. No trailing slash; drives metadata, sitemap, robots. User site: `https://<user>.github.io`. Project subpath: align `basePath` / `assetPrefix` in `next.config.js` and set URL accordingly.
+**`NEXT_PUBLIC_SITE_URL`** / **`NEXT_PUBLIC_BASE_PATH`** — copy `.env.example` → `.env.local`. Origin URL has no trailing slash. **User site** (`username.github.io` repo): leave `NEXT_PUBLIC_BASE_PATH` empty. **Project site** (repo e.g. `tonyh2021`): set `NEXT_PUBLIC_SITE_URL=https://<user>.github.io/tonyh2021` and GitHub Variable `NEXT_PUBLIC_BASE_PATH=/tonyh2021`.
 
 ## Build
 
@@ -31,7 +31,7 @@ pnpm build
 
 Output: static `./out/` (GitHub Actions deploys it to Pages). Repo **Settings → Pages**: source **GitHub Actions**. Optional repo variable `NEXT_PUBLIC_SITE_URL` if not default.
 
-**GitHub Pages + blog paths:** `trailingSlash: false` in `next.config.js` exports `blog/<slug>.html`, which Pages serves at **`/blog/<slug>`** (no trailing slash). **`/blog/<slug>/`** can 404 (no per-slug folder + `index.html`).
+**GitHub Pages + blog:** use **`trailingSlash: true`** so export is `blog/<slug>/index.html` → live URL **`/blog/<slug>/`**. Using only `blog/<slug>.html` with **`trailingSlash: false`** often still 404s at `/blog/<slug>` because Pages does not rewrite extensionless paths for nested files. Canonicals, sitemap, and in-app links must use the **trailing slash** to match.
 
 ## License
 

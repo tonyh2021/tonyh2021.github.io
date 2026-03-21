@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: false,
+  /**
+   * GitHub Pages maps directories (`blog/<slug>/index.html`) to `/blog/<slug>/`.
+   * `blog/<slug>.html` alone often 404s at `/blog/<slug>` with no extensionless rewrite.
+   */
+  trailingSlash: true,
   reactStrictMode: true,
   images: {
     unoptimized: true,
@@ -12,6 +16,17 @@ const nextConfig = {
     ],
   },
 };
+
+/** Project site: `https://<user>.github.io/<repo>/` — set e.g. `/tonyh2021` in CI vars. */
+const rawBase = (process.env.NEXT_PUBLIC_BASE_PATH || "").trim();
+const basePath =
+  rawBase === ""
+    ? ""
+    : (rawBase.startsWith("/") ? rawBase : `/${rawBase}`).replace(/\/$/, "");
+if (basePath) {
+  nextConfig.basePath = basePath;
+  nextConfig.assetPrefix = basePath;
+}
 
 /**
  * Static export is required for GitHub Pages, but with `output: "export"` Next will refuse
