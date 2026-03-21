@@ -53,11 +53,7 @@ export default function ArticleContent({
         <time className={timeClassName}>{formatDate(post.frontMatter.date)}</time>
         {tags.map((tag) =>
           tagMode === "link" ? (
-            <a
-              key={tag}
-              href={`/tags/#${encodeURIComponent(tag)}`}
-              className={tagClassName}
-            >
+            <a key={tag} href={`/tags/#${encodeURIComponent(tag)}`} className={tagClassName}>
               {tagPrefixHash ? `#${tag}` : tag}
             </a>
           ) : (
@@ -76,4 +72,3 @@ export default function ArticleContent({
     </article>
   );
 }
-

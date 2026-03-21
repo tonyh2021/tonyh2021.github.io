@@ -38,18 +38,12 @@ export default function MacOSApp({ posts, enPosts }: Props) {
 
   return (
     <>
-      {systemPhase === "desktop" ? (
-        <MacDesktop posts={posts} enPosts={enPosts} />
-      ) : (
-        <Login />
-      )}
+      {systemPhase === "desktop" ? <MacDesktop posts={posts} enPosts={enPosts} /> : <Login />}
 
       {/* Boot overlay */}
       <div
         className={`fixed inset-0 z-99999 transition-opacity duration-500 ${
-          systemPhase !== "desktop" && systemPhase !== "login"
-            ? ""
-            : "pointer-events-none"
+          systemPhase !== "desktop" && systemPhase !== "login" ? "" : "pointer-events-none"
         }`}
         style={{
           opacity: systemPhase !== "desktop" && systemPhase !== "login" ? 1 : 0,

@@ -54,8 +54,9 @@ export default function MacDesktop({ posts, enPosts }: Props) {
   const [mounted, setMounted] = useState(false);
   const [showLaunchpad, setShowLaunchpad] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
-  const [spotlightBtnRef, setSpotlightBtnRef] =
-    useState<React.RefObject<HTMLDivElement> | null>(null);
+  const [spotlightBtnRef, setSpotlightBtnRef] = useState<React.RefObject<HTMLDivElement> | null>(
+    null,
+  );
 
   const anyMaximized = Object.values(wins).some((w) => w?.open && w.maximized);
 
@@ -104,10 +105,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
     if (!el) return;
     const rect = el.getBoundingClientRect();
     el.style.setProperty("--restore-x", rect.left.toFixed(1) + "px");
-    el.style.setProperty(
-      "--restore-y",
-      (rect.top - TOP_BAR_H).toFixed(1) + "px",
-    );
+    el.style.setProperty("--restore-y", (rect.top - TOP_BAR_H).toFixed(1) + "px");
   };
 
   /**
@@ -143,9 +141,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
   const openApp = (id: AppId) => {
     const win = wins[id];
     if (win?.minimized) {
-      const winEl = document.querySelector(
-        `#window-${id}`,
-      ) as HTMLElement | null;
+      const winEl = document.querySelector(`#window-${id}`) as HTMLElement | null;
       if (winEl) {
         const rx = winEl.style.getPropertyValue("--restore-x");
         const ry = winEl.style.getPropertyValue("--restore-y");
@@ -167,11 +163,11 @@ export default function MacDesktop({ posts, enPosts }: Props) {
   };
 
   if (!mounted) {
-    return <div className="w-screen h-screen" style={bgStyle} />;
+    return <div className="h-screen w-screen" style={bgStyle} />;
   }
 
   return (
-    <div className="w-screen h-screen overflow-hidden relative" style={bgStyle}>
+    <div className="relative h-screen w-screen overflow-hidden" style={bgStyle}>
       {video && (
         <video
           key={video}
@@ -181,7 +177,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
           loop
           playsInline
           onCanPlayThrough={() => setVideoReady(true)}
-          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
       <TopBar
@@ -193,7 +189,7 @@ export default function MacDesktop({ posts, enPosts }: Props) {
 
       {/* Window container — same bounds as playground-macos .window-bound */}
       <div
-        className="absolute left-0 right-0 overflow-hidden"
+        className="absolute right-0 left-0 overflow-hidden"
         style={{ top: TOP_BAR_H, bottom: 76 }}
       >
         {ALL_WIN_IDS.map((id) => {

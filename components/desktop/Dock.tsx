@@ -5,9 +5,7 @@ import { appConfigs, type AppId } from "@/configs/apps";
 import type { WinState } from "@/store/slices/windows";
 import { useMobile } from "@/hooks/useMobile";
 import { useDockVisibility } from "@/hooks/useDockVisibility";
-import MagnifiedDockBar, {
-  type MagnifiedDockSlot,
-} from "./MagnifiedDockBar";
+import MagnifiedDockBar, { type MagnifiedDockSlot } from "./MagnifiedDockBar";
 
 const MOBILE_APPS = ["blog", "about", "safari", "github"] as const;
 
@@ -26,13 +24,7 @@ const LAUNCHPAD = {
   desktop: false,
 };
 
-export default function Dock({
-  openWin,
-  wins,
-  hide,
-  toggleLaunchpad,
-  showLaunchpad,
-}: Props) {
+export default function Dock({ openWin, wins, hide, toggleLaunchpad, showLaunchpad }: Props) {
   const isMobile = useMobile();
   const dockVisible = useDockVisibility({ isMobile, threshold: 15 });
 
@@ -77,9 +69,7 @@ export default function Dock({
 
   // ── Mobile: iPhone-style bottom tab bar ────────────────────────────────────
   if (isMobile) {
-    const mobileApps = appConfigs.filter((a) =>
-      (MOBILE_APPS as readonly string[]).includes(a.id),
-    );
+    const mobileApps = appConfigs.filter((a) => (MOBILE_APPS as readonly string[]).includes(a.id));
 
     return (
       <div
@@ -89,27 +79,25 @@ export default function Dock({
           transform: dockVisible ? "translateY(0)" : "translateY(110%)",
         }}
       >
-        <div className="mx-3 mb-2 rounded-3xl backdrop-blur-2xl bg-white/25 dark:bg-black/35 border border-white/30 dark:border-white/10 shadow-2xl">
+        <div className="mx-3 mb-2 rounded-3xl border border-white/30 bg-white/25 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-black/35">
           <ul className="flex items-center justify-around px-2 py-2">
             {mobileApps.map((app) => {
-              const isOpen = app.desktop
-                ? !!wins[app.id as AppId]?.open
-                : false;
+              const isOpen = app.desktop ? !!wins[app.id as AppId]?.open : false;
               const inner = (
                 <div className="flex flex-col items-center gap-1">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <div
-                    className={`w-14 h-14 rounded-2xl overflow-hidden shadow-md transition-transform duration-150 active:scale-90`}
+                    className={`h-14 w-14 overflow-hidden rounded-2xl shadow-md transition-transform duration-150 active:scale-90`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element -- dock icons are local assets */}
                     <img
                       src={app.img}
                       alt={app.title}
-                      className="w-full h-full object-cover border-0"
+                      className="h-full w-full border-0 object-cover"
                       draggable={false}
                     />
                   </div>
-                  <span className="text-[10px] text-white drop-shadow font-medium tracking-tight">
+                  <span className="text-[10px] font-medium tracking-tight text-white drop-shadow">
                     {app.title}
                   </span>
                 </div>
@@ -122,9 +110,7 @@ export default function Dock({
                       {inner}
                     </a>
                   ) : (
-                    <button onClick={() => handleOpen(app.id as AppId)}>
-                      {inner}
-                    </button>
+                    <button onClick={() => handleOpen(app.id as AppId)}>{inner}</button>
                   )}
                 </li>
               );
@@ -138,7 +124,7 @@ export default function Dock({
   // ── Desktop: macOS-style magnifying dock (cosine lens + lerp) ──────────────
   return (
     <div
-      className={`dock fixed inset-x-0 mx-auto bottom-1 flex justify-center ${hide ? "z-0" : "z-9999"} overflow-x-visible px-2`}
+      className={`dock fixed inset-x-0 bottom-1 mx-auto flex justify-center ${hide ? "z-0" : "z-9999"} overflow-x-visible px-2`}
     >
       <MagnifiedDockBar className="max-w-[100vw]" slots={desktopSlots} />
     </div>

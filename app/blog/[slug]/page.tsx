@@ -63,11 +63,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const zhPost = getPostSafe(slug, "zh");
   const enPost = getPostSafe(slug, "en");
@@ -100,7 +96,7 @@ export default async function PostPage({
   };
 
   return (
-    <div className="min-h-screen h-dvh overflow-y-auto bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+    <div className="h-dvh min-h-screen overflow-y-auto bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}

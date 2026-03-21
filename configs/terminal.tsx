@@ -18,9 +18,8 @@ const terminalData: TerminalEntry[] = [
         type: "file",
         content: (
           <div className="py-1">
-            Hi, I&apos;m Tony Han — a software engineer who loves exploring new
-            tech and building things. I write about iOS, Swift, web dev, and
-            whatever I find interesting.
+            Hi, I&apos;m Tony Han — a software engineer who loves exploring new tech and building
+            things. I write about iOS, Swift, web dev, and whatever I find interesting.
           </div>
         ),
       },
@@ -35,7 +34,7 @@ const terminalData: TerminalEntry[] = [
         title: "contact.txt",
         type: "file",
         content: (
-          <ul className="list-disc ml-6">
+          <ul className="ml-6 list-disc">
             <li>
               GitHub:{" "}
               <a
@@ -70,8 +69,8 @@ const terminalData: TerminalEntry[] = [
     content: (
       <div className="py-1 font-mono">
         <div>
-          <span className="text-pink-400">while</span>{" "}
-          <span className="text-blue-300">true</span> {"{"}{" "}
+          <span className="text-pink-400">while</span> <span className="text-blue-300">true</span>{" "}
+          {"{"}{" "}
         </div>
         <div className="ml-8">
           <span className="text-green-300">// keep building cool things</span>

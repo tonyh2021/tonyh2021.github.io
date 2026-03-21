@@ -29,7 +29,7 @@ function Tile({
   return (
     <div
       onClick={onClick}
-      className={`cursor-default rounded-xl border border-black/5 bg-white/22 backdrop-blur-md shadow-none dark:border-white/8 dark:bg-white/[0.07] dark:backdrop-blur-md ${className}`}
+      className={`cursor-default rounded-xl border border-black/5 bg-white/22 shadow-none backdrop-blur-md dark:border-white/8 dark:bg-white/[0.07] dark:backdrop-blur-md ${className}`}
     >
       {children}
     </div>
@@ -48,9 +48,7 @@ function IconBubble({
   return (
     <div
       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-        active
-          ? color
-          : "bg-gray-200/90 text-gray-700 dark:bg-white/20 dark:text-white"
+        active ? color : "bg-gray-200/90 text-gray-700 dark:bg-white/20 dark:text-white"
       }`}
     >
       {children}
@@ -110,7 +108,7 @@ export default function ControlCenterMenu({
   const toggleFullScreen = useStore((s) => s.toggleFullScreen);
 
   return (
-    <div ref={ref} className="fixed top-[33px] right-0 sm:right-1.5 z-10000">
+    <div ref={ref} className="fixed top-[33px] right-0 z-10000 sm:right-1.5">
       <div className="menu-box-surface flex w-72 flex-col gap-1.5 p-2">
         {/* Network */}
         <div className="grid grid-cols-2 gap-1.5">
@@ -119,21 +117,18 @@ export default function ControlCenterMenu({
               <WifiIcon />
             </IconBubble>
             <div>
-              <div className="text-sm font-semibold leading-4">Wi-Fi</div>
+              <div className="text-sm leading-4 font-semibold">Wi-Fi</div>
               <div className="text-[11px] text-gray-600 dark:text-white/50">
                 {wifi ? "Home" : "Off"}
               </div>
             </div>
           </Tile>
-          <Tile
-            onClick={toggleBluetooth}
-            className="flex items-center gap-2.5 p-3"
-          >
+          <Tile onClick={toggleBluetooth} className="flex items-center gap-2.5 p-3">
             <IconBubble active={bluetooth}>
               <BluetoothIcon />
             </IconBubble>
             <div>
-              <div className="text-sm font-semibold leading-4">Bluetooth</div>
+              <div className="text-sm leading-4 font-semibold">Bluetooth</div>
               <div className="text-[11px] text-gray-600 dark:text-white/50">
                 {bluetooth ? "On" : "Off"}
               </div>
@@ -146,16 +141,12 @@ export default function ControlCenterMenu({
           <Tile onClick={toggleDark} className="flex items-center gap-2.5 p-3">
             <IconBubble
               active={dark}
-              color={
-                dark ? "bg-gray-600 text-white" : "bg-amber-400 text-gray-900"
-              }
+              color={dark ? "bg-gray-600 text-white" : "bg-amber-400 text-gray-900"}
             >
               {dark ? <MoonIcon size={18} /> : <SunIcon size={18} />}
             </IconBubble>
             <div>
-              <div className="text-sm font-semibold leading-4">
-                {dark ? "Dark" : "Light"}
-              </div>
+              <div className="text-sm leading-4 font-semibold">{dark ? "Dark" : "Light"}</div>
               <div className="text-[11px] text-gray-600 dark:text-white/50">
                 {dark ? "Dark Mode" : "Light Mode"}
               </div>
@@ -163,13 +154,13 @@ export default function ControlCenterMenu({
           </Tile>
           <Tile
             onClick={() => toggleFullScreen(!isFullScreen())}
-            className="flex items-center gap-2.5 p-3 cursor-pointer"
+            className="flex cursor-pointer items-center gap-2.5 p-3"
           >
             <IconBubble active={fullscreen} color="bg-gray-500 text-white">
               {fullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
             </IconBubble>
             <div>
-              <div className="text-sm font-semibold leading-4">
+              <div className="text-sm leading-4 font-semibold">
                 {fullscreen ? "Exit Full" : "Fullscreen"}
               </div>
               <div className="text-[11px] text-gray-600 dark:text-white/50">
@@ -181,7 +172,7 @@ export default function ControlCenterMenu({
 
         {/* Brightness */}
         <Tile>
-          <div className="px-3 pb-0.5 pt-2.5 text-xs font-semibold text-gray-800 dark:text-white/80">
+          <div className="px-3 pt-2.5 pb-0.5 text-xs font-semibold text-gray-800 dark:text-white/80">
             Display
           </div>
           <RangeSlider
@@ -193,14 +184,10 @@ export default function ControlCenterMenu({
 
         {/* Volume */}
         <Tile>
-          <div className="px-3 pb-0.5 pt-2.5 text-xs font-semibold text-gray-800 dark:text-white/80">
+          <div className="px-3 pt-2.5 pb-0.5 text-xs font-semibold text-gray-800 dark:text-white/80">
             Sound
           </div>
-          <RangeSlider
-            icon={<VolumeIcon size={12} />}
-            value={volume}
-            onChange={setVolume}
-          />
+          <RangeSlider icon={<VolumeIcon size={12} />} value={volume} onChange={setVolume} />
         </Tile>
 
         {/* Now Playing */}
@@ -209,10 +196,10 @@ export default function ControlCenterMenu({
           <img
             src={music.cover}
             alt="cover"
-            className="w-10 h-10 rounded-xl object-cover shrink-0"
+            className="h-10 w-10 shrink-0 rounded-xl object-cover"
           />
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold truncate">{music.title}</div>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold">{music.title}</div>
             <div className="truncate text-[11px] text-gray-600 dark:text-white/50">
               {music.artist}
             </div>

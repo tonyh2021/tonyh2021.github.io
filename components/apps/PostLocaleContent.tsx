@@ -11,7 +11,7 @@ interface Props {
 
 export default function PostLocaleContent({ zhPost, enPost }: Props) {
   const locale = usePostLocale("en");
-  const post = locale === "zh" ? zhPost ?? enPost : enPost ?? zhPost;
+  const post = locale === "zh" ? (zhPost ?? enPost) : (enPost ?? zhPost);
 
   if (!post) return null;
 
@@ -29,4 +29,3 @@ export default function PostLocaleContent({ zhPost, enPost }: Props) {
     />
   );
 }
-

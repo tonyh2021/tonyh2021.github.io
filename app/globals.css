@@ -2,8 +2,12 @@
 @import "highlight.js/styles/github-dark.css";
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Dark mode: apply when .dark class is on any ancestor */
@@ -44,7 +48,7 @@ html {
   opacity: 0;
   font-size: 7px;
   line-height: 1;
-  color: rgba(0,0,0,0.7);
+  color: rgba(0, 0, 0, 0.7);
 }
 .traffic-lights:hover .window-btn .icon {
   opacity: 1;
@@ -171,7 +175,9 @@ html {
 .dock-tooltip {
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.15s, transform 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
 }
 
 .hljs {
@@ -257,7 +263,7 @@ html {
   transition: background 0.25s;
 }
 .slider-toggle::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 1rem;
   height: 1rem;
@@ -266,7 +272,7 @@ html {
   transform: translateY(-50%);
   background: white;
   border-radius: 9999px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   transition: transform 0.25s;
 }
 .switch-toggle input:checked + .slider-toggle {
@@ -313,7 +319,7 @@ html {
 }
 
 /* ── Range slider (Control Center) ───────────────────────────────── */
-input[type='range'] {
+input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   height: 4px;
@@ -322,24 +328,24 @@ input[type='range'] {
   outline: none;
   cursor: pointer;
 }
-.dark input[type='range'] {
+.dark input[type="range"] {
   background: rgba(255, 255, 255, 0.2);
 }
-input[type='range']::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
-input[type='range']::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   border: none;
   cursor: pointer;
 }

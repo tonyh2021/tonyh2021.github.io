@@ -15,14 +15,7 @@ interface Props {
   btnRef: React.RefObject<HTMLDivElement>;
 }
 
-export default function AppleMenu({
-  logout,
-  shutdown,
-  restart,
-  sleep,
-  close,
-  btnRef,
-}: Props) {
+export default function AppleMenu({ logout, shutdown, restart, sleep, close, btnRef }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   useClickOutside(ref, close, [btnRef]);
   const openWin = useStore((s) => s.openWin);

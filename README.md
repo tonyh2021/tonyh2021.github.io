@@ -31,6 +31,10 @@ pnpm install
 pnpm dev
 ```
 
+Type-check only (no emit): `pnpm typecheck` (`tsc --noEmit`).
+
+Format with [Prettier](https://prettier.io/): `pnpm format` (write) / `pnpm format:check` (CI). ESLint uses `eslint-config-prettier` so style rules don’t fight Prettier.
+
 **Environment (GitHub Pages):** Copy `.env.example` to `.env.local`. Set `NEXT_PUBLIC_SITE_URL` to the **exact URL visitors use**, with no trailing slash — it powers `metadataBase`, canonical/OG tags, `sitemap.xml`, and `robots.txt`. For a **user/org site** (`<user>.github.io` from a `<user>.github.io` repo), use `https://<user>.github.io`. For a **project site** served at `https://<user>.github.io/<repo>/`, set `next.config.js` `basePath` / `assetPrefix` per Next docs and use a matching `NEXT_PUBLIC_SITE_URL` (often `https://<user>.github.io/<repo>`). CI already defaults this repo to `https://tonyh2021.github.io`; override with a repo **Variable** `NEXT_PUBLIC_SITE_URL` if needed.
 
 ## Build

@@ -1,8 +1,6 @@
 /** Pure utilities — safe to import in both server and client components */
 
-export function cn(
-  ...classes: Array<string | false | null | undefined>
-): string {
+export function cn(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
 }
 

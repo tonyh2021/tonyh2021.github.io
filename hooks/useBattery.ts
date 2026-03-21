@@ -20,13 +20,16 @@ const defaults: BatteryState = {
   level: 1,
 };
 
-interface TimeBattery { level: number; charging: boolean; }
+interface TimeBattery {
+  level: number;
+  charging: boolean;
+}
 
 function getTimeBattery(): TimeBattery {
   const now = new Date();
   const minutes = now.getHours() * 60 + now.getMinutes();
-  const chargeEnd = 8 * 60;   // 8:00am — fully charged
-  const dayEnd    = 24 * 60;  // midnight — fully drained
+  const chargeEnd = 8 * 60; // 8:00am — fully charged
+  const dayEnd = 24 * 60; // midnight — fully drained
 
   if (minutes <= chargeEnd) {
     // 0:00 → 8:00: charging 0% → 100%

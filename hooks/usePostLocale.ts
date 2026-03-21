@@ -14,4 +14,3 @@ export function usePostLocale(defaultLocale: PostLocale = "en"): PostLocale {
 
   return locale;
 }
-

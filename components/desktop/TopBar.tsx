@@ -31,14 +31,7 @@ const TopItem = React.forwardRef<
     children: React.ReactNode;
   }
 >(function TopItem(
-  {
-    forceHover = false,
-    hideOnMobile = false,
-    className = "",
-    onClick,
-    onMouseEnter,
-    children,
-  },
+  { forceHover = false, hideOnMobile = false, className = "", onClick, onMouseEnter, children },
   ref,
 ) {
   const base = hideOnMobile ? "hidden sm:inline-flex" : "inline-flex";
@@ -46,7 +39,7 @@ const TopItem = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={`${base} ${hover} items-center gap-1 h-6 px-2 rounded cursor-default transition-colors ${className}`}
+      className={`${base} ${hover} h-6 cursor-default items-center gap-1 rounded px-2 transition-colors ${className}`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
     >
@@ -55,12 +48,7 @@ const TopItem = React.forwardRef<
   );
 });
 
-export default function TopBar({
-  currentApp,
-  hide,
-  toggleSpotlight,
-  setSpotlightBtnRef,
-}: Props) {
+export default function TopBar({ currentApp, hide, toggleSpotlight, setSpotlightBtnRef }: Props) {
   const appleBtnRef = useRef<HTMLDivElement>(null);
   const wifiBtnRef = useRef<HTMLDivElement>(null);
   const ccBtnRef = useRef<HTMLDivElement>(null);
@@ -71,18 +59,17 @@ export default function TopBar({
   const [showWifi, setShowWifi] = useState(false);
   const [showCC, setShowCC] = useState(false);
 
-  const { wifi, volume, brightness, setSystemPhase, shutdown, sleep, restart } =
-    useStore(
-      useShallow((s) => ({
-        wifi: s.wifi,
-        volume: s.volume,
-        brightness: s.brightness,
-        setSystemPhase: s.setSystemPhase,
-        shutdown: s.shutdown,
-        sleep: s.sleep,
-        restart: s.restart,
-      })),
-    );
+  const { wifi, volume, brightness, setSystemPhase, shutdown, sleep, restart } = useStore(
+    useShallow((s) => ({
+      wifi: s.wifi,
+      volume: s.volume,
+      brightness: s.brightness,
+      setSystemPhase: s.setSystemPhase,
+      shutdown: s.shutdown,
+      sleep: s.sleep,
+      restart: s.restart,
+    })),
+  );
   const toggleFullScreen = useStore((s) => s.toggleFullScreen);
   const setVolume = useStore((s) => s.setVolume);
   const setBrightness = useStore((s) => s.setBrightness);
@@ -134,7 +121,7 @@ export default function TopBar({
 
   return (
     <div
-      className={`w-full h-8 px-2 fixed top-0 hidden sm:flex items-center justify-between ${hide ? "z-0" : "z-9999"} text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition-all select-none`}
+      className={`fixed top-0 hidden h-8 w-full items-center justify-between px-2 sm:flex ${hide ? "z-0" : "z-9999"} bg-gray-700/10 text-sm text-white shadow backdrop-blur-2xl transition-all select-none`}
     >
       {/* Left side */}
       <div className="flex items-center gap-0.5">
@@ -145,18 +132,13 @@ export default function TopBar({
           ref={appleBtnRef}
           className="px-2"
         >
-          <svg
-            viewBox="0 0 814 1000"
-            width="13"
-            height="13"
-            fill="currentColor"
-          >
+          <svg viewBox="0 0 814 1000" width="13" height="13" fill="currentColor">
             <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.5 0 663 0 541.8c0-207.5 135.4-317.5 269-317.5 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49.1 185.5-49.1 29.4 0 108.2 2.6 168.6 81.3zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z" />
           </svg>
         </TopItem>
         {/* Current app */}
         <TopItem
-          className="font-semibold px-2"
+          className="px-2 font-semibold"
           onMouseEnter={() => showApple && setShowApple(false)}
         >
           {currentApp}
@@ -203,11 +185,7 @@ export default function TopBar({
         </TopItem>
 
         {/* Control center */}
-        <TopItem
-          forceHover={showCC}
-          onClick={() => setShowCC((v) => !v)}
-          ref={ccBtnRef}
-        >
+        <TopItem forceHover={showCC} onClick={() => setShowCC((v) => !v)} ref={ccBtnRef}>
           {/* CC icon: two stacked toggle sliders */}
           <svg viewBox="0 0 29 29" width="16" height="16" fill="currentColor">
             <path d="M7.5,13h14a5.5,5.5,0,0,0,0-11H7.5a5.5,5.5,0,0,0,0,11Zm0-9h14a3.5,3.5,0,0,1,0,7H7.5a3.5,3.5,0,0,1,0-7Zm0,6A2.5,2.5,0,1,0,5,7.5,2.5,2.5,0,0,0,7.5,10Zm14,6H7.5a5.5,5.5,0,0,0,0,11h14a5.5,5.5,0,0,0,0-11Zm1.43,8a2.5,2.5,0,1,1,2.5-2.5A2.5,2.5,0,0,1,22.93,24Z" />
@@ -234,9 +212,7 @@ export default function TopBar({
           btnRef={appleBtnRef}
         />
       )}
-      {showWifi && (
-        <WifiMenu close={() => setShowWifi(false)} btnRef={wifiBtnRef} />
-      )}
+      {showWifi && <WifiMenu close={() => setShowWifi(false)} btnRef={wifiBtnRef} />}
       {showCC && (
         <ControlCenterMenu
           playing={audioState.playing}

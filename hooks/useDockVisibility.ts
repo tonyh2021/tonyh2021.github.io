@@ -44,8 +44,7 @@ export function useDockVisibility({
     const onScroll: EventListener = () => {
       if (!ticking.current) {
         requestAnimationFrame(() => {
-          const currentY =
-            target instanceof Window ? window.scrollY : target.scrollTop;
+          const currentY = target instanceof Window ? window.scrollY : target.scrollTop;
           const diff = currentY - lastScrollY.current;
 
           if (diff > threshold) setDockVisible(false);
@@ -71,4 +70,3 @@ export function useDockVisibility({
 
   return dockVisible;
 }
-

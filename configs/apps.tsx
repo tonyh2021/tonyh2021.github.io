@@ -107,6 +107,4 @@ export const appConfigs = [
 export type AppId = (typeof appConfigs)[number]["id"];
 
 /** All desktop window IDs */
-export const ALL_WIN_IDS = appConfigs
-  .filter((a) => a.desktop)
-  .map((a) => a.id) as AppId[];
+export const ALL_WIN_IDS = appConfigs.filter((a) => a.desktop).map((a) => a.id) as AppId[];

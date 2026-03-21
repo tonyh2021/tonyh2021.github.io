@@ -20,7 +20,7 @@ export default function Login() {
 
   return (
     <div
-      className="relative w-screen h-screen flex flex-col items-center justify-center text-center select-none cursor-default"
+      className="relative flex h-screen w-screen cursor-default flex-col items-center justify-center text-center select-none"
       style={{
         backgroundImage: image ? `url(${image})` : undefined,
         backgroundSize: "cover",
@@ -37,15 +37,15 @@ export default function Login() {
           loop
           playsInline
           onCanPlayThrough={() => setVideoReady(true)}
-          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
-      <div className="relative z-10 -top-10">
+      <div className="relative -top-10 z-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={user.avatar}
           alt={user.name}
-          className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg"
+          className="mx-auto h-24 w-24 rounded-full object-cover shadow-lg"
         />
         <p className="mt-2 text-xl font-semibold text-white">{user.name}</p>
       </div>
@@ -80,10 +80,10 @@ export default function Login() {
         ].map(({ label, icon, action }) => (
           <div
             key={label}
-            className="flex flex-col items-center gap-1 text-white cursor-pointer w-20"
+            className="flex w-20 cursor-pointer flex-col items-center gap-1 text-white"
             onClick={action}
           >
-            <div className="w-10 h-10 rounded-full bg-gray-700/70 backdrop-blur flex items-center justify-center text-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-700/70 text-lg backdrop-blur">
               {icon}
             </div>
             <span className="text-xs">{label}</span>

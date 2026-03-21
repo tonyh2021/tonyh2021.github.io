@@ -11,7 +11,12 @@ interface FsDoc extends Document {
 
 export const isFullScreen = (): boolean => {
   const d = document as FsDoc;
-  return !!(d.fullscreenElement || d.webkitIsFullScreen || d.mozFullScreen || d.msFullscreenElement);
+  return !!(
+    d.fullscreenElement ||
+    d.webkitIsFullScreen ||
+    d.mozFullScreen ||
+    d.msFullscreenElement
+  );
 };
 
 export const enterFullScreen = (): void => {

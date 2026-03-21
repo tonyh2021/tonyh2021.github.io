@@ -88,10 +88,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
   initWins: (ids) =>
     set(() => ({
       wins: Object.fromEntries(
-        ids.map((id) => [
-          id,
-          { open: false, z: 2, minimized: false, maximized: false },
-        ]),
+        ids.map((id) => [id, { open: false, z: 2, minimized: false, maximized: false }]),
       ),
     })),
 });

@@ -5,16 +5,8 @@ import { useInterval } from "@/hooks/useInterval";
 import terminalData, { type TerminalEntry } from "@/configs/terminal";
 
 /* ── rm -rf easter egg ─────────────────────────────────────── */
-const CHARS =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-const EMOJIS = [
-  "\\(o_o)/",
-  "(˚Δ˚)b",
-  "(^-^*)",
-  "(╯‵□′)╯",
-  "\\(°ˊДˋ°)/",
-  "╰(‵□′)╯",
-];
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
+const EMOJIS = ["\\(o_o)/", "(˚Δ˚)b", "(^-^*)", "(╯‵□′)╯", "\\(°ˊДˋ°)/", "╰(‵□′)╯"];
 
 function MatrixRain({ onClose }: { onClose: () => void }) {
   const FONT = 12;
@@ -41,21 +33,15 @@ function MatrixRain({ onClose }: { onClose: () => void }) {
     ctx.fillStyle = "#2e9244";
     ctx.font = `${FONT}px monospace`;
     drops.forEach((y, x) =>
-      ctx.fillText(
-        CHARS[Math.floor(Math.random() * CHARS.length)],
-        x * FONT,
-        y * FONT,
-      ),
+      ctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], x * FONT, y * FONT),
     );
-    setDrops((d) =>
-      d.map((y) => (y * FONT > cv.height && Math.random() > 0.975 ? 1 : y + 1)),
-    );
+    setDrops((d) => d.map((y) => (y * FONT > cv.height && Math.random() > 0.975 ? 1 : y + 1)));
   }, 33);
 
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 bg-black text-white cursor-pointer"
+      className="absolute inset-0 cursor-pointer bg-black text-white"
       onClick={onClose}
     >
       <canvas ref={canvasRef} className="absolute inset-0" />
@@ -100,9 +86,7 @@ export default function Terminal() {
   const [rows, setRows] = useState<Row[]>([]);
   const [rmrf, setRmrf] = useState(false);
   const lastLogin = useRef(fmtLastLogin()).current;
-  const zshTheme = useRef(
-    ZSH_THEMES[Math.floor(Math.random() * ZSH_THEMES.length)],
-  ).current;
+  const zshTheme = useRef(ZSH_THEMES[Math.floor(Math.random() * ZSH_THEMES.length)]).current;
   const inputCounterRef = useRef(0);
   const historyRef = useRef<string[]>([]);
   const histIdxRef = useRef(0);
@@ -118,22 +102,21 @@ export default function Terminal() {
     return nodes;
   };
 
-  const addRow = (row: Row) =>
-    setRows((r) => (r.find((x) => x.key === row.key) ? r : [...r, row]));
+  const addRow = (row: Row) => setRows((r) => (r.find((x) => x.key === row.key) ? r : [...r, row]));
 
   const buildPrompt = (id: number) => (
-    <div key={`inp-${id}`} className="flex items-center gap-1 mt-1">
-      <span className="text-green-400 shrink-0">tony</span>
-      <span className="text-gray-500 shrink-0">@</span>
-      <span className="text-cyan-400 shrink-0">macbook</span>
-      <span className="text-gray-500 shrink-0 mx-0.5">:</span>
-      <span className="text-blue-400 shrink-0">
+    <div key={`inp-${id}`} className="mt-1 flex items-center gap-1">
+      <span className="shrink-0 text-green-400">tony</span>
+      <span className="shrink-0 text-gray-500">@</span>
+      <span className="shrink-0 text-cyan-400">macbook</span>
+      <span className="mx-0.5 shrink-0 text-gray-500">:</span>
+      <span className="shrink-0 text-blue-400">
         ~{dirPathRef.current.length ? "/" + dirPathRef.current.join("/") : ""}
       </span>
-      <span className="text-yellow-300 shrink-0 ml-1">%</span>
+      <span className="ml-1 shrink-0 text-yellow-300">%</span>
       <input
         id={`ti-${id}`}
-        className="flex-1 min-w-0 text-white bg-transparent outline-none caret-green-400"
+        className="min-w-0 flex-1 bg-transparent text-white caret-green-400 outline-none"
         onKeyDown={handleKey}
       />
     </div>
@@ -161,9 +144,7 @@ export default function Terminal() {
       dirPathRef.current = dirPathRef.current.slice(0, -1);
       return;
     }
-    const target = getChildren().find(
-      (n) => n.title === arg && n.type === "folder",
-    );
+    const target = getChildren().find((n) => n.title === arg && n.type === "folder");
     if (!target) addResult(id, <span>cd: no such directory: {arg}</span>);
     else dirPathRef.current = [...dirPathRef.current, arg];
   };
@@ -172,12 +153,9 @@ export default function Terminal() {
     const id = inputCounterRef.current;
     addResult(
       id,
-      <div className="grid grid-cols-4 w-full">
+      <div className="grid w-full grid-cols-4">
         {getChildren().map((n) => (
-          <span
-            key={n.id}
-            className={n.type === "file" ? "text-white" : "text-purple-300"}
-          >
+          <span key={n.id} className={n.type === "file" ? "text-white" : "text-purple-300"}>
             {n.title}
           </span>
         ))}
@@ -187,11 +165,8 @@ export default function Terminal() {
 
   const cat = (arg?: string) => {
     const id = inputCounterRef.current;
-    const file = getChildren().find(
-      (n) => n.title === arg && n.type === "file",
-    );
-    if (!file)
-      addResult(id, <span>cat: {arg}: No such file or directory</span>);
+    const file = getChildren().find((n) => n.title === arg && n.type === "file");
+    if (!file) addResult(id, <span>cat: {arg}: No such file or directory</span>);
     else addResult(id, <span>{file.content}</span>);
   };
 
@@ -203,7 +178,7 @@ export default function Terminal() {
   const help = () => {
     addResult(
       inputCounterRef.current,
-      <ul className="list-disc ml-6 pb-1.5 space-y-0.5">
+      <ul className="ml-6 list-disc space-y-0.5 pb-1.5">
         {[
           ["cat <file>", "print file contents"],
           ["cd <dir>", 'change directory; "cd .." parent, "cd" root'],
@@ -232,18 +207,14 @@ export default function Terminal() {
     }
     if (cmd === "cd" || cmd === "cat") {
       const type = cmd === "cd" ? "folder" : "file";
-      const match = getChildren().find(
-        (n) => n.type === type && n.title.startsWith(arg),
-      );
+      const match = getChildren().find((n) => n.type === type && n.title.startsWith(arg));
       return match ? `${cmd} ${match.title}` : text;
     }
     return text;
   };
 
   const focusLast = () => {
-    const el = document.getElementById(
-      `ti-${inputCounterRef.current}`,
-    ) as HTMLInputElement;
+    const el = document.getElementById(`ti-${inputCounterRef.current}`) as HTMLInputElement;
     el?.focus({ preventScroll: true });
   };
 
@@ -270,11 +241,7 @@ export default function Terminal() {
         });
         return;
       } else if (cmd === "help") help();
-      else if (cmd)
-        addResult(
-          inputCounterRef.current,
-          <span>zsh: command not found: {cmd}</span>,
-        );
+      else if (cmd) addResult(inputCounterRef.current, <span>zsh: command not found: {cmd}</span>);
       inputCounterRef.current += 1;
       addRow({
         key: `inp-${inputCounterRef.current}`,
@@ -282,8 +249,7 @@ export default function Terminal() {
       });
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (histIdxRef.current > 0)
-        inp.value = historyRef.current[--histIdxRef.current];
+      if (histIdxRef.current > 0) inp.value = historyRef.current[--histIdxRef.current];
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       if (histIdxRef.current < historyRef.current.length) {
@@ -326,23 +292,17 @@ export default function Terminal() {
 
   return (
     <div
-      className="relative flex flex-col h-full bg-[#1e1e2e] text-white text-sm font-mono cursor-text"
+      className="relative flex h-full cursor-text flex-col bg-[#1e1e2e] font-mono text-sm text-white"
       onClick={focusLast}
     >
       {rmrf && <MatrixRain onClose={() => setRmrf(false)} />}
 
       {/* Scrollable content */}
-      <div
-        ref={scrollAreaRef}
-        className="flex-1 overflow-y-auto px-3 py-2 space-y-1"
-      >
-        <div className="pb-1 space-y-0.5">
+      <div ref={scrollAreaRef} className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        <div className="space-y-0.5 pb-1">
           <div className="text-gray-400">{lastLogin}</div>
           <div className="text-yellow-400/90">
-            [oh-my-zsh] Random theme{" "}
-            <span className="text-green-400">
-              &apos;{zshTheme}&apos;
-            </span>{" "}
+            [oh-my-zsh] Random theme <span className="text-green-400">&apos;{zshTheme}&apos;</span>{" "}
             loaded
           </div>
         </div>

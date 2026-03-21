@@ -27,19 +27,14 @@ function publicAssetUrl(path: string): string {
   return `/${path}`;
 }
 
-export default function MagnifiedDockBar({
-  slots,
-  className = "",
-}: MagnifiedDockBarProps) {
+export default function MagnifiedDockBar({ slots, className = "" }: MagnifiedDockBarProps) {
   const slotsKey = useMemo(
     () => slots.map((s) => (s.kind === "icon" ? s.id : "|")).join(),
     [slots],
   );
 
   const [mouseX, setMouseX] = useState<number | null>(null);
-  const [currentScales, setCurrentScales] = useState<number[]>(() =>
-    slots.map(() => 1),
-  );
+  const [currentScales, setCurrentScales] = useState<number[]>(() => slots.map(() => 1));
   const [currentPositions, setCurrentPositions] = useState<number[]>([]);
   const dockRef = useRef<HTMLDivElement>(null);
   const iconRefs = useRef<(HTMLElement | null)[]>([]);
@@ -140,15 +135,7 @@ export default function MagnifiedDockBar({
         return minScale + scaleFactor * (maxScale - minScale);
       });
     },
-    [
-      slots,
-      baseIconSize,
-      baseSpacing,
-      sepWidth,
-      effectWidth,
-      maxScale,
-      minScale,
-    ],
+    [slots, baseIconSize, baseSpacing, sepWidth, effectWidth, maxScale, minScale],
   );
 
   const calculatePositions = useCallback(
@@ -165,9 +152,7 @@ export default function MagnifiedDockBar({
   );
 
   useEffect(() => {
-    const initialScales = slots.map((s) =>
-      s.kind === "separator" ? minScale : minScale,
-    );
+    const initialScales = slots.map((s) => (s.kind === "separator" ? minScale : minScale));
     const initialPositions = calculatePositions(initialScales);
     scalesRef.current = initialScales;
     positionsRef.current = initialPositions;
@@ -255,17 +240,13 @@ export default function MagnifiedDockBar({
     const el = iconRefs.current[iconIdx];
     if (!el) return;
 
-    if (
-      typeof window !== "undefined" &&
-      (window as unknown as { gsap?: unknown }).gsap
-    ) {
+    if (typeof window !== "undefined" && (window as unknown as { gsap?: unknown }).gsap) {
       const gsap = (
         window as unknown as {
           gsap: { to: (t: HTMLElement, o: object) => void };
         }
       ).gsap;
-      const bounceHeight =
-        scale > 1.3 ? -baseIconSize * 0.2 : -baseIconSize * 0.15;
+      const bounceHeight = scale > 1.3 ? -baseIconSize * 0.2 : -baseIconSize * 0.15;
       gsap.to(el, {
         y: bounceHeight,
         duration: 0.2,
@@ -362,18 +343,13 @@ export default function MagnifiedDockBar({
                 }}
               >
                 <div
-                  className={cn(
-                    "h-9 w-px rounded-full",
-                    dark ? "bg-white/25" : "bg-black/18",
-                  )}
+                  className={cn("h-9 w-px rounded-full", dark ? "bg-white/25" : "bg-black/18")}
                 />
               </div>
             );
           }
 
-          const iconIdx = slots
-            .slice(0, index)
-            .filter((s) => s.kind === "icon").length;
+          const iconIdx = slots.slice(0, index).filter((s) => s.kind === "icon").length;
           const scaledSize = baseIconSize * scale;
 
           const inner = (
@@ -397,9 +373,7 @@ export default function MagnifiedDockBar({
                     bottom: `${Math.max(-2, -baseIconSize * 0.05)}px`,
                     width: `${Math.max(3, baseIconSize * 0.06)}px`,
                     height: `${Math.max(3, baseIconSize * 0.06)}px`,
-                    backgroundColor: dark
-                      ? "rgba(255, 255, 255, 0.85)"
-                      : "rgba(30, 30, 30, 0.62)",
+                    backgroundColor: dark ? "rgba(255, 255, 255, 0.85)" : "rgba(30, 30, 30, 0.62)",
                     boxShadow: dark
                       ? "0 0 4px rgba(0, 0, 0, 0.35)"
                       : "0 0 3px rgba(255, 255, 255, 0.5)",
@@ -419,7 +393,7 @@ export default function MagnifiedDockBar({
           };
 
           const tooltip = (
-            <span className="dock-tooltip pointer-events-none absolute -top-9 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/80 px-2 py-1 text-xs text-white shadow">
+            <span className="dock-tooltip pointer-events-none absolute -top-9 left-1/2 z-20 -translate-x-1/2 rounded-md bg-black/80 px-2 py-1 text-xs whitespace-nowrap text-white shadow">
               {slot.name}
             </span>
           );

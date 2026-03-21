@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
-const defaultEvents = ['mousedown', 'touchstart'];
+const defaultEvents = ["mousedown", "touchstart"];
 
 export function useClickOutside(
   ref: React.RefObject<HTMLElement | null>,

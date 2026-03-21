@@ -126,8 +126,8 @@ const AppWindow = memo(function AppWindow({
         onClick={() => focus(id)}
       >
         {/* Mobile nav bar */}
-        <div className="relative flex items-center justify-center h-11 px-2 bg-gray-200/80 dark:bg-gray-800/80 backdrop-blur shrink-0 border-b border-gray-300/50 dark:border-gray-600/50">
-          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate max-w-[60%]">
+        <div className="relative flex h-11 shrink-0 items-center justify-center border-b border-gray-300/50 bg-gray-200/80 px-2 backdrop-blur dark:border-gray-600/50 dark:bg-gray-800/80">
+          <span className="max-w-[60%] truncate text-sm font-semibold text-gray-800 dark:text-gray-100">
             {title}
           </span>
         </div>
@@ -169,24 +169,22 @@ const AppWindow = memo(function AppWindow({
     >
       {/* Title bar — mirrors playground-macos */}
       <div
-        className="window-bar relative flex items-center justify-center h-6 bg-gray-200 dark:bg-gray-700"
+        className="window-bar relative flex h-6 items-center justify-center bg-gray-200 dark:bg-gray-700"
         onDoubleClick={() => !max && setMax(id)}
       >
         {/* Traffic lights */}
-        <div className="traffic-lights flex flex-row absolute left-0 items-center space-x-2 pl-2 h-full">
+        <div className="traffic-lights absolute left-0 flex h-full flex-row items-center space-x-2 pl-2">
           <button
-            className="window-btn bg-red-500 dark:bg-red-400 flex items-center justify-center"
+            className="window-btn flex items-center justify-center bg-red-500 dark:bg-red-400"
             onClick={(e) => {
               e.stopPropagation();
               close(id);
             }}
           >
-            <span className="icon text-[9px] opacity-0 group-hover:opacity-100">
-              ✕
-            </span>
+            <span className="icon text-[9px] opacity-0 group-hover:opacity-100">✕</span>
           </button>
           <button
-            className={`window-btn flex items-center justify-center ${max ? "bg-gray-400 cursor-not-allowed" : "bg-yellow-400 dark:bg-yellow-400"}`}
+            className={`window-btn flex items-center justify-center ${max ? "cursor-not-allowed bg-gray-400" : "bg-yellow-400 dark:bg-yellow-400"}`}
             onClick={(e) => {
               e.stopPropagation();
               setMin(id);
@@ -200,7 +198,7 @@ const AppWindow = memo(function AppWindow({
             </span>
           </button>
           <button
-            className="window-btn bg-green-500 dark:bg-green-400 flex items-center justify-center"
+            className="window-btn flex items-center justify-center bg-green-500 dark:bg-green-400"
             onClick={(e) => {
               e.stopPropagation();
               setMax(id);
@@ -210,14 +208,14 @@ const AppWindow = memo(function AppWindow({
           </button>
         </div>
 
-        <span className="inline-block text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[60%]">
+        <span className="inline-block max-w-[60%] truncate text-xs font-semibold text-gray-700 dark:text-gray-300">
           {title}
         </span>
       </div>
 
       {/* Content */}
       <div
-        className="overflow-y-hidden w-full bg-white dark:bg-gray-900"
+        className="w-full overflow-y-hidden bg-white dark:bg-gray-900"
         style={{ height: "calc(100% - 24px)" }}
       >
         {children}
