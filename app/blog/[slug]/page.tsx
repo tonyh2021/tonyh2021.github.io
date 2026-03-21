@@ -1,6 +1,7 @@
 import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import { notFound } from "next/navigation";
-import PostLocaleContent from "@/components/apps/PostLocaleContent";
+import BlogPostArticle from "@/components/apps/BlogPostArticle";
+import { BlogPostHeader } from "@/components/apps/BlogPostHeader";
 import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -100,12 +101,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <div className="relative flex h-11 shrink-0 items-center justify-center border-b border-gray-300/50 bg-gray-200/80 px-2 backdrop-blur dark:border-gray-600/50 dark:bg-gray-800/80">
-        <span className="max-w-[60%] truncate text-lg font-semibold text-gray-800 md:text-sm dark:text-gray-100">
-          Blogs
-        </span>
-      </div>
-      <PostLocaleContent zhPost={zhPost} enPost={enPost} />
+      <BlogPostHeader />
+      <BlogPostArticle zhPost={zhPost} enPost={enPost} />
     </div>
   );
 }
