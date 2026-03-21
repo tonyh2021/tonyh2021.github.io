@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useInterval } from "@/hooks/useInterval";
 import { useWallpaper } from "@/hooks/useWallpaper";
+import { useMobile } from "@/hooks/useMobile";
 import type { SystemPhase } from "@/store/slices/system";
 
 interface Props {
@@ -83,30 +84,42 @@ function ShutdownScreen({ onWake }: { onWake: () => void }) {
 }
 
 /* ── Boot animation ───────────────────────────────────────────── */
+interface BootAnimationProps {
+  mode: "restart" | "shutdown";
+  setSystemPhase: (p: SystemPhase) => void;
+  /** Only for `mode: "restart"` — where to go after the progress bar finishes. */
+  restartCompletePhase?: "login" | "desktop";
+}
+
+/** ~60fps ticks; step scales with interval to keep bar duration vs old 1ms ticks. */
+const BOOT_TICK_MS = 10;
+const BOOT_STEP_DESKTOP = 0.3;
+const BOOT_STEP_MOBILE = 2.0;
+
 function BootAnimation({
   mode,
   setSystemPhase,
-  restartCompletePhase,
-}: {
-  mode: "restart" | "shutdown";
-  setSystemPhase: (p: SystemPhase) => void;
-  restartCompletePhase: "login" | "desktop";
-}) {
+  restartCompletePhase = "login",
+}: BootAnimationProps) {
+  const isMobile = useMobile();
   const [percent, setPercent] = useState(0);
   const didFinishRef = useRef(false);
 
   useInterval(() => {
     if (didFinishRef.current) return;
-    const next = percent + 0.15;
-    if (next >= 100) {
-      didFinishRef.current = true;
-      if (mode === "restart")
-        setTimeout(() => setSystemPhase(restartCompletePhase), 500);
-      else setSystemPhase("shutdownWait");
-    } else {
-      setPercent(next);
-    }
-  }, 1);
+    const step = isMobile ? BOOT_STEP_MOBILE : BOOT_STEP_DESKTOP;
+    setPercent((prev) => {
+      if (didFinishRef.current) return prev;
+      const next = prev + step;
+      if (next >= 100) {
+        didFinishRef.current = true;
+        if (mode === "restart") setTimeout(() => setSystemPhase(restartCompletePhase), 500);
+        else setSystemPhase("shutdownWait");
+        return 100;
+      }
+      return next;
+    });
+  }, BOOT_TICK_MS);
 
   return (
     <div
@@ -147,13 +160,7 @@ export default function Boot({
       />
     );
   if (systemPhase === "bootShutdown")
-    return (
-      <BootAnimation
-        mode="shutdown"
-        setSystemPhase={setSystemPhase}
-        restartCompletePhase="login"
-      />
-    );
+    return <BootAnimation mode="shutdown" setSystemPhase={setSystemPhase} />;
 
   return null;
 }
