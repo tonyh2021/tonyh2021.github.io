@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { appConfigs, type AppId } from "@/configs/apps";
-import { launchpadApps } from "@/configs/launchpad";
 
 type AppItem = {
   id: AppId;
@@ -24,12 +23,9 @@ type PortfolioItem = {
 
 type Item = AppItem | PortfolioItem;
 
-const ALL_ITEMS: Item[] = [
-  ...appConfigs
-    .filter((a) => a.desktop || a.link)
-    .map((a) => ({ id: a.id, title: a.title, type: "app" as const })),
-  ...launchpadApps.map((a) => ({ ...a, type: "portfolio" as const })),
-];
+const APP_ITEMS: AppItem[] = appConfigs
+  .filter((a) => a.desktop || a.link)
+  .map((a) => ({ id: a.id, title: a.title, type: "app" as const }));
 
 const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const randDate = () => format(new Date(rand(0, Date.now())), "MM/dd/yyyy");
@@ -48,9 +44,30 @@ export default function Spotlight({ openApp, toggleLaunchpad, close, btnRef }: P
 
   const [query, setQuery] = useState("");
   const [selectedIdx, setSelectedIdx] = useState(0);
+  /** Loaded on mount — Spotlight only mounts when opened, so `launchpad` is not in the main graph until then. */
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void import("@/configs/launchpad").then((m) => {
+      if (!cancelled) {
+        setPortfolioItems(
+          m.launchpadApps.map((a) => ({ ...a, type: "portfolio" as const })),
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const allItems = useMemo((): Item[] => {
+    if (!portfolioItems) return APP_ITEMS;
+    return [...APP_ITEMS, ...portfolioItems];
+  }, [portfolioItems]);
 
   const results = query
-    ? ALL_ITEMS.filter(
+    ? allItems.filter(
         (a) =>
           a.title.toLowerCase().includes(query.toLowerCase()) ||
           a.id.toLowerCase().includes(query.toLowerCase()),

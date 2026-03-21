@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { launchpadApps } from "@/configs/launchpad";
+import { useState, useEffect } from "react";
+import type { LaunchpadItem } from "@/configs/launchpad";
 import { useWallpaper } from "@/hooks/useWallpaper";
 
 interface Props {
@@ -9,17 +9,54 @@ interface Props {
   toggle: (v: boolean) => void;
 }
 
+/** Match `launchpadApps` length in configs/launchpad.ts (skeleton only; no runtime import). */
+const LAUNCHPAD_GRID_PLACEHOLDER_COUNT = 7;
+
+/** No `<img>` until Launchpad is open — avoids icon requests on first paint. */
+function LaunchpadAppIcon({ src, alt, load }: { src: string; alt: string; load: boolean }) {
+  return (
+    <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-white/15 shadow-lg">
+      {load ? (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          className="h-full w-full object-cover"
+        />
+      ) : null}
+    </div>
+  );
+}
+
 export default function Launchpad({ show, toggle }: Props) {
   const { image: wallpaperImage } = useWallpaper();
   const [search, setSearch] = useState("");
+  /** No static `launchpadApps` import — module loads only after user opens Launchpad. */
+  const [apps, setApps] = useState<LaunchpadItem[] | null>(null);
+
+  useEffect(() => {
+    if (!show || apps !== null) return;
+    let cancelled = false;
+    void import("@/configs/launchpad").then((m) => {
+      if (!cancelled) setApps(m.launchpadApps);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [show, apps]);
+
+  const baseApps = apps ?? [];
+  const loadingList = show && apps === null;
 
   const filtered = search
-    ? launchpadApps.filter(
+    ? baseApps.filter(
         (a) =>
           a.title.toLowerCase().includes(search.toLowerCase()) ||
           a.id.toLowerCase().includes(search.toLowerCase()),
       )
-    : launchpadApps;
+    : baseApps;
 
   return (
     <div
@@ -62,23 +99,33 @@ export default function Launchpad({ show, toggle }: Props) {
 
         {/* App grid */}
         <div className="grid grid-cols-4 gap-x-6 gap-y-8 px-12 sm:grid-cols-7">
-          {filtered.map((app) => (
-            <div key={app.id} className="flex w-20 flex-col items-center gap-2">
-              <a
-                href={app.link}
-                target="_blank"
-                rel="noreferrer"
-                className="w-16 transition-transform duration-150 hover:scale-110 active:scale-95 sm:w-20"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={app.img} alt={app.title} className="w-full rounded-2xl shadow-lg" />
-              </a>
-              <span className="text-center text-xs leading-tight text-white/90 drop-shadow">
-                {app.title}
-              </span>
-            </div>
-          ))}
+          {loadingList
+            ? Array.from({ length: LAUNCHPAD_GRID_PLACEHOLDER_COUNT }, (_, i) => (
+                <div
+                  key={`sk-${i}`}
+                  className="flex w-20 flex-col items-center gap-2"
+                  aria-hidden
+                >
+                  <div className="aspect-square w-16 animate-pulse rounded-2xl bg-white/20 sm:w-20" />
+                  <div className="h-3 w-14 animate-pulse rounded bg-white/15" />
+                </div>
+              ))
+            : filtered.map((app) => (
+                <div key={app.id} className="flex w-20 flex-col items-center gap-2">
+                  <a
+                    href={app.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-16 transition-transform duration-150 hover:scale-110 active:scale-95 sm:w-20"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <LaunchpadAppIcon src={app.img} alt={app.title} load={show} />
+                  </a>
+                  <span className="text-center text-xs leading-tight text-white/90 drop-shadow">
+                    {app.title}
+                  </span>
+                </div>
+              ))}
         </div>
       </div>
     </div>
