@@ -1,7 +1,6 @@
 import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import { notFound } from "next/navigation";
-import BlogPostArticle from "@/components/apps/BlogPostArticle";
-import { BlogPostHeader } from "@/components/apps/BlogPostHeader";
+import PostDeepLink from "@/components/PostDeepLink";
 import { markdownExcerpt } from "@/lib/postExcerpt";
 import type { Metadata } from "next";
 
@@ -98,13 +97,18 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     keywords,
   };
   return (
-    <div className="h-dvh min-h-screen overflow-y-auto bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+    <>
+      {/* Redirect before React hydration */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.location.replace("/?post=${slug}");`,
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <BlogPostHeader />
-      <BlogPostArticle zhPost={zhPost} enPost={enPost} />
-    </div>
+      <PostDeepLink slug={slug} />
+    </>
   );
 }

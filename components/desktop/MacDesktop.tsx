@@ -78,6 +78,7 @@ export default function MacDesktop() {
   const toggleMaxWin = useStore((s) => s.toggleMaxWin);
   const focusWin = useStore((s) => s.focusWin);
   const initWins = useStore((s) => s.initWins);
+  const setBlogCurrentSlug = useStore((s) => s.setBlogCurrentSlug);
   const [mounted, setMounted] = useState(false);
   const [showLaunchpad, setShowLaunchpad] = useState(false);
   /** Keep Launchpad mounted after first open so close opacity transition can finish. */
@@ -90,6 +91,12 @@ export default function MacDesktop() {
 
   useEffect(() => {
     initWins(ALL_WIN_IDS);
+    const params = new URLSearchParams(window.location.search);
+    const postSlug = params.get("post");
+    if (postSlug) {
+      setBlogCurrentSlug(postSlug);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
     setTimeout(() => openWin("blog"), 80);
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps

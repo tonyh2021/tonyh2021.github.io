@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { normalizeTags } from "@/lib/utils";
 import { postBodyJsonUrl } from "@/lib/postBodyUrl";
 import type { Post, PostIndex } from "@/lib/types";
 import { useMobile } from "@/hooks/useMobile";
 import { resolvePostIndices, type Locale } from "@/lib/postBundle";
 import { usePostIndexBundle } from "@/contexts/PostIndexContext";
-import PostApp from "@/components/apps/PostApp";
+import PostContent from "@/components/apps/PostContent";
 import { DocumentTextIcon, CalendarIcon, HashtagIcon } from "@heroicons/react/24/solid";
+import { useStore } from "@/store";
 
 /** macOS / iOS default system accent (control tint) — Apple HIG blue. */
 const MAC_SYSTEM_ACCENT_BG = "bg-[#007AFF] text-white dark:bg-[#0A84FF]";
@@ -31,25 +32,57 @@ type FilterType =
 export default function BlogApp() {
   const postIndexBundle = usePostIndexBundle();
   const isMobile = useMobile();
-  const [locale, setLocale] = useState<Locale>("zh");
-  useEffect(() => {
-    if (!navigator.language.toLowerCase().startsWith("zh")) setLocale("en");
-  }, []);
+  const [locale, setLocale] = useState<Locale>(() =>
+    navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en",
+  );
 
   const indices = resolvePostIndices(postIndexBundle, locale);
 
+  const blogCurrentSlug = useStore((s) => s.blogCurrentSlug);
+  const listRef = useRef<HTMLDivElement>(null);
+
   const [filter, setFilter] = useState<FilterType>({ kind: "all" });
-  const [selectedIndex, setSelectedIndex] = useState<PostIndex | null>(indices[0] ?? null);
+  const [selectedIndex, setSelectedIndex] = useState<PostIndex | null>(() => {
+    if (blogCurrentSlug) {
+      const found = indices.find((p) => p.slug === blogCurrentSlug);
+      if (found) return found;
+    }
+    return indices[0] ?? null;
+  });
   const [loadedPost, setLoadedPost] = useState<Post | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadingBody, setLoadingBody] = useState(false);
-  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+  const [mobileView, setMobileView] = useState<"list" | "detail">(() =>
+    blogCurrentSlug ? "detail" : "list",
+  );
 
   useEffect(() => {
     setFilter({ kind: "all" });
     setSelectedIndex(indices[0] ?? null);
     setMobileView("list");
   }, [locale, indices]);
+
+  useEffect(() => {
+    if (!selectedIndex || !listRef.current) return;
+    const item = listRef.current.querySelector<HTMLLIElement>(
+      `[data-slug="${selectedIndex.slug}"]`,
+    );
+    item?.scrollIntoView({ block: "nearest" });
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    if (!blogCurrentSlug) return;
+    const found = indices.find((p) => p.slug === blogCurrentSlug);
+    if (found) {
+      setSelectedIndex(found);
+      setMobileView("detail");
+    } else {
+      const otherLocale: Locale = locale === "zh" ? "en" : "zh";
+      if (postIndexBundle[otherLocale].some((p) => p.slug === blogCurrentSlug)) {
+        setLocale(otherLocale);
+      }
+    }
+  }, [blogCurrentSlug, indices, locale, postIndexBundle]);
 
   const loadBody = useCallback(async (index: PostIndex | null) => {
     if (!index) {
@@ -216,7 +249,7 @@ export default function BlogApp() {
               ) : loadError ? (
                 <div className="p-6 text-sm text-amber-800 dark:text-amber-200">{loadError}</div>
               ) : (
-                <PostApp post={loadedPost} />
+                <PostContent post={loadedPost} />
               )}
             </div>
           </>
@@ -303,7 +336,7 @@ export default function BlogApp() {
       </div>
 
       {/* ── Column 2: Post list ────────────────────────────── */}
-      <div className="w-56 shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 dark:border-gray-700/60 dark:bg-gray-800">
+      <div ref={listRef} className="w-56 shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 dark:border-gray-700/60 dark:bg-gray-800">
         <ul>
           {filteredPosts.map((post) => {
             const excerpt = post.excerpt.slice(0, 80) + (post.excerpt.length > 80 ? "…" : "");
@@ -311,6 +344,7 @@ export default function BlogApp() {
             return (
               <li
                 key={post.slug}
+                data-slug={post.slug}
                 className={`flex h-24 cursor-default flex-col border-l-2 transition-colors ${
                   isSelected
                     ? `${MAC_SYSTEM_ACCENT_BORDER} bg-white dark:bg-gray-700`
@@ -366,7 +400,7 @@ export default function BlogApp() {
             {!loadingBody && loadError && (
               <div className="p-6 text-sm text-amber-800 dark:text-amber-200">{loadError}</div>
             )}
-            {!loadingBody && !loadError && loadedPost ? <PostApp post={loadedPost} /> : null}
+            {!loadingBody && !loadError && loadedPost ? <PostContent post={loadedPost} /> : null}
           </>
         )}
       </div>

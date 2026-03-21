@@ -12,6 +12,8 @@ export interface WindowsSlice {
   wins: Partial<Record<AppId, WinState>>;
   maxZ: number;
   currentApp: AppId;
+  blogCurrentSlug: string | null;
+  setBlogCurrentSlug: (slug: string | null) => void;
   openWin: (id: AppId) => void;
   closeWin: (id: AppId) => void;
   minimizeWin: (id: AppId) => void;
@@ -24,6 +26,8 @@ export const createWindowsSlice: StateCreator<WindowsSlice> = (set) => ({
   wins: {},
   maxZ: 2,
   currentApp: "blog",
+  blogCurrentSlug: null,
+  setBlogCurrentSlug: (slug) => set({ blogCurrentSlug: slug }),
   openWin: (id) =>
     set((state) => {
       const newZ = state.maxZ + 1;
