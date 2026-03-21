@@ -6,7 +6,6 @@ import { resolveImageSrc } from "@/lib/imageSrc";
 import { useStore } from "@/store";
 import { useDark } from "@/hooks/useDark";
 import { websites, type SiteSection } from "@/configs/websites";
-import { useMobile } from "@/hooks/useMobile";
 
 function isValidURL(url: string) {
   try {
@@ -148,49 +147,13 @@ export default function Safari({ width = 900 }: { width?: number }) {
     setActiveURL("");
   };
 
-  const isMobile = useMobile();
   const canGoBack = activeURL !== "";
   const hideRight = width < 500;
 
   return (
     <div className="flex h-full w-full flex-col">
       {/* Browser toolbar */}
-      {isMobile ? (
-        /* Mobile: full-width flex bar, larger touch targets */
-        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-gray-200 bg-gray-100 px-3 dark:border-gray-700 dark:bg-gray-800">
-          {canGoBack && (
-            <button
-              onClick={goBack}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-blue-500 active:bg-gray-200 dark:active:bg-gray-700"
-            >
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" />
-              </svg>
-            </button>
-          )}
-          <div className="flex h-8 flex-1 items-center gap-1.5 rounded-xl bg-gray-200/80 px-3 dark:bg-gray-700/80">
-            <svg
-              viewBox="0 0 24 24"
-              width="13"
-              height="13"
-              fill="currentColor"
-              className="shrink-0 text-gray-400"
-            >
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-            </svg>
-            <input
-              type="text"
-              value={inputURL}
-              onChange={(e) => setInputURL(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && navigate(inputURL)}
-              placeholder="Search or enter website name"
-              className="flex-1 bg-transparent text-center text-sm text-gray-600 placeholder-gray-400 outline-none dark:text-gray-300"
-            />
-          </div>
-        </div>
-      ) : (
-        /* Desktop: 3-column grid */
-        <div
+      <div
           className="h-10 shrink-0 border-b border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
           style={{
             display: "grid",
@@ -255,7 +218,6 @@ export default function Safari({ width = 900 }: { width?: number }) {
             </div>
           )}
         </div>
-      )}
 
       {/* Browser content */}
       <div className="flex-1 overflow-hidden">

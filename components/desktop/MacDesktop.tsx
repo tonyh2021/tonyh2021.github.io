@@ -6,7 +6,6 @@ import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 import { appConfigs, ALL_WIN_IDS, type AppId } from "@/configs/apps";
 import { useWallpaper } from "@/hooks/useWallpaper";
-import { useMobile } from "@/hooks/useMobile";
 import { WallpaperLayer } from "@/components/WallpaperLayer";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
@@ -60,7 +59,6 @@ export default function MacDesktop() {
       brightness: s.brightness,
     })),
   );
-  const isMobile = useMobile();
   const { image, video } = useWallpaper();
   const [videoReady, setVideoReady] = useState(false);
   const prevVideoRef = useRef<string | null>(null);
@@ -221,19 +219,17 @@ export default function MacDesktop() {
           className={`pointer-events-none absolute inset-0 z-1 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
-      {!isMobile && (
-        <TopBar
-          currentApp={currentAppTitle}
-          hide={anyMaximized}
-          toggleSpotlight={() => setShowSpotlight((v) => !v)}
-          setSpotlightBtnRef={(ref) => setSpotlightBtnRef(ref)}
-        />
-      )}
+      <TopBar
+        currentApp={currentAppTitle}
+        hide={anyMaximized}
+        toggleSpotlight={() => setShowSpotlight((v) => !v)}
+        setSpotlightBtnRef={(ref) => setSpotlightBtnRef(ref)}
+      />
 
       {/* Window container — same bounds as playground-macos .window-bound */}
       <div
         className="absolute right-0 left-0 z-2 overflow-hidden"
-        style={{ top: isMobile ? 0 : TOP_BAR_H, bottom: 76 }}
+        style={{ top: TOP_BAR_H, bottom: 76 }}
       >
         {ALL_WIN_IDS.map((id) => {
           const win = wins[id];
