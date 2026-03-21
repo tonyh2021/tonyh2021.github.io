@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useStore } from "@/store";
+import { useDark } from "@/hooks/useDark";
 
 interface Wallpaper {
   image: string;
@@ -41,7 +41,7 @@ function msUntilNoon(): number {
 }
 
 export function useWallpaper(): WallpaperInfo {
-  const dark = useStore((s) => s.dark);
+  const dark = useDark();
   const [lightWallpaper, setLightWallpaper] = useState<Wallpaper | null>(null);
 
   useEffect(() => {

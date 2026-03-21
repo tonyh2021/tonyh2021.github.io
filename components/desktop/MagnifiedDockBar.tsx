@@ -1,14 +1,9 @@
 "use client";
 
 import type { CSSProperties, MouseEvent } from "react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useDark } from "@/hooks/useDark";
 
 export type MagnifiedDockSlot =
   | {
@@ -55,43 +50,44 @@ export default function MagnifiedDockBar({
 
   const getResponsiveConfig = useCallback(() => {
     if (typeof window === "undefined") {
-      return { baseIconSize: 52, maxScale: 1.65, effectWidth: 260 };
+      return { baseIconSize: 64, maxScale: 1.6, effectWidth: 240 };
     }
 
     const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
 
     if (smallerDimension < 480) {
       return {
-        baseIconSize: Math.max(36, smallerDimension * 0.075),
-        maxScale: 1.38,
-        effectWidth: smallerDimension * 0.42,
+        baseIconSize: Math.max(40, smallerDimension * 0.08),
+        maxScale: 1.4,
+        effectWidth: smallerDimension * 0.4,
       };
     }
     if (smallerDimension < 768) {
       return {
-        baseIconSize: Math.max(44, smallerDimension * 0.065),
-        maxScale: 1.48,
-        effectWidth: smallerDimension * 0.36,
+        baseIconSize: Math.max(48, smallerDimension * 0.07),
+        maxScale: 1.5,
+        effectWidth: smallerDimension * 0.35,
       };
     }
     if (smallerDimension < 1024) {
       return {
-        baseIconSize: Math.max(50, smallerDimension * 0.055),
-        maxScale: 1.62,
-        effectWidth: Math.min(280, smallerDimension * 0.32),
+        baseIconSize: Math.max(56, smallerDimension * 0.06),
+        maxScale: 1.6,
+        effectWidth: smallerDimension * 0.3,
       };
     }
     return {
-      baseIconSize: Math.max(52, Math.min(72, smallerDimension * 0.048)),
-      maxScale: 1.78,
+      baseIconSize: Math.max(64, Math.min(80, smallerDimension * 0.05)),
+      maxScale: 1.8,
       effectWidth: 300,
     };
   }, []);
 
   const [config, setConfig] = useState(getResponsiveConfig);
   const { baseIconSize, maxScale, effectWidth } = config;
+  const dark = useDark();
   const minScale = 1;
-  const baseSpacing = Math.max(3, baseIconSize * 0.07);
+  const baseSpacing = Math.max(4, baseIconSize * 0.08);
   const sepWidth = Math.max(8, baseIconSize * 0.12);
 
   useEffect(() => {
@@ -109,42 +105,50 @@ export default function MagnifiedDockBar({
     [slots, baseIconSize, sepWidth],
   );
 
-  const iconCenterInRow = useCallback(
-    (index: number, scales: number[]) => {
-      let x = 0;
-      for (let i = 0; i < index; i++) {
-        x += slotWidth(i, scales[i]) + baseSpacing;
-      }
-      return x + slotWidth(index, scales[index]) / 2;
-    },
-    [baseSpacing, slotWidth],
-  );
-
+  /**
+   * Same cosine lens as the reference MacOSDock. Lens centers use unscaled slot widths
+   * (including separators) along X—same idea as a uniform icon grid, but fits
+   * Launchpad | divider | apps.
+   */
   const calculateTargetMagnification = useCallback(
-    (mousePosition: number | null, scales: number[]) => {
+    (mousePosition: number | null) => {
       if (mousePosition === null) {
         return slots.map(() => minScale);
       }
 
-      return slots.map((slot, index) => {
-        if (slot.kind === "separator") return minScale;
-
-        const center = iconCenterInRow(index, scales);
-        const minX = mousePosition - effectWidth / 2;
-        const maxX = mousePosition + effectWidth / 2;
-
-        if (center < minX || center > maxX) {
+      let x = 0;
+      return slots.map((slot) => {
+        if (slot.kind === "separator") {
+          x += sepWidth + baseSpacing;
           return minScale;
         }
 
-        const theta = ((center - minX) / effectWidth) * 2 * Math.PI;
+        const normalIconCenter = x + baseIconSize / 2;
+        x += baseIconSize + baseSpacing;
+
+        const minX = mousePosition - effectWidth / 2;
+        const maxX = mousePosition + effectWidth / 2;
+
+        if (normalIconCenter < minX || normalIconCenter > maxX) {
+          return minScale;
+        }
+
+        const theta = ((normalIconCenter - minX) / effectWidth) * 2 * Math.PI;
         const cappedTheta = Math.min(Math.max(theta, 0), 2 * Math.PI);
         const scaleFactor = (1 - Math.cos(cappedTheta)) / 2;
 
         return minScale + scaleFactor * (maxScale - minScale);
       });
     },
-    [slots, effectWidth, maxScale, minScale, iconCenterInRow],
+    [
+      slots,
+      baseIconSize,
+      baseSpacing,
+      sepWidth,
+      effectWidth,
+      maxScale,
+      minScale,
+    ],
   );
 
   const calculatePositions = useCallback(
@@ -175,8 +179,8 @@ export default function MagnifiedDockBar({
 
   const animateToTarget = useCallback(() => {
     const prevScales = scalesRef.current;
-    const targetScales = calculateTargetMagnification(mouseX, prevScales);
-    const lerpFactor = mouseX !== null ? 0.22 : 0.14;
+    const targetScales = calculateTargetMagnification(mouseX);
+    const lerpFactor = mouseX !== null ? 0.2 : 0.12;
 
     const nextScales = prevScales.map((currentScale, index) => {
       const diff = targetScales[index] - currentScale;
@@ -195,10 +199,10 @@ export default function MagnifiedDockBar({
     setCurrentPositions(nextPositions);
 
     const scalesNeedUpdate = nextScales.some(
-      (scale, index) => Math.abs(scale - targetScales[index]) > 0.003,
+      (scale, index) => Math.abs(scale - targetScales[index]) > 0.002,
     );
     const positionsNeedUpdate = nextPositions.some(
-      (pos, index) => Math.abs(pos - targetPositions[index]) > 0.15,
+      (pos, index) => Math.abs(pos - targetPositions[index]) > 0.1,
     );
 
     if (scalesNeedUpdate || positionsNeedUpdate || mouseX !== null) {
@@ -239,22 +243,48 @@ export default function MagnifiedDockBar({
   }, []);
 
   const createBounceAnimation = (element: HTMLElement) => {
-    const bounceHeight = Math.max(-8, -baseIconSize * 0.14);
-    element.style.transition = "transform 0.22s ease-out";
+    const bounceHeight = Math.max(-8, -baseIconSize * 0.15);
+    element.style.transition = "transform 0.2s ease-out";
     element.style.transform = `translateY(${bounceHeight}px)`;
     window.setTimeout(() => {
       element.style.transform = "translateY(0px)";
-    }, 220);
+    }, 200);
+  };
+
+  const bounceIcon = (iconIdx: number, scale: number) => {
+    const el = iconRefs.current[iconIdx];
+    if (!el) return;
+
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: unknown }).gsap
+    ) {
+      const gsap = (
+        window as unknown as {
+          gsap: { to: (t: HTMLElement, o: object) => void };
+        }
+      ).gsap;
+      const bounceHeight =
+        scale > 1.3 ? -baseIconSize * 0.2 : -baseIconSize * 0.15;
+      gsap.to(el, {
+        y: bounceHeight,
+        duration: 0.2,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+        transformOrigin: "bottom center",
+      });
+    } else {
+      createBounceAnimation(el);
+    }
   };
 
   const handleIconClick = (slotIndex: number, iconIdx: number) => {
     const slot = slots[slotIndex];
     if (slot.kind !== "icon") return;
 
-    const el = iconRefs.current[iconIdx];
-    if (el) {
-      createBounceAnimation(el);
-    }
+    const scale = currentScales[slotIndex] ?? 1;
+    bounceIcon(iconIdx, scale);
     slot.onActivate();
   };
 
@@ -273,29 +303,45 @@ export default function MagnifiedDockBar({
 
   const padding = Math.max(8, baseIconSize * 0.12);
 
+  const dockShellStyle = useMemo((): CSSProperties => {
+    const radius = `${Math.max(12, baseIconSize * 0.4)}px`;
+    const y1 = Math.max(4, baseIconSize * 0.1);
+    const blur1 = Math.max(16, baseIconSize * 0.4);
+    const y2 = Math.max(2, baseIconSize * 0.05);
+    const blur2 = Math.max(8, baseIconSize * 0.2);
+
+    if (dark) {
+      return {
+        borderRadius: radius,
+        background: "rgba(45, 45, 45, 0.25)",
+        border: "1px solid rgba(255, 255, 255, 0.15)",
+      };
+    }
+
+    return {
+      borderRadius: radius,
+      background: "rgba(255, 255, 255, 0.25)",
+      border: "1px solid rgba(255, 255, 255, 0.72)",
+    };
+  }, [dark, baseIconSize]);
+
   return (
     <div
-      className={cn(
-        "border border-white/25 bg-white/20 shadow-xl backdrop-blur-2xl dark:border-white/10 dark:bg-black/35 dark:shadow-[0_8px_32px_rgba(0,0,0,0.45)]",
-        className,
-      )}
+      className={cn("overflow-visible backdrop-blur-md", className)}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       ref={dockRef}
       style={{
         width: `${contentWidth + padding * 2}px`,
-        borderRadius: `${Math.max(12, baseIconSize * 0.38)}px`,
-        boxShadow: `
-          0 ${Math.max(4, baseIconSize * 0.08)}px ${Math.max(18, baseIconSize * 0.38)}px rgba(0, 0, 0, 0.18),
-          inset 0 1px 0 rgba(255, 255, 255, 0.35)
-        `,
+        ...dockShellStyle,
         padding: `${padding}px`,
       }}
     >
+      {/* MacOSDock-style track: fixed to baseIconSize; magnified icons overflow upward */}
       <div
-        className="relative"
+        className="relative overflow-visible"
         style={{
-          height: `${baseIconSize * maxScale * 0.95}px`,
+          height: `${baseIconSize}px`,
           width: "100%",
         }}
       >
@@ -315,7 +361,12 @@ export default function MagnifiedDockBar({
                   height: `${baseIconSize * 0.85}px`,
                 }}
               >
-                <div className="h-9 w-px rounded-full bg-white/30 dark:bg-white/20" />
+                <div
+                  className={cn(
+                    "h-9 w-px rounded-full",
+                    dark ? "bg-white/25" : "bg-black/18",
+                  )}
+                />
               </div>
             );
           }
@@ -336,17 +387,22 @@ export default function MagnifiedDockBar({
                 src={publicAssetUrl(slot.icon)}
                 width={scaledSize}
                 style={{
-                  filter: `drop-shadow(0 ${scale > 1.15 ? Math.max(2, baseIconSize * 0.05) : Math.max(1, baseIconSize * 0.03)}px ${scale > 1.15 ? Math.max(4, baseIconSize * 0.09) : Math.max(2, baseIconSize * 0.05)}px rgba(0,0,0,${0.15 + (scale - 1) * 0.12}))`,
+                  filter: `drop-shadow(0 ${scale > 1.2 ? Math.max(2, baseIconSize * 0.05) : Math.max(1, baseIconSize * 0.03)}px ${scale > 1.2 ? Math.max(4, baseIconSize * 0.1) : Math.max(2, baseIconSize * 0.06)}px rgba(0,0,0,${dark ? 0.2 + (scale - 1) * 0.15 : 0.14 + (scale - 1) * 0.1}))`,
                 }}
               />
               {slot.isOpen && (
                 <div
-                  className="absolute left-1/2 -translate-x-1/2 rounded-full bg-white/90 shadow dark:bg-white/80"
+                  className="absolute left-1/2 -translate-x-1/2 rounded-full"
                   style={{
                     bottom: `${Math.max(-2, -baseIconSize * 0.05)}px`,
                     width: `${Math.max(3, baseIconSize * 0.06)}px`,
                     height: `${Math.max(3, baseIconSize * 0.06)}px`,
-                    boxShadow: "0 0 4px rgba(0, 0, 0, 0.25)",
+                    backgroundColor: dark
+                      ? "rgba(255, 255, 255, 0.85)"
+                      : "rgba(30, 30, 30, 0.62)",
+                    boxShadow: dark
+                      ? "0 0 4px rgba(0, 0, 0, 0.35)"
+                      : "0 0 3px rgba(255, 255, 255, 0.5)",
                   }}
                 />
               )}
@@ -363,7 +419,7 @@ export default function MagnifiedDockBar({
           };
 
           const tooltip = (
-            <span className="dock-tooltip pointer-events-none absolute -top-9 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800/90 px-2 py-1 text-xs text-white shadow dark:bg-gray-900/95">
+            <span className="dock-tooltip pointer-events-none absolute -top-9 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/80 px-2 py-1 text-xs text-white shadow">
               {slot.name}
             </span>
           );
@@ -382,8 +438,7 @@ export default function MagnifiedDockBar({
                 style={tileStyle}
                 title={slot.name}
                 onClick={() => {
-                  const el = iconRefs.current[iconIdx];
-                  if (el) createBounceAnimation(el);
+                  bounceIcon(iconIdx, currentScales[index] ?? 1);
                 }}
               >
                 {tooltip}

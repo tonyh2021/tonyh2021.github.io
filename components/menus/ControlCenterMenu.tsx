@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useStore } from "@/store";
+import { useDark } from "@/hooks/useDark";
 import { useShallow } from "zustand/shallow";
 import { music } from "@/configs/music";
 import { isFullScreen } from "@/lib/screen";
@@ -93,9 +94,9 @@ export default function ControlCenterMenu({
   const ref = useRef<HTMLDivElement>(null);
   useClickOutside(ref, close, [btnRef]);
 
-  const { dark, wifi, bluetooth, brightness, volume, fullscreen } = useStore(
+  const dark = useDark();
+  const { wifi, bluetooth, brightness, volume, fullscreen } = useStore(
     useShallow((s) => ({
-      dark: s.dark,
       wifi: s.wifi,
       bluetooth: s.bluetooth,
       brightness: s.brightness,

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useStore } from "@/store";
+import { useDark } from "@/hooks/useDark";
 import { websites, type SiteSection } from "@/configs/websites";
 import { useMobile } from "@/hooks/useMobile";
 
@@ -77,7 +78,7 @@ function HomePage({
 }: {
   onNavigate: (url: string) => void;
 }) {
-  const dark = useStore((s) => s.dark);
+  const dark = useDark();
   return (
     <div
       className="w-full h-full overflow-y-auto overscroll-none text-gray-900 dark:text-gray-100"
