@@ -12,6 +12,10 @@ import { usePostIndexBundle } from "@/contexts/PostIndexContext";
 import ArticleContent from "@/components/apps/ArticleContent";
 import { DocumentTextIcon, CalendarIcon, HashtagIcon } from "@heroicons/react/24/solid";
 
+/** macOS / iOS default system accent (control tint) — Apple HIG blue. */
+const MAC_SYSTEM_ACCENT_BG = "bg-[#007AFF] text-white dark:bg-[#0A84FF]";
+const MAC_SYSTEM_ACCENT_BORDER = "border-[#007AFF] dark:border-[#0A84FF]";
+
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day).toLocaleDateString("en-US", {
@@ -116,7 +120,7 @@ export default function BlogApp() {
           style={{ scrollbarWidth: "none" }}
         >
           <button
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "all" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "all" ? MAC_SYSTEM_ACCENT_BG : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
             onClick={() => applyFilter({ kind: "all" })}
           >
             All ({indices.length})
@@ -124,7 +128,7 @@ export default function BlogApp() {
           {years.map((year) => (
             <button
               key={year}
-              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "year" && filter.value === year ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "year" && filter.value === year ? MAC_SYSTEM_ACCENT_BG : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
               onClick={() => applyFilter({ kind: "year", value: year })}
             >
               {year}
@@ -133,7 +137,7 @@ export default function BlogApp() {
           {tags.map((tag) => (
             <button
               key={tag}
-              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "tag" && filter.value === tag ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "tag" && filter.value === tag ? MAC_SYSTEM_ACCENT_BG : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
               onClick={() => applyFilter({ kind: "tag", value: tag })}
             >
               #{tag}
@@ -154,7 +158,7 @@ export default function BlogApp() {
                 <span className="mb-1 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
                   {post.frontMatter.title}
                 </span>
-                <span className="mb-1 text-xs text-gray-400 dark:text-gray-500">
+                <span className="mb-1 text-xs text-gray-500 dark:text-gray-500">
                   {formatDate(post.frontMatter.date)}
                 </span>
                 <span className="line-clamp-2 text-xs leading-snug text-gray-500 dark:text-gray-400">
@@ -182,7 +186,7 @@ export default function BlogApp() {
           <li
             className={`flex h-8 cursor-default items-center gap-2 pl-4 transition-colors ${
               filter.kind === "all"
-                ? "bg-orange-500 text-white"
+                ? MAC_SYSTEM_ACCENT_BG
                 : "hover:bg-gray-300 dark:hover:bg-gray-600"
             }`}
             onClick={() => applyFilter({ kind: "all" })}
@@ -207,7 +211,7 @@ export default function BlogApp() {
               key={year}
               className={`flex h-8 cursor-default items-center pl-4 transition-colors ${
                 filter.kind === "year" && filter.value === year
-                  ? "bg-orange-500 text-white"
+                  ? MAC_SYSTEM_ACCENT_BG
                   : "hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
               onClick={() => applyFilter({ kind: "year", value: year })}
@@ -233,7 +237,7 @@ export default function BlogApp() {
               key={tag}
               className={`flex h-8 cursor-default items-center pl-4 transition-colors ${
                 filter.kind === "tag" && filter.value === tag
-                  ? "bg-orange-500 text-white"
+                  ? MAC_SYSTEM_ACCENT_BG
                   : "hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
               onClick={() => applyFilter({ kind: "tag", value: tag })}
@@ -261,7 +265,7 @@ export default function BlogApp() {
                 key={post.slug}
                 className={`flex h-24 cursor-default flex-col border-l-2 transition-colors ${
                   isSelected
-                    ? "border-orange-500 bg-white dark:bg-gray-700"
+                    ? `${MAC_SYSTEM_ACCENT_BORDER} bg-white dark:bg-gray-700`
                     : "border-transparent hover:bg-white dark:hover:bg-gray-700/50"
                 }`}
                 onClick={() => setSelectedIndex(post)}
