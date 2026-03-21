@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useStore } from "@/store";
-import { useShallow } from "zustand/shallow";
 
 interface Props {
   close: () => void;

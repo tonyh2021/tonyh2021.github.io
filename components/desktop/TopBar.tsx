@@ -59,11 +59,10 @@ export default function TopBar({ currentApp, hide, toggleSpotlight, setSpotlight
   const [showWifi, setShowWifi] = useState(false);
   const [showCC, setShowCC] = useState(false);
 
-  const { wifi, volume, brightness, setSystemPhase, shutdown, sleep, restart } = useStore(
+  const { wifi, volume, setSystemPhase, shutdown, sleep, restart } = useStore(
     useShallow((s) => ({
       wifi: s.wifi,
       volume: s.volume,
-      brightness: s.brightness,
       setSystemPhase: s.setSystemPhase,
       shutdown: s.shutdown,
       sleep: s.sleep,

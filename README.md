@@ -31,7 +31,7 @@ pnpm install
 pnpm dev
 ```
 
-Type-check only (no emit): `pnpm typecheck` (`tsc --noEmit`).
+Type-check only (no emit): `pnpm typecheck` (`tsc --noEmit`). `tsconfig.json` enables unused locals/parameters and no switch fallthrough.
 
 Format with [Prettier](https://prettier.io/): `pnpm format` (write) / `pnpm format:check` (CI). ESLint uses `eslint-config-prettier` so style rules don’t fight Prettier.
 
@@ -59,6 +59,6 @@ Pushing to `master` runs GitHub Actions: `pnpm build` → upload `./out/` → **
 The following directories and their contents are Copyright Tony Han. You may not reuse anything therein without permission:
 
 - `_posts/`
-- `public/images/`
+- `public/images/posts/`
 
 All other directories and files are MIT Licensed.

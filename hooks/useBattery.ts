@@ -13,13 +13,6 @@ export interface UseBatteryState extends BatteryState {
   fetched?: boolean;
 }
 
-const defaults: BatteryState = {
-  charging: false,
-  chargingTime: 0,
-  dischargingTime: 0,
-  level: 1,
-};
-
 interface TimeBattery {
   level: number;
   charging: boolean;

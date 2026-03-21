@@ -277,7 +277,7 @@ export default function MagnifiedDockBar({ slots, className = "" }: MagnifiedDoc
             return pos + w / 2;
           }),
         )
-      : slots.reduce((acc, s, i) => {
+      : slots.reduce((acc, s) => {
           if (s.kind === "separator") return acc + sepWidth + baseSpacing;
           return acc + baseIconSize + baseSpacing;
         }, 0) - baseSpacing;
@@ -286,10 +286,6 @@ export default function MagnifiedDockBar({ slots, className = "" }: MagnifiedDoc
 
   const dockShellStyle = useMemo((): CSSProperties => {
     const radius = `${Math.max(12, baseIconSize * 0.4)}px`;
-    const y1 = Math.max(4, baseIconSize * 0.1);
-    const blur1 = Math.max(16, baseIconSize * 0.4);
-    const y2 = Math.max(2, baseIconSize * 0.05);
-    const blur2 = Math.max(8, baseIconSize * 0.2);
 
     if (dark) {
       return {

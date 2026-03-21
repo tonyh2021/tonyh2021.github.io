@@ -82,7 +82,6 @@ export default function Dock({ openWin, wins, hide, toggleLaunchpad, showLaunchp
         <div className="mx-3 mb-2 rounded-3xl border border-white/30 bg-white/25 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-black/35">
           <ul className="flex items-center justify-around px-2 py-2">
             {mobileApps.map((app) => {
-              const isOpen = app.desktop ? !!wins[app.id as AppId]?.open : false;
               const inner = (
                 <div className="flex flex-col items-center gap-1">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
