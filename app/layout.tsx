@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { siteConfig } from "@/configs/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Tony's Portfolio",
-    template: "%s | Tony's Portfolio",
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "Tony Han's portfolio and technical blog.",
-  applicationName: "Tony's Portfolio",
-  authors: [{ name: "Tony Han" }],
-  creator: "Tony Han",
-  publisher: "Tony Han",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.author }],
+  creator: siteConfig.author,
+  publisher: siteConfig.author,
   alternates: {
     canonical: "/",
   },
@@ -24,14 +23,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Tony's Portfolio",
-    title: "Tony's Portfolio",
-    description: "Tony Han's portfolio and technical blog.",
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tony's Portfolio",
-    description: "Tony Han's portfolio and technical blog.",
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
 };
 
@@ -45,7 +44,7 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="author" content="Tony Han" />
+        <meta name="author" content={siteConfig.author} />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}})();`,
