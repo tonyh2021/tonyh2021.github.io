@@ -1,5 +1,5 @@
 /**
- * Writes `public/data/post-bodies/{zh|en}/{slug}.json` for lazy-loading in BlogApp.
+ * Writes `public/data/post-bodies/{zh|en}/{slug}.json` for lazy-loading in PostApp.
  * Run via `pnpm prebuild` before `next build`.
  */
 import fs from "fs";

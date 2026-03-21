@@ -29,7 +29,7 @@ type FilterType =
   | { kind: "tag"; value: string }
   | { kind: "year"; value: string };
 
-export default function BlogApp() {
+export default function PostApp() {
   const postIndexBundle = usePostIndexBundle();
   const isMobile = useMobile();
   const [locale, setLocale] = useState<Locale>(() =>
@@ -64,10 +64,14 @@ export default function BlogApp() {
 
   useEffect(() => {
     if (!selectedIndex || !listRef.current) return;
-    const item = listRef.current.querySelector<HTMLLIElement>(
-      `[data-slug="${selectedIndex.slug}"]`,
-    );
-    item?.scrollIntoView({ block: "nearest" });
+    const container = listRef.current;
+    const item = container.querySelector<HTMLLIElement>(`[data-slug="${selectedIndex.slug}"]`);
+    if (!item) return;
+    const { offsetTop, offsetHeight } = item;
+    const { scrollTop, clientHeight } = container;
+    if (offsetTop < scrollTop || offsetTop + offsetHeight > scrollTop + clientHeight) {
+      container.scrollTop = offsetTop - clientHeight / 2 + offsetHeight / 2;
+    }
   }, [selectedIndex]);
 
   useEffect(() => {

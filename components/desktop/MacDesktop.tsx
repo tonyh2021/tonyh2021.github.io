@@ -24,7 +24,7 @@ function WindowAppLoading({ label }: { label: string }) {
 }
 
 /** Per-app code-splitting to trim first-load JS; Blog/Tags read index from PostIndexContext. */
-const BlogApp = dynamic(() => import("@/components/apps/BlogApp"), {
+const PostApp = dynamic(() => import("@/components/apps/PostApp"), {
   ssr: false,
   loading: () => <WindowAppLoading label="Blog" />,
 });
@@ -109,7 +109,7 @@ export default function MacDesktop() {
   // ── Memoize window contents (each app is a dynamic chunk; index from PostIndexProvider) ──
   const windowContents = useMemo(
     () => ({
-      blog: <BlogApp />,
+      blog: <PostApp />,
       about: <AboutApp />,
       tags: <TagsApp />,
       safari: <Safari />,
