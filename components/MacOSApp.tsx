@@ -23,16 +23,13 @@ export default function MacOSApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mobile: skip all non-desktop phases, go straight to desktop
-  useEffect(() => {
-    if (isMobile && systemPhase !== "desktop") {
-      setSystemPhase("desktop");
-    }
-  }, [isMobile, systemPhase, setSystemPhase]);
+  /** Mobile: render desktop under the boot overlay so JS chunks mount while the bar animates. */
+  const desktopUnderBoot = isMobile && systemPhase === "bootRestart";
+  const showMacDesktop = systemPhase === "desktop" || desktopUnderBoot;
 
   return (
     <>
-      {systemPhase === "desktop" ? <MacDesktop /> : <Login />}
+      {showMacDesktop ? <MacDesktop /> : <Login />}
 
       {/* Boot overlay */}
       <div
@@ -44,7 +41,11 @@ export default function MacOSApp() {
         }}
       >
         {systemPhase !== "desktop" && systemPhase !== "login" && (
-          <Boot systemPhase={systemPhase} setSystemPhase={setSystemPhase} />
+          <Boot
+            systemPhase={systemPhase}
+            setSystemPhase={setSystemPhase}
+            restartCompletePhase={isMobile ? "desktop" : "login"}
+          />
         )}
       </div>
     </>

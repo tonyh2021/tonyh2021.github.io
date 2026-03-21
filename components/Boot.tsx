@@ -8,6 +8,8 @@ import type { SystemPhase } from "@/store/slices/system";
 interface Props {
   systemPhase: SystemPhase;
   setSystemPhase: (p: SystemPhase) => void;
+  /** After `bootRestart` progress completes (default: login). */
+  restartCompletePhase?: "login" | "desktop";
 }
 
 /* ── Sleep / screensaver ──────────────────────────────────────── */
@@ -84,9 +86,11 @@ function ShutdownScreen({ onWake }: { onWake: () => void }) {
 function BootAnimation({
   mode,
   setSystemPhase,
+  restartCompletePhase,
 }: {
   mode: "restart" | "shutdown";
   setSystemPhase: (p: SystemPhase) => void;
+  restartCompletePhase: "login" | "desktop";
 }) {
   const [percent, setPercent] = useState(0);
   const didFinishRef = useRef(false);
@@ -96,7 +100,8 @@ function BootAnimation({
     const next = percent + 0.15;
     if (next >= 100) {
       didFinishRef.current = true;
-      if (mode === "restart") setTimeout(() => setSystemPhase("login"), 500);
+      if (mode === "restart")
+        setTimeout(() => setSystemPhase(restartCompletePhase), 500);
       else setSystemPhase("shutdownWait");
     } else {
       setPercent(next);
@@ -124,15 +129,31 @@ function BootAnimation({
 }
 
 /* ── Entry point ──────────────────────────────────────────────── */
-export default function Boot({ systemPhase, setSystemPhase }: Props) {
+export default function Boot({
+  systemPhase,
+  setSystemPhase,
+  restartCompletePhase = "login",
+}: Props) {
   if (systemPhase === "sleep") return <SleepScreen onWake={() => setSystemPhase("login")} />;
   if (systemPhase === "shutdownWait")
     return <ShutdownScreen onWake={() => setSystemPhase("login")} />;
 
   if (systemPhase === "bootRestart")
-    return <BootAnimation mode="restart" setSystemPhase={setSystemPhase} />;
+    return (
+      <BootAnimation
+        mode="restart"
+        setSystemPhase={setSystemPhase}
+        restartCompletePhase={restartCompletePhase}
+      />
+    );
   if (systemPhase === "bootShutdown")
-    return <BootAnimation mode="shutdown" setSystemPhase={setSystemPhase} />;
+    return (
+      <BootAnimation
+        mode="shutdown"
+        setSystemPhase={setSystemPhase}
+        restartCompletePhase="login"
+      />
+    );
 
   return null;
 }
