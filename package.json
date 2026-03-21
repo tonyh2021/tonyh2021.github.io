@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "sync-post-bodies": "tsx scripts/generate-post-bodies.ts",
+    "predev": "pnpm run sync-post-bodies",
+    "prebuild": "pnpm run sync-post-bodies",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -43,6 +46,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0"
   },
   "packageManager": "pnpm@10.29.3"

@@ -16,17 +16,16 @@ import VSCode from "@/components/apps/VSCode";
 import Terminal from "@/components/apps/Terminal";
 import Launchpad from "@/components/Launchpad";
 import Spotlight from "@/components/Spotlight";
-import type { Post } from "@/lib/types";
+import type { PostIndexBundle } from "@/lib/types";
 
 /** Top bar height — mirrors minMarginY in playground-macos */
 const TOP_BAR_H = 32;
 
 interface Props {
-  posts: Post[];
-  enPosts: Post[];
+  postIndexBundle: PostIndexBundle;
 }
 
-export default function MacDesktop({ posts, enPosts }: Props) {
+export default function MacDesktop({ postIndexBundle }: Props) {
   const { wins, currentApp, brightness } = useStore(
     useShallow((s) => ({
       wins: s.wins,
@@ -70,14 +69,14 @@ export default function MacDesktop({ posts, enPosts }: Props) {
   // ── Memoize window contents ─────────────────────────────────────────────────
   const windowContents = useMemo(
     () => ({
-      blog: <BlogApp posts={posts} enPosts={enPosts} />,
+      blog: <BlogApp postIndexBundle={postIndexBundle} />,
       about: <AboutApp />,
-      tags: <TagsApp posts={posts} enPosts={enPosts} />,
+      tags: <TagsApp postIndexBundle={postIndexBundle} />,
       safari: <Safari />,
       vscode: <VSCode />,
       terminal: <Terminal />,
     }),
-    [posts, enPosts],
+    [postIndexBundle],
   );
 
   const getWindowMeta = (id: AppId) => {

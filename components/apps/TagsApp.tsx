@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { normalizeTags } from "@/lib/utils";
-import type { Post } from "@/lib/types";
+import type { PostIndex, PostIndexBundle } from "@/lib/types";
+import { usePostLocale } from "@/hooks/usePostLocale";
+import { resolvePostIndices } from "@/lib/postBundle";
 
 interface Props {
-  posts: Post[];
-  enPosts: Post[];
+  postIndexBundle: PostIndexBundle;
 }
 
-function buildTagMap(posts: Post[]): Record<string, Post[]> {
-  const map: Record<string, Post[]> = {};
+function buildTagMap(posts: PostIndex[]): Record<string, PostIndex[]> {
+  const map: Record<string, PostIndex[]> = {};
   for (const post of posts) {
     for (const tag of normalizeTags(post.frontMatter.tags)) {
       if (!map[tag]) map[tag] = [];
@@ -29,19 +30,24 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function TagsApp({ posts, enPosts }: Props) {
-  const [activePosts, setActivePosts] = useState(posts);
-  useEffect(() => {
-    if (!navigator.language.toLowerCase().startsWith("zh")) setActivePosts(enPosts);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export default function TagsApp({ postIndexBundle }: Props) {
+  const locale = usePostLocale("en");
+  const indices = useMemo(
+    () => resolvePostIndices(postIndexBundle, locale),
+    [postIndexBundle, locale],
+  );
 
-  const tagMap = buildTagMap(activePosts);
-  const tags = Object.keys(tagMap).sort((a, b) => tagMap[b].length - tagMap[a].length);
+  const tagMap = useMemo(() => buildTagMap(indices), [indices]);
+  const tags = useMemo(
+    () => Object.keys(tagMap).sort((a, b) => tagMap[b].length - tagMap[a].length),
+    [tagMap],
+  );
   const [selected, setSelected] = useState<string | null>(null);
+  const tagsKey = tags.join("|");
+
   useEffect(() => {
     setSelected(tags[0] ?? null);
-  }, [activePosts]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [tagsKey, tags]);
 
   return (
     <div className="flex h-full bg-white text-gray-900 dark:bg-gray-900 dark:text-white">

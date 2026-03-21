@@ -1,25 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeTags } from "@/lib/utils";
-import type { Post } from "@/lib/types";
+import { postBodyJsonUrl } from "@/lib/postBodyUrl";
+import type { Post, PostIndex, PostIndexBundle } from "@/lib/types";
 import { useMobile } from "@/hooks/useMobile";
 import { usePostLocale } from "@/hooks/usePostLocale";
+import { resolvePostIndices } from "@/lib/postBundle";
 import ArticleContent from "@/components/apps/ArticleContent";
-
-function stripMd(text: string): string {
-  return text
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/`[^`]*`/g, "")
-    .replace(/!\[.*?\]\(.*?\)/g, "")
-    .replace(/\[([^\]]*)\]\(.*?\)/g, "$1")
-    .replace(/#{1,6}\s/g, "")
-    .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, "$1")
-    .replace(/>\s/g, "")
-    .replace(/\n+/g, " ")
-    .trim();
-}
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -31,8 +20,7 @@ function formatDate(dateStr: string): string {
 }
 
 interface Props {
-  posts: Post[];
-  enPosts: Post[];
+  postIndexBundle: PostIndexBundle;
 }
 
 type FilterType =
@@ -40,22 +28,53 @@ type FilterType =
   | { kind: "tag"; value: string }
   | { kind: "year"; value: string };
 
-export default function BlogApp({ posts, enPosts }: Props) {
+export default function BlogApp({ postIndexBundle }: Props) {
   const isMobile = useMobile();
   const router = useRouter();
   const locale = usePostLocale("en");
-  posts = locale === "zh" ? posts : enPosts;
+  const indices = resolvePostIndices(postIndexBundle, locale);
+
   const [filter, setFilter] = useState<FilterType>({ kind: "all" });
-  const [selectedPost, setSelectedPost] = useState<Post | null>(posts[0] ?? null);
+  const [selectedIndex, setSelectedIndex] = useState<PostIndex | null>(indices[0] ?? null);
+  const [loadedPost, setLoadedPost] = useState<Post | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadingBody, setLoadingBody] = useState(false);
 
   useEffect(() => {
     setFilter({ kind: "all" });
-    setSelectedPost(posts[0] ?? null);
-  }, [locale, posts]);
+    setSelectedIndex(indices[0] ?? null);
+  }, [locale, indices]);
+
+  const loadBody = useCallback(async (index: PostIndex | null) => {
+    if (!index) {
+      setLoadedPost(null);
+      setLoadError(null);
+      return;
+    }
+    setLoadingBody(true);
+    setLoadError(null);
+    try {
+      const res = await fetch(postBodyJsonUrl(index));
+      if (!res.ok) throw new Error(`${res.status}`);
+      const data = (await res.json()) as Post;
+      setLoadedPost(data);
+    } catch {
+      setLoadedPost(null);
+      setLoadError(
+        "Could not load post body. Run `pnpm run sync-post-bodies` (or `pnpm dev` / `pnpm build`) to generate JSON under public/data/post-bodies.",
+      );
+    } finally {
+      setLoadingBody(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadBody(selectedIndex);
+  }, [selectedIndex, loadBody]);
 
   // Build tag map
   const tagCounts: Record<string, number> = {};
-  for (const post of posts) {
+  for (const post of indices) {
     for (const tag of normalizeTags(post.frontMatter.tags)) {
       tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
     }
@@ -64,7 +83,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
 
   // Build year map
   const yearCounts: Record<string, number> = {};
-  for (const post of posts) {
+  for (const post of indices) {
     const year = post.frontMatter.date.slice(0, 4);
     yearCounts[year] = (yearCounts[year] ?? 0) + 1;
   }
@@ -72,20 +91,20 @@ export default function BlogApp({ posts, enPosts }: Props) {
 
   const filteredPosts =
     filter.kind === "all"
-      ? posts
+      ? indices
       : filter.kind === "tag"
-        ? posts.filter((p) => normalizeTags(p.frontMatter.tags).includes(filter.value))
-        : posts.filter((p) => p.frontMatter.date.startsWith(filter.value));
+        ? indices.filter((p) => normalizeTags(p.frontMatter.tags).includes(filter.value))
+        : indices.filter((p) => p.frontMatter.date.startsWith(filter.value));
 
   const applyFilter = (f: FilterType) => {
     setFilter(f);
     const first =
       f.kind === "all"
-        ? posts[0]
+        ? indices[0]
         : f.kind === "tag"
-          ? posts.find((p) => normalizeTags(p.frontMatter.tags).includes(f.value))
-          : posts.find((p) => p.frontMatter.date.startsWith(f.value));
-    setSelectedPost(first ?? null);
+          ? indices.find((p) => normalizeTags(p.frontMatter.tags).includes(f.value))
+          : indices.find((p) => p.frontMatter.date.startsWith(f.value));
+    setSelectedIndex(first ?? null);
   };
 
   // ── Mobile layout ─────────────────────────────────────────────────────────
@@ -101,7 +120,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${filter.kind === "all" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"}`}
             onClick={() => applyFilter({ kind: "all" })}
           >
-            All ({posts.length})
+            All ({indices.length})
           </button>
           {years.map((year) => (
             <button
@@ -126,7 +145,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
         {/* Post list */}
         <ul className="flex-1 overflow-y-auto">
           {filteredPosts.map((post) => {
-            const excerpt = stripMd(post.content).slice(0, 80);
+            const excerpt = post.excerpt.slice(0, 80) + (post.excerpt.length > 80 ? "…" : "");
             return (
               <li
                 key={post.slug}
@@ -174,7 +193,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
             <span
               className={`ml-auto pr-2 text-xs ${filter.kind === "all" ? "text-white/70" : "text-gray-500 dark:text-gray-500"}`}
             >
-              {posts.length}
+              {indices.length}
             </span>
           </li>
         </ul>
@@ -236,8 +255,8 @@ export default function BlogApp({ posts, enPosts }: Props) {
       <div className="w-56 shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 dark:border-gray-700/60 dark:bg-gray-800">
         <ul>
           {filteredPosts.map((post) => {
-            const excerpt = stripMd(post.content).slice(0, 80);
-            const isSelected = selectedPost?.slug === post.slug;
+            const excerpt = post.excerpt.slice(0, 80) + (post.excerpt.length > 80 ? "…" : "");
+            const isSelected = selectedIndex?.slug === post.slug;
             return (
               <li
                 key={post.slug}
@@ -246,7 +265,7 @@ export default function BlogApp({ posts, enPosts }: Props) {
                     ? "border-orange-500 bg-white dark:bg-gray-700"
                     : "border-transparent hover:bg-white dark:hover:bg-gray-700/50"
                 }`}
-                onClick={() => setSelectedPost(post)}
+                onClick={() => setSelectedIndex(post)}
               >
                 {/* Title */}
                 <div className="mt-3 flex h-8 items-center">
@@ -282,14 +301,22 @@ export default function BlogApp({ posts, enPosts }: Props) {
 
       {/* ── Column 3: Content ─────────────────────────────── */}
       <div className="flex-1 overflow-y-auto bg-gray-50 select-text dark:bg-gray-800">
-        {selectedPost ? (
-          <>
-            <ArticleContent post={selectedPost} />
-          </>
-        ) : (
+        {!selectedIndex ? (
           <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-600">
             Select a post to read
           </div>
+        ) : (
+          <>
+            {loadingBody && (
+              <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-600">
+                Loading…
+              </div>
+            )}
+            {!loadingBody && loadError && (
+              <div className="p-6 text-sm text-amber-800 dark:text-amber-200">{loadError}</div>
+            )}
+            {!loadingBody && !loadError && loadedPost ? <ArticleContent post={loadedPost} /> : null}
+          </>
         )}
       </div>
     </div>

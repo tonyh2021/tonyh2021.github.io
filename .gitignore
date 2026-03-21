@@ -46,6 +46,9 @@ bower_components
 .next/
 out/
 
+# Generated post JSON for lazy-load (recreated by predev / prebuild)
+public/data/post-bodies/
+
 # Env (keep .env.example committed)
 .env
 .env.local

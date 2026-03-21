@@ -43,7 +43,9 @@ Format with [Prettier](https://prettier.io/): `pnpm format` (write) / `pnpm form
 pnpm build
 ```
 
-Static output is generated in `./out/`.
+`prebuild` runs **`pnpm run sync-post-bodies`**, which writes `public/data/post-bodies/{zh,en}/*.json` (full markdown per post). The desktop **Blog** window loads those on demand via `fetch`, while the home RSC only serializes a light **`PostIndexBundle`** (slug, front matter, excerpt, `bodyLocale`) into the client — not the entire corpus twice. Regenerate after editing `_posts/` (or rely on `predev` before `pnpm dev`). Generated files are gitignored; CI runs the same script before `next build`.
+
+Static HTML export is written to `./out/` (includes `out/data/post-bodies/` from `public/`).
 
 ## Deployment (GitHub Pages)
 

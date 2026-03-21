@@ -1,18 +1,20 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import type { Post, PostFrontMatter } from "./types";
+import type { Post, PostFrontMatter, PostIndex, PostIndexBundle } from "./types";
+import type { Locale } from "./postBundle";
+import { markdownExcerpt } from "./postExcerpt";
 import { normalizeTags } from "./utils";
 
 export { normalizeTags };
-
-export type Locale = "zh" | "en";
+export type { Locale } from "./postBundle";
+export { resolvePostIndices } from "./postBundle";
 
 const POSTS_DIR = path.join(process.cwd(), "_posts");
 
 function fileNameToSlug(fileName: string): string {
   return fileName
-    .replace(/_en\.mdx?$/, "") // strip _en before extension
+    .replace(/_en\.mdx?$/, "")
     .replace(/\.mdx?$/, "")
     .replace(/\s+/g, "-")
     .toLowerCase();
@@ -57,51 +59,79 @@ function getAllPostFiles(locale: Locale = "zh"): { filePath: string; fileName: s
   return result;
 }
 
-export function getAllPosts(locale: Locale = "zh"): Post[] {
+function parsePostFile(filePath: string, fileName: string): Post {
+  const slug = fileNameToSlug(fileName);
+  const date = extractDateFromFileName(fileName);
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const { data, content } = matter(raw);
+  const frontMatter: PostFrontMatter = {
+    ...(data as Omit<PostFrontMatter, "date">),
+    date,
+  };
+  return { slug, frontMatter, content };
+}
+
+// ── Module cache: one read+matter parse per locale per Node process ─────────
+const postsCache = new Map<Locale, Post[]>();
+
+function loadPosts(locale: Locale): Post[] {
+  const hit = postsCache.get(locale);
+  if (hit) return hit;
+
   const files = getAllPostFiles(locale);
+  const posts = files
+    .map(({ filePath, fileName }) => parsePostFile(filePath, fileName))
+    .sort((a, b) => b.frontMatter.date.localeCompare(a.frontMatter.date));
 
-  const posts = files.map(({ filePath, fileName }) => {
-    const slug = fileNameToSlug(fileName);
-    const date = extractDateFromFileName(fileName);
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(raw);
-    const frontMatter: PostFrontMatter = {
-      ...(data as Omit<PostFrontMatter, "date">),
-      date,
-    };
-    return { slug, frontMatter, content };
-  });
+  postsCache.set(locale, posts);
+  return posts;
+}
 
-  return posts.sort((a, b) => b.frontMatter.date.localeCompare(a.frontMatter.date));
+function toPostIndex(post: Post, bodyLocale: Locale): PostIndex {
+  return {
+    slug: post.slug,
+    frontMatter: post.frontMatter,
+    excerpt: markdownExcerpt(post.content, 160),
+    bodyLocale,
+  };
+}
+
+export function getAllPosts(locale: Locale = "zh"): Post[] {
+  return loadPosts(locale);
+}
+
+export function getPostIndexBundle(): PostIndexBundle {
+  return {
+    zh: loadPosts("zh").map((p) => toPostIndex(p, "zh")),
+    en: loadPosts("en").map((p) => toPostIndex(p, "en")),
+  };
 }
 
 export function getAllSlugs(): string[] {
-  return getAllPosts("zh").map((p) => p.slug);
+  return loadPosts("zh").map((p) => p.slug);
 }
 
 export function getPostBySlug(slug: string, locale: Locale = "zh"): Post {
-  const posts = getAllPosts(locale);
-  const post = posts.find((p) => p.slug === slug);
+  const post = loadPosts(locale).find((p) => p.slug === slug);
   if (post) return post;
 
-  // Fallback to Chinese if English version not found
   if (locale === "en") {
-    const zhPost = getAllPosts("zh").find((p) => p.slug === slug);
+    const zhPost = loadPosts("zh").find((p) => p.slug === slug);
     if (zhPost) return zhPost;
   }
 
   throw new Error(`Post not found: ${slug}`);
 }
 
-export function getAllTags(locale: Locale = "zh"): Record<string, Post[]> {
-  const posts = getAllPosts(locale);
-  const tagMap: Record<string, Post[]> = {};
+export function getAllTags(locale: Locale = "zh"): Record<string, PostIndex[]> {
+  const posts = loadPosts(locale);
+  const tagMap: Record<string, PostIndex[]> = {};
 
   for (const post of posts) {
-    const tags = normalizeTags(post.frontMatter.tags);
-    for (const tag of tags) {
+    const idx = toPostIndex(post, locale);
+    for (const tag of normalizeTags(post.frontMatter.tags)) {
       if (!tagMap[tag]) tagMap[tag] = [];
-      tagMap[tag].push(post);
+      tagMap[tag].push(idx);
     }
   }
 
