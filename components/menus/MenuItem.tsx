@@ -5,16 +5,22 @@ import type { ReactNode } from "react";
 export function MenuItem({
   onClick,
   children,
+  icon,
 }: {
   onClick?: (e: React.MouseEvent<HTMLLIElement>) => void;
   children: ReactNode;
+  /** Optional leading icon (inline `<svg>` + `currentColor` recommended). */
+  icon?: ReactNode;
 }) {
   return (
     <li
       onClick={onClick}
-      className="cursor-default rounded px-2.5 leading-6 select-none hover:bg-blue-500 hover:text-white"
+      className="flex cursor-default items-center gap-2 rounded px-2.5 py-0.5 leading-6 select-none hover:bg-blue-500 hover:text-white"
     >
-      {children}
+      {icon != null ? (
+        <span className="flex shrink-0 items-center opacity-90">{icon}</span>
+      ) : null}
+      <span className="min-w-0 flex-1">{children}</span>
     </li>
   );
 }

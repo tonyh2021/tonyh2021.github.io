@@ -15,7 +15,7 @@ export function PostIndexProvider({
   return <PostIndexContext.Provider value={value}>{children}</PostIndexContext.Provider>;
 }
 
-/** 博客索引（由首页 RSC 注入，供 Blog / Tags 等窗口消费） */
+/** Post index from the home RSC, consumed by Blog / Tags windows. */
 export function usePostIndexBundle(): PostIndexBundle {
   const ctx = useContext(PostIndexContext);
   if (!ctx) {

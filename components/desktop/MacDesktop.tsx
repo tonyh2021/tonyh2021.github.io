@@ -23,7 +23,7 @@ function WindowAppLoading({ label }: { label: string }) {
   );
 }
 
-/** 按应用拆 chunk，减轻首屏 JS；Blog/Tags 从 PostIndexContext 读索引 */
+/** Per-app code-splitting to trim first-load JS; Blog/Tags read index from PostIndexContext. */
 const BlogApp = dynamic(() => import("@/components/apps/BlogApp"), {
   ssr: false,
   loading: () => <WindowAppLoading label="Blog" />,
@@ -89,7 +89,7 @@ export default function MacDesktop() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Memoize window contents（子应用各自 dynamic chunk，索引由 PostIndexProvider 提供）──
+  // ── Memoize window contents (each app is a dynamic chunk; index from PostIndexProvider) ──
   const windowContents = useMemo(
     () => ({
       blog: <BlogApp />,
