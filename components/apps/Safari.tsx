@@ -129,7 +129,7 @@ function NoInternetPage() {
           Not Connected to the Internet
         </div>
         <div className="text-sm">
-          This page can't be displayed because your computer is currently
+          This page can&apos;t be displayed because your computer is currently
           offline.
         </div>
       </div>

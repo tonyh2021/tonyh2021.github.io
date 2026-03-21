@@ -340,7 +340,10 @@ export default function Terminal() {
           <div className="text-gray-400">{lastLogin}</div>
           <div className="text-yellow-400/90">
             [oh-my-zsh] Random theme{" "}
-            <span className="text-green-400">'{zshTheme}'</span> loaded
+            <span className="text-green-400">
+              &apos;{zshTheme}&apos;
+            </span>{" "}
+            loaded
           </div>
         </div>
         {rows.map((r) => r.el)}

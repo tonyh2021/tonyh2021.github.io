@@ -5,7 +5,7 @@ export default function AboutApp() {
     <div className="h-full overflow-y-auto bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <div className="max-w-lg mx-auto px-6 py-8">
         <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          Hi. I'm Tony.
+          Hi. I&apos;m Tony.
         </h1>
 
         <p className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">

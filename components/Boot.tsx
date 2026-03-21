@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useInterval } from "@/hooks/useInterval";
 import { useWallpaper } from "@/hooks/useWallpaper";
 import type { SystemPhase } from "@/store/slices/system";
@@ -17,13 +17,13 @@ function SleepScreen({ onWake }: { onWake: () => void }) {
   const didWakeRef = useRef(false);
   const wakeTimerRef = useRef<number | null>(null);
 
-  const handleWake = () => {
+  const handleWake = useCallback(() => {
     if (didWakeRef.current) return;
     didWakeRef.current = true;
     wakeTimerRef.current = window.setTimeout(() => {
       onWake();
     }, 2000);
-  };
+  }, [onWake]);
 
   useEffect(() => {
     window.addEventListener("mousemove", handleWake);
