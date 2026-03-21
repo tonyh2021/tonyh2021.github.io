@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect } from "react";
 import { useDark } from "@/hooks/useDark";
-import { useMobile } from "@/hooks/useMobile";
+import { MOBILE_BREAKPOINT_PX } from "@/hooks/useMobile";
 
 interface Wallpaper {
   image: string;
@@ -43,7 +43,12 @@ function msUntilNoon(): number {
 
 export function useWallpaper(): WallpaperInfo {
   const dark = useDark();
-  const isMobile = useMobile();
+  /**
+   * `null` until viewport is measured — must NOT use `useMobile()` here: that hook
+   * starts `false` for hydration, which would briefly expose `video` on phones and
+   * trigger an MP4 fetch. Only enable video after we know width >= breakpoint.
+   */
+  const [allowVideoWallpaper, setAllowVideoWallpaper] = useState<boolean | null>(null);
   /**
    * Stable SSR + hydration: server and first client frame use the same default.
    * Real time-of-day wallpaper is applied in useLayoutEffect (client only).
@@ -52,6 +57,10 @@ export function useWallpaper(): WallpaperInfo {
 
   useLayoutEffect(() => {
     setLightWallpaper(getLightWallpaper());
+    const measure = () => setAllowVideoWallpaper(window.innerWidth >= MOBILE_BREAKPOINT_PX);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
   useEffect(() => {
@@ -68,6 +77,7 @@ export function useWallpaper(): WallpaperInfo {
   }, []);
 
   const wp = dark ? Wallpapers.night : lightWallpaper;
-  // Skip animated wallpaper on small viewports — no MP4 fetch/decode/battery cost.
-  return { image: wp.image, video: isMobile ? null : wp.video };
+  // Skip MP4 on mobile / until viewport known (SSR + first client frame).
+  const video = allowVideoWallpaper === true ? wp.video : null;
+  return { image: wp.image, video };
 }

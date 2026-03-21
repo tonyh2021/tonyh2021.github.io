@@ -2,7 +2,10 @@
 
 import { useState, useLayoutEffect } from "react";
 
-export function useMobile(breakpoint = 768): boolean {
+/** Same breakpoint as Tailwind `sm` (must stay in sync with `useWallpaper` video gating). */
+export const MOBILE_BREAKPOINT_PX = 768;
+
+export function useMobile(breakpoint = MOBILE_BREAKPOINT_PX): boolean {
   /** Must match SSR (`false`) to avoid hydration mismatch; real value after layout. */
   const [isMobile, setIsMobile] = useState(false);
 
