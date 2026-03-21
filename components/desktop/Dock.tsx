@@ -1,13 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useCallback, useMemo } from "react";
 import { resolveImageSrc } from "@/lib/imageSrc";
 import { appConfigs, type AppId } from "@/configs/apps";
 import type { WinState } from "@/store/slices/windows";
 import { useMobile } from "@/hooks/useMobile";
 import { useDockVisibility } from "@/hooks/useDockVisibility";
-import MagnifiedDockBar, { type MagnifiedDockSlot } from "./MagnifiedDockBar";
+import type { MagnifiedDockSlot } from "./MagnifiedDockBar";
+
+/** Desktop-only; never loaded on mobile (early return below). */
+const MagnifiedDockBar = dynamic(() => import("./MagnifiedDockBar"), {
+  ssr: false,
+  loading: () => <div className="h-20 max-w-[100vw]" aria-hidden />,
+});
 
 const MOBILE_APPS = ["blog", "about", "safari", "github"] as const;
 

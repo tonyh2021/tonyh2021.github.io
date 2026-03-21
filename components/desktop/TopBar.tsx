@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 import { format } from "date-fns";
@@ -11,7 +12,10 @@ import { music } from "@/configs/music";
 import AppleMenu from "@/components/menus/AppleMenu";
 import WifiMenu from "@/components/menus/WifiMenu";
 import Battery from "@/components/menus/Battery";
-import ControlCenterMenu from "@/components/menus/ControlCenterMenu";
+
+const ControlCenterMenu = dynamic(() => import("@/components/menus/ControlCenterMenu"), {
+  ssr: false,
+});
 
 interface Props {
   currentApp: string;

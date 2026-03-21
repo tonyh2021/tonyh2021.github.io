@@ -9,8 +9,6 @@ import { useWallpaper } from "@/hooks/useWallpaper";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import AppWindow from "./AppWindow";
-import Launchpad from "@/components/Launchpad";
-import Spotlight from "@/components/Spotlight";
 
 /** Top bar height — mirrors minMarginY in playground-macos */
 const TOP_BAR_H = 32;
@@ -49,6 +47,9 @@ const Terminal = dynamic(() => import("@/components/apps/Terminal"), {
   loading: () => <WindowAppLoading label="Terminal" />,
 });
 
+const Launchpad = dynamic(() => import("@/components/Launchpad"), { ssr: false });
+const Spotlight = dynamic(() => import("@/components/Spotlight"), { ssr: false });
+
 export default function MacDesktop() {
   const { wins, currentApp, brightness } = useStore(
     useShallow((s) => ({
@@ -76,6 +77,8 @@ export default function MacDesktop() {
   const initWins = useStore((s) => s.initWins);
   const [mounted, setMounted] = useState(false);
   const [showLaunchpad, setShowLaunchpad] = useState(false);
+  /** Keep Launchpad mounted after first open so close opacity transition can finish. */
+  const [launchpadMounted, setLaunchpadMounted] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [spotlightBtnRef, setSpotlightBtnRef] =
     useState<React.RefObject<HTMLDivElement | null> | null>(null);
@@ -88,6 +91,10 @@ export default function MacDesktop() {
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (showLaunchpad) setLaunchpadMounted(true);
+  }, [showLaunchpad]);
 
   // ── Memoize window contents (each app is a dynamic chunk; index from PostIndexProvider) ──
   const windowContents = useMemo(
@@ -250,7 +257,9 @@ export default function MacDesktop() {
         />
       )}
 
-      <Launchpad show={showLaunchpad} toggle={setShowLaunchpad} />
+      {launchpadMounted && (
+        <Launchpad show={showLaunchpad} toggle={setShowLaunchpad} />
+      )}
 
       <Dock
         openWin={openApp}
