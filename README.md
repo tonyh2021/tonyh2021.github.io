@@ -31,6 +31,8 @@ pnpm build
 
 Output: static `./out/` (GitHub Actions deploys it to Pages). Repo **Settings → Pages**: source **GitHub Actions**. Optional repo variable `NEXT_PUBLIC_SITE_URL` if not default.
 
+**GitHub Pages + blog paths:** `trailingSlash: false` in `next.config.js` exports `blog/<slug>.html`, which Pages serves at **`/blog/<slug>`** (no trailing slash). **`/blog/<slug>/`** can 404 (no per-slug folder + `index.html`).
+
 ## License
 
 - `_posts/`, `public/images/posts/` — Copyright Tony Han (no reuse without permission)

@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const postRoutes: MetadataRoute.Sitemap = getAllSlugs().map((slug) => ({
-    url: `${SITE_URL}/blog/${slug}/`,
+    url: `${SITE_URL}/blog/${slug}`,
     lastModified: now,
     changeFrequency: "monthly",
     priority: 0.7,

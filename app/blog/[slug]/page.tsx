@@ -24,7 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostSafe(slug, "en") ?? getPostSafe(slug, "zh");
-  const canonicalPath = `/blog/${slug}/`;
+  const canonicalPath = `/blog/${slug}`;
   if (!post) {
     return {
       title: "Post Not Found",
@@ -69,7 +69,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const enPost = getPostSafe(slug, "en");
   if (!zhPost && !enPost) notFound();
   const seoPost = enPost ?? zhPost!;
-  const canonicalUrl = `${SITE_URL}/blog/${slug}/`;
+  const canonicalUrl = `${SITE_URL}/blog/${slug}`;
   const keywords =
     typeof seoPost.frontMatter.tags === "string"
       ? [seoPost.frontMatter.tags]

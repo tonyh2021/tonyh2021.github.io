@@ -53,7 +53,7 @@ export default function TagsPage() {
                       {formatDate(post.frontMatter.date)}
                     </span>
                     <a
-                      href={`/blog/${post.slug}/`}
+                      href={`/blog/${post.slug}`}
                       className="text-gray-300 transition-colors hover:text-blue-400"
                     >
                       {post.frontMatter.title}
