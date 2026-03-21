@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { appConfigs, type AppId } from "@/configs/apps";
+import { resolveImageSrc } from "@/lib/imageSrc";
 
 type AppItem = {
   id: AppId;
@@ -135,8 +137,15 @@ export default function Spotlight({ openApp, toggleLaunchpad, close, btnRef }: P
           onChange={(e) => setQuery(e.target.value)}
         />
         {selected?.img && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={selected.img} alt={selected.title} className="h-8 w-8 shrink-0" />
+          <div className="relative h-8 w-8 shrink-0">
+            <Image
+              src={resolveImageSrc(selected.img)}
+              alt={selected.title}
+              fill
+              sizes="32px"
+              className="object-contain"
+            />
+          </div>
         )}
       </div>
 
@@ -182,12 +191,15 @@ export default function Spotlight({ openApp, toggleLaunchpad, close, btnRef }: P
                       className={`flex cursor-default items-center gap-2 rounded px-2 py-1 text-xs ${idx === selectedIdx ? "bg-blue-500 text-white" : "text-gray-800 dark:text-gray-200"}`}
                     >
                       {app.img && (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={app.img}
-                          alt={app.title}
-                          className="h-5 w-5 shrink-0 object-contain"
-                        />
+                        <div className="relative h-5 w-5 shrink-0">
+                          <Image
+                            src={resolveImageSrc(app.img)}
+                            alt={app.title}
+                            fill
+                            sizes="20px"
+                            className="object-contain"
+                          />
+                        </div>
                       )}
                       <span className="truncate">{app.title}</span>
                     </div>
@@ -202,8 +214,15 @@ export default function Spotlight({ openApp, toggleLaunchpad, close, btnRef }: P
             <div className="flex flex-1 flex-col">
               <div className="flex flex-1 flex-col items-center justify-center gap-3 border-b border-gray-200 p-4 dark:border-gray-700">
                 {selected.img ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={selected.img} alt={selected.title} className="w-24 object-contain" />
+                  <div className="relative h-24 w-24">
+                    <Image
+                      src={resolveImageSrc(selected.img)}
+                      alt={selected.title}
+                      fill
+                      sizes="96px"
+                      className="object-contain"
+                    />
+                  </div>
                 ) : (
                   <div className="flex h-24 w-24 items-center justify-center text-5xl">
                     {appConfigs.find((a) => a.id === selected.id)?.icon ?? "📦"}

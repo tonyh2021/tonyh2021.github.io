@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { user } from "@/configs/user";
 import { useWallpaper } from "@/hooks/useWallpaper";
@@ -41,11 +42,13 @@ export default function Login() {
         />
       )}
       <div className="relative -top-10 z-10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={user.avatar}
           alt={user.name}
-          className="mx-auto h-24 w-24 rounded-full object-cover shadow-lg"
+          width={96}
+          height={96}
+          priority
+          className="mx-auto h-24 w-24 rounded-full object-cover object-top shadow-lg"
         />
         <p className="mt-2 text-xl font-semibold text-white">{user.name}</p>
       </div>

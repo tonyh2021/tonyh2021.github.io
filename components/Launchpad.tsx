@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import type { LaunchpadItem } from "@/configs/launchpad";
 import { useWallpaper } from "@/hooks/useWallpaper";
 
@@ -12,18 +13,19 @@ interface Props {
 /** Match `launchpadApps` length in configs/launchpad.ts (skeleton only; no runtime import). */
 const LAUNCHPAD_GRID_PLACEHOLDER_COUNT = 7;
 
-/** No `<img>` until Launchpad is open — avoids icon requests on first paint. */
+/** No image until Launchpad is open — avoids icon requests on first paint. */
 function LaunchpadAppIcon({ src, alt, load }: { src: string; alt: string; load: boolean }) {
   return (
     <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-white/15 shadow-lg">
       {load ? (
-        <img
+        <Image
           src={src}
           alt={alt}
+          fill
+          sizes="80px"
+          className="object-cover"
           loading="lazy"
-          decoding="async"
           fetchPriority="low"
-          className="h-full w-full object-cover"
         />
       ) : null}
     </div>

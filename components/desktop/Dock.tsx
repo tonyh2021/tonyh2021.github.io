@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useMemo } from "react";
+import { resolveImageSrc } from "@/lib/imageSrc";
 import { appConfigs, type AppId } from "@/configs/apps";
 import type { WinState } from "@/store/slices/windows";
 import { useMobile } from "@/hooks/useMobile";
@@ -84,15 +86,16 @@ export default function Dock({ openWin, wins, hide, toggleLaunchpad, showLaunchp
             {mobileApps.map((app) => {
               const inner = (
                 <div className="flex flex-col items-center gap-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <div
-                    className={`h-14 w-14 overflow-hidden rounded-2xl shadow-md transition-transform duration-150 active:scale-90`}
+                    className={`relative h-14 w-14 overflow-hidden rounded-2xl shadow-md transition-transform duration-150 active:scale-90`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element -- dock icons are local assets */}
-                    <img
-                      src={app.img}
+                    <Image
+                      src={resolveImageSrc(app.img)}
                       alt={app.title}
-                      className="h-full w-full border-0 object-cover"
+                      fill
+                      sizes="56px"
+                      loading="lazy"
+                      className="border-0 object-cover"
                       draggable={false}
                     />
                   </div>

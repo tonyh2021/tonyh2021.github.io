@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
+import { resolveImageSrc } from "@/lib/imageSrc";
 import { useStore } from "@/store";
 import { useDark } from "@/hooks/useDark";
 import { websites, type SiteSection } from "@/configs/websites";
@@ -46,10 +48,15 @@ function NavSection({
             className="flex h-28 cursor-pointer flex-col items-center"
             onClick={() => onNavigate(site.link)}
           >
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm">
+            <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm">
               {site.img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={site.img} alt={site.title} className="h-full w-full object-contain p-1" />
+                <Image
+                  src={resolveImageSrc(site.img)}
+                  alt={site.title}
+                  fill
+                  sizes="64px"
+                  className="object-contain p-1"
+                />
               ) : (
                 <span className="px-1 text-center text-sm font-medium text-gray-700">
                   {site.title}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useStore } from "@/store";
@@ -193,10 +194,11 @@ export default function ControlCenterMenu({
 
         {/* Now Playing */}
         <Tile className="flex items-center gap-3 px-3 py-2.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={music.cover}
             alt="cover"
+            width={40}
+            height={40}
             className="h-10 w-10 shrink-0 rounded-xl object-cover"
           />
           <div className="min-w-0 flex-1">

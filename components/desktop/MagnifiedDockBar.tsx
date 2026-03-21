@@ -1,7 +1,9 @@
 "use client";
 
 import type { CSSProperties, MouseEvent } from "react";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { resolveImageSrc } from "@/lib/imageSrc";
 import { cn } from "@/lib/utils";
 import { useDark } from "@/hooks/useDark";
 
@@ -20,11 +22,6 @@ export type MagnifiedDockSlot =
 interface MagnifiedDockBarProps {
   slots: MagnifiedDockSlot[];
   className?: string;
-}
-
-function publicAssetUrl(path: string): string {
-  if (path.startsWith("http") || path.startsWith("/")) return path;
-  return `/${path}`;
 }
 
 export default function MagnifiedDockBar({ slots, className = "" }: MagnifiedDockBarProps) {
@@ -348,17 +345,20 @@ export default function MagnifiedDockBar({ slots, className = "" }: MagnifiedDoc
           const iconIdx = slots.slice(0, index).filter((s) => s.kind === "icon").length;
           const scaledSize = baseIconSize * scale;
 
+          const roundedSize = Math.max(1, Math.round(scaledSize));
           const inner = (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 alt={slot.name}
                 className="object-contain select-none"
                 draggable={false}
-                height={scaledSize}
-                src={publicAssetUrl(slot.icon)}
-                width={scaledSize}
+                height={roundedSize}
+                width={roundedSize}
+                src={resolveImageSrc(slot.icon)}
+                sizes={`${Math.max(1, Math.round(baseIconSize * 1.8))}px`}
                 style={{
+                  width: scaledSize,
+                  height: scaledSize,
                   filter: `drop-shadow(0 ${scale > 1.2 ? Math.max(2, baseIconSize * 0.05) : Math.max(1, baseIconSize * 0.03)}px ${scale > 1.2 ? Math.max(4, baseIconSize * 0.1) : Math.max(2, baseIconSize * 0.06)}px rgba(0,0,0,${dark ? 0.2 + (scale - 1) * 0.15 : 0.14 + (scale - 1) * 0.1}))`,
                 }}
               />
