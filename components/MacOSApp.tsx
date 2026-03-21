@@ -7,13 +7,8 @@ import Boot from "./Boot";
 import Login from "./Login";
 import MacDesktop from "./desktop/MacDesktop";
 import { useMobile } from "@/hooks/useMobile";
-import type { PostIndexBundle } from "@/lib/types";
 
-interface Props {
-  postIndexBundle: PostIndexBundle;
-}
-
-export default function MacOSApp({ postIndexBundle }: Props) {
+export default function MacOSApp() {
   const isMobile = useMobile();
   const { initDark, systemPhase, setSystemPhase } = useStore(
     useShallow((s) => ({
@@ -37,7 +32,7 @@ export default function MacOSApp({ postIndexBundle }: Props) {
 
   return (
     <>
-      {systemPhase === "desktop" ? <MacDesktop postIndexBundle={postIndexBundle} /> : <Login />}
+      {systemPhase === "desktop" ? <MacDesktop /> : <Login />}
 
       {/* Boot overlay */}
       <div

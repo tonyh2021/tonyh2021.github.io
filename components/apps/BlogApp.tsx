@@ -4,10 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeTags } from "@/lib/utils";
 import { postBodyJsonUrl } from "@/lib/postBodyUrl";
-import type { Post, PostIndex, PostIndexBundle } from "@/lib/types";
+import type { Post, PostIndex } from "@/lib/types";
 import { useMobile } from "@/hooks/useMobile";
 import { usePostLocale } from "@/hooks/usePostLocale";
 import { resolvePostIndices } from "@/lib/postBundle";
+import { usePostIndexBundle } from "@/contexts/PostIndexContext";
 import ArticleContent from "@/components/apps/ArticleContent";
 
 function formatDate(dateStr: string): string {
@@ -19,16 +20,13 @@ function formatDate(dateStr: string): string {
   });
 }
 
-interface Props {
-  postIndexBundle: PostIndexBundle;
-}
-
 type FilterType =
   | { kind: "all" }
   | { kind: "tag"; value: string }
   | { kind: "year"; value: string };
 
-export default function BlogApp({ postIndexBundle }: Props) {
+export default function BlogApp() {
+  const postIndexBundle = usePostIndexBundle();
   const isMobile = useMobile();
   const router = useRouter();
   const locale = usePostLocale("en");

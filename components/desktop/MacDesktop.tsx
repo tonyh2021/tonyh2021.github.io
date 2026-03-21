@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 import { appConfigs, ALL_WIN_IDS, type AppId } from "@/configs/apps";
@@ -8,24 +9,47 @@ import { useWallpaper } from "@/hooks/useWallpaper";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import AppWindow from "./AppWindow";
-import BlogApp from "@/components/apps/BlogApp";
-import AboutApp from "@/components/apps/AboutApp";
-import TagsApp from "@/components/apps/TagsApp";
-import Safari from "@/components/apps/Safari";
-import VSCode from "@/components/apps/VSCode";
-import Terminal from "@/components/apps/Terminal";
 import Launchpad from "@/components/Launchpad";
 import Spotlight from "@/components/Spotlight";
-import type { PostIndexBundle } from "@/lib/types";
 
 /** Top bar height — mirrors minMarginY in playground-macos */
 const TOP_BAR_H = 32;
 
-interface Props {
-  postIndexBundle: PostIndexBundle;
+function WindowAppLoading({ label }: { label: string }) {
+  return (
+    <div className="flex h-full min-h-[120px] items-center justify-center text-sm text-white/40">
+      {label}…
+    </div>
+  );
 }
 
-export default function MacDesktop({ postIndexBundle }: Props) {
+/** 按应用拆 chunk，减轻首屏 JS；Blog/Tags 从 PostIndexContext 读索引 */
+const BlogApp = dynamic(() => import("@/components/apps/BlogApp"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="Blog" />,
+});
+const AboutApp = dynamic(() => import("@/components/apps/AboutApp"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="About" />,
+});
+const TagsApp = dynamic(() => import("@/components/apps/TagsApp"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="Tags" />,
+});
+const Safari = dynamic(() => import("@/components/apps/Safari"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="Safari" />,
+});
+const VSCode = dynamic(() => import("@/components/apps/VSCode"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="VS Code" />,
+});
+const Terminal = dynamic(() => import("@/components/apps/Terminal"), {
+  ssr: false,
+  loading: () => <WindowAppLoading label="Terminal" />,
+});
+
+export default function MacDesktop() {
   const { wins, currentApp, brightness } = useStore(
     useShallow((s) => ({
       wins: s.wins,
@@ -66,17 +90,17 @@ export default function MacDesktop({ postIndexBundle }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Memoize window contents ─────────────────────────────────────────────────
+  // ── Memoize window contents（子应用各自 dynamic chunk，索引由 PostIndexProvider 提供）──
   const windowContents = useMemo(
     () => ({
-      blog: <BlogApp postIndexBundle={postIndexBundle} />,
+      blog: <BlogApp />,
       about: <AboutApp />,
-      tags: <TagsApp postIndexBundle={postIndexBundle} />,
+      tags: <TagsApp />,
       safari: <Safari />,
       vscode: <VSCode />,
       terminal: <Terminal />,
     }),
-    [postIndexBundle],
+    [],
   );
 
   const getWindowMeta = (id: AppId) => {
