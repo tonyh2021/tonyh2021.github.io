@@ -2,6 +2,7 @@ import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import BlogPostArticle from "@/components/apps/BlogPostArticle";
 import { BlogPostHeader } from "@/components/apps/BlogPostHeader";
+import { markdownExcerpt } from "@/lib/postExcerpt";
 import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -34,9 +35,10 @@ export async function generateMetadata({
       alternates: { canonical: canonicalPath },
     };
   }
+  const description = post.frontMatter.description ?? markdownExcerpt(post.content, 160);
   return {
     title: post.frontMatter.title,
-    description: post.frontMatter.description ?? "",
+    description,
     alternates: {
       canonical: canonicalPath,
       languages: {
@@ -49,7 +51,7 @@ export async function generateMetadata({
       type: "article",
       url: canonicalPath,
       title: post.frontMatter.title,
-      description: post.frontMatter.description ?? "",
+      description,
       publishedTime: post.frontMatter.date,
       tags:
         typeof post.frontMatter.tags === "string"
@@ -59,7 +61,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: post.frontMatter.title,
-      description: post.frontMatter.description ?? "",
+      description,
     },
   };
 }
@@ -70,7 +72,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const enPost = getPostSafe(slug, "en");
   if (!zhPost && !enPost) notFound();
   const seoPost = enPost ?? zhPost!;
-  const canonicalUrl = `${SITE_URL}/blog/${slug}/`;
+  const canonicalUrl = `${SITE_URL}/posts/${slug}/`;
   const keywords =
     typeof seoPost.frontMatter.tags === "string"
       ? [seoPost.frontMatter.tags]

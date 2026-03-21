@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllSlugs } from "@/lib/posts";
+import { getAllPosts } from "@/lib/posts";
 
 /** Required for `output: "export"` (Next 15+) */
 export const dynamic = "force-static";
@@ -14,11 +14,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/tags/`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
 
-  const postRoutes: MetadataRoute.Sitemap = getAllSlugs().map((slug) => ({
-    url: `${SITE_URL}/blog/${slug}/`,
-    lastModified: now,
+  const postRoutes: MetadataRoute.Sitemap = getAllPosts("zh").map((post) => ({
+    url: `${SITE_URL}/posts/${post.slug}/`,
+    lastModified: post.frontMatter.date ? new Date(post.frontMatter.date) : now,
     changeFrequency: "monthly",
-    priority: 0.7,
+    priority: 0.8,
   }));
 
   return [...staticRoutes, ...postRoutes];
