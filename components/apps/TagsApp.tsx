@@ -3,8 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { normalizeTags } from "@/lib/utils";
 import type { PostIndex } from "@/lib/types";
-import { usePostLocale } from "@/hooks/usePostLocale";
-import { resolvePostIndices } from "@/lib/postBundle";
+import { resolvePostIndices, type Locale } from "@/lib/postBundle";
 import { usePostIndexBundle } from "@/contexts/PostIndexContext";
 
 function buildTagMap(posts: PostIndex[]): Record<string, PostIndex[]> {
@@ -29,7 +28,11 @@ function formatDate(dateStr: string): string {
 
 export default function TagsApp() {
   const postIndexBundle = usePostIndexBundle();
-  const locale = usePostLocale("en");
+  const [locale, setLocale] = useState<Locale>("zh");
+  useEffect(() => {
+    if (!navigator.language.toLowerCase().startsWith("zh")) setLocale("en");
+  }, []);
+
   const indices = useMemo(
     () => resolvePostIndices(postIndexBundle, locale),
     [postIndexBundle, locale],

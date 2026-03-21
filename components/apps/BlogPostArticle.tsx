@@ -8,8 +8,7 @@ interface Props {
 
 /**
  * Server-rendered article for `/blog/[slug]` static export (GitHub Pages).
- * Matches the initial `usePostLocale("en")` choice in `PostLocaleContent`: English first, then Chinese.
- * Avoids client-only boundaries so markdown is in the exported HTML.
+ * Uses English when available, else Chinese — independent of in-app Blog `PostApp` rendering.
  */
 export default function BlogPostArticle({ zhPost, enPost }: Props) {
   const post = enPost ?? zhPost;
