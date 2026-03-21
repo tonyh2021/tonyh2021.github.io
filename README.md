@@ -31,6 +31,8 @@ pnpm install
 pnpm dev
 ```
 
+**Environment (GitHub Pages):** Copy `.env.example` to `.env.local`. Set `NEXT_PUBLIC_SITE_URL` to the **exact URL visitors use**, with no trailing slash — it powers `metadataBase`, canonical/OG tags, `sitemap.xml`, and `robots.txt`. For a **user/org site** (`<user>.github.io` from a `<user>.github.io` repo), use `https://<user>.github.io`. For a **project site** served at `https://<user>.github.io/<repo>/`, set `next.config.js` `basePath` / `assetPrefix` per Next docs and use a matching `NEXT_PUBLIC_SITE_URL` (often `https://<user>.github.io/<repo>`). CI already defaults this repo to `https://tonyh2021.github.io`; override with a repo **Variable** `NEXT_PUBLIC_SITE_URL` if needed.
+
 ## Build
 
 ```bash
@@ -39,11 +41,14 @@ pnpm build
 
 Static output is generated in `./out/`.
 
-## Deployment
+## Deployment (GitHub Pages)
 
-Pushing to `master` triggers a GitHub Actions workflow that builds the site and deploys the `./out/` directory to the `gh-pages` branch.
+Pushing to `master` runs GitHub Actions: `pnpm build` → upload `./out/` → **GitHub Pages** (static hosting).
 
-Configure GitHub Pages: Settings → Pages → Source: `gh-pages` branch.
+1. Repo **Settings → Pages**: set source to **GitHub Actions** (this workflow uses `deploy-pages`, not the legacy `gh-pages` branch unless you switched it — align Settings with how you publish).
+2. Ensure **`NEXT_PUBLIC_SITE_URL`** in CI matches your live Pages URL so SEO links are not `localhost` (see workflow `env`; optional repo **Variable** override).
+
+[GitHub Pages documentation](https://docs.github.com/pages)
 
 ## License
 

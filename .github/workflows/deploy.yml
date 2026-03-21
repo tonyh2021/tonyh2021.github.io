@@ -35,6 +35,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Next.js
+        env:
+          # Override via repo Variable `NEXT_PUBLIC_SITE_URL` if the site URL changes
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://tonyh2021.github.io' }}
         run: pnpm build
 
       - name: Disable Jekyll

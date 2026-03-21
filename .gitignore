@@ -46,6 +46,11 @@ bower_components
 .next/
 out/
 
+# Env (keep .env.example committed)
+.env
+.env.local
+.env.*.local
+
 # TypeScript incremental build cache
 *.tsbuildinfo
 
