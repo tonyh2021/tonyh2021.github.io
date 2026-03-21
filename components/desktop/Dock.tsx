@@ -82,7 +82,7 @@ export default function Dock({ openWin, wins, hide, toggleLaunchpad, showLaunchp
 
     return (
       <div
-        className={`fixed inset-x-0 bottom-3 ${hide ? "z-0" : "z-9999"} transition-transform duration-300`}
+        className={`fixed inset-x-0 bottom-5 ${hide ? "z-0" : "z-9999"} transition-transform duration-300`}
         style={{
           paddingBottom: "env(safe-area-inset-bottom)",
           transform: dockVisible ? "translateY(0)" : "translateY(110%)",
@@ -106,7 +106,7 @@ export default function Dock({ openWin, wins, hide, toggleLaunchpad, showLaunchp
                       draggable={false}
                     />
                   </div>
-                  <span className="text-[10px] font-medium tracking-tight text-white drop-shadow">
+                  <span className="text-[10px] font-medium tracking-tight text-gray-900 drop-shadow-sm dark:text-white dark:drop-shadow">
                     {app.title}
                   </span>
                 </div>
