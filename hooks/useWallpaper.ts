@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDark } from "@/hooks/useDark";
+import { useMobile } from "@/hooks/useMobile";
 
 interface Wallpaper {
   image: string;
@@ -42,6 +43,7 @@ function msUntilNoon(): number {
 
 export function useWallpaper(): WallpaperInfo {
   const dark = useDark();
+  const isMobile = useMobile();
   const [lightWallpaper, setLightWallpaper] = useState<Wallpaper | null>(null);
 
   useEffect(() => {
@@ -61,5 +63,6 @@ export function useWallpaper(): WallpaperInfo {
 
   if (lightWallpaper === null) return { image: null, video: null };
   const wp = dark ? Wallpapers.night : lightWallpaper;
-  return { image: wp.image, video: wp.video };
+  // Skip animated wallpaper on small viewports — no MP4 fetch/decode/battery cost.
+  return { image: wp.image, video: isMobile ? null : wp.video };
 }

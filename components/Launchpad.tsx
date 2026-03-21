@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function Launchpad({ show, toggle }: Props) {
-  const wallpaper = useWallpaper();
+  const { image: wallpaperImage } = useWallpaper();
   const [search, setSearch] = useState("");
 
   const filtered = search
@@ -26,7 +26,7 @@ export default function Launchpad({ show, toggle }: Props) {
       id="launchpad"
       className="fixed inset-0 z-30 overflow-hidden bg-cover bg-center"
       style={{
-        backgroundImage: wallpaper ? `url(${wallpaper})` : undefined,
+        backgroundImage: wallpaperImage ? `url(${wallpaperImage})` : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
         opacity: show ? 1 : 0,
