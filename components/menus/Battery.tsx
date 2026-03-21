@@ -14,7 +14,7 @@ export default function Battery() {
         ? "bg-yellow-400"
         : "bg-white";
 
-  const fillWidth = 0.1 + bat.level * 0.96; // rem
+  const fillWidth = 0.2 + bat.level * 0.96; // rem
 
   return (
     <div className="flex items-center gap-1.5">
@@ -39,7 +39,7 @@ export default function Battery() {
         </svg>
         {/* fill */}
         <div
-          className={`absolute top-[3px] bottom-[3px] left-[3px] rounded-[1px] ${fillColor}`}
+          className={`absolute top-[3px] bottom-[3px] left-[2px] rounded-[1px] ${fillColor}`}
           style={{ width: `${fillWidth}rem` }}
         />
         {/* lightning bolt when charging */}

@@ -7,6 +7,7 @@ import { useDark } from "@/hooks/useDark";
 import { useShallow } from "zustand/shallow";
 import { music } from "@/configs/music";
 import { isFullScreen } from "@/lib/screen";
+import { PlayIcon, PauseIcon, ForwardIcon, BackwardIcon } from "@heroicons/react/24/solid";
 
 interface Props {
   playing: boolean;
@@ -205,17 +206,33 @@ export default function ControlCenterMenu({
             </div>
           </div>
           <div className="flex items-center gap-2 text-gray-700 dark:text-white/70">
-            <button className="transition-colors hover:text-gray-950 dark:hover:text-white">
-              ⏮
+            <button
+              type="button"
+              aria-label="Previous track"
+              className="transition-colors hover:text-gray-950 disabled:opacity-40 dark:hover:text-white"
+              disabled
+            >
+              <BackwardIcon className="h-5 w-5" aria-hidden />
             </button>
             <button
+              type="button"
               onClick={toggleAudio}
-              className="text-lg transition-colors hover:text-gray-950 dark:hover:text-white"
+              aria-label={playing ? "Pause" : "Play"}
+              className="transition-colors hover:text-gray-950 dark:hover:text-white"
             >
-              {playing ? "⏸" : "▶"}
+              {playing ? (
+                <PauseIcon className="h-5 w-5" aria-hidden />
+              ) : (
+                <PlayIcon className="h-5 w-5" aria-hidden />
+              )}
             </button>
-            <button className="transition-colors hover:text-gray-950 dark:hover:text-white">
-              ⏭
+            <button
+              type="button"
+              aria-label="Next track"
+              className="transition-colors hover:text-gray-950 disabled:opacity-40 dark:hover:text-white"
+              disabled
+            >
+              <ForwardIcon className="h-5 w-5" aria-hidden />
             </button>
           </div>
         </Tile>
