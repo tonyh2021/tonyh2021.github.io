@@ -10,6 +10,7 @@ import { usePostLocale } from "@/hooks/usePostLocale";
 import { resolvePostIndices } from "@/lib/postBundle";
 import { usePostIndexBundle } from "@/contexts/PostIndexContext";
 import ArticleContent from "@/components/apps/ArticleContent";
+import { DocumentTextIcon, CalendarIcon, HashtagIcon } from "@heroicons/react/24/solid";
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -186,7 +187,7 @@ export default function BlogApp() {
             }`}
             onClick={() => applyFilter({ kind: "all" })}
           >
-            <span>📚</span>
+            <DocumentTextIcon className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">Blogs</span>
             <span
               className={`ml-auto pr-2 text-xs ${filter.kind === "all" ? "text-white/70" : "text-gray-500 dark:text-gray-500"}`}
@@ -211,10 +212,10 @@ export default function BlogApp() {
               }`}
               onClick={() => applyFilter({ kind: "year", value: year })}
             >
-              <span className="mr-1.5 text-xs text-gray-400">📅</span>
-              <span className="flex-1 truncate">{year}</span>
+              <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
+              <span className="ml-2 flex-1 truncate">{year}</span>
               <span
-                className={`ml-auto shrink-0 pr-2 text-xs ${filter.kind === "year" && filter.value === year ? "text-white/70" : "text-gray-500"}`}
+                className={`ml-auto pr-2 text-xs ${filter.kind === "year" && filter.value === year ? "text-white/70" : "text-gray-500"}`}
               >
                 {yearCounts[year]}
               </span>
@@ -237,8 +238,8 @@ export default function BlogApp() {
               }`}
               onClick={() => applyFilter({ kind: "tag", value: tag })}
             >
-              <span className="mr-1.5 text-xs text-gray-400">#</span>
-              <span className="flex-1 truncate">{tag}</span>
+              <HashtagIcon className="h-3.5 w-3.5 shrink-0" />
+              <span className="ml-2 flex-1 truncate">{tag}</span>
               <span
                 className={`ml-auto shrink-0 pr-2 text-xs ${filter.kind === "tag" && filter.value === tag ? "text-white/70" : "text-gray-500"}`}
               >
