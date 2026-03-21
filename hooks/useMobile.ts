@@ -3,10 +3,8 @@
 import { useState, useLayoutEffect } from "react";
 
 export function useMobile(breakpoint = 768): boolean {
-  /** Avoid first paint as "desktop" on phones (reduces wrong branch + extra chunk loads). */
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < breakpoint : false,
-  );
+  /** Must match SSR (`false`) to avoid hydration mismatch; real value after layout. */
+  const [isMobile, setIsMobile] = useState(false);
 
   useLayoutEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint);

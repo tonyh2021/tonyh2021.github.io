@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { resolveImageSrc } from "@/lib/imageSrc";
 import { useStore } from "@/store";
 import { useDark } from "@/hooks/useDark";
 import { websites, type SiteSection } from "@/configs/websites";
 import { useMobile } from "@/hooks/useMobile";
-
-const numTrackers = Math.floor(Math.random() * 99 + 1);
 
 function isValidURL(url: string) {
   try {
@@ -76,6 +74,10 @@ function NavSection({
 /* ── New-tab homepage ───────────────────────────────── */
 function HomePage({ onNavigate }: { onNavigate: (url: string) => void }) {
   const dark = useDark();
+  const [numTrackers, setNumTrackers] = useState(12);
+  useEffect(() => {
+    setNumTrackers(Math.floor(Math.random() * 99) + 1);
+  }, []);
   return (
     <div
       className="h-full w-full overflow-y-auto overscroll-none text-gray-900 dark:text-gray-100"

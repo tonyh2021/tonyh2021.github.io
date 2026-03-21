@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useInterval } from "@/hooks/useInterval";
 import { useWallpaper } from "@/hooks/useWallpaper";
 import { useMobile } from "@/hooks/useMobile";
+import { WallpaperLayer } from "@/components/WallpaperLayer";
 import type { SystemPhase } from "@/store/slices/system";
 
 interface Props {
@@ -45,24 +46,20 @@ function SleepScreen({ onWake }: { onWake: () => void }) {
 
   return (
     <div
-      className="h-screen w-screen cursor-none select-none"
-      style={{
-        backgroundImage: image ? `url(${image})` : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="relative h-screen w-screen cursor-none select-none"
       onClick={handleWake}
     >
+      <WallpaperLayer image={image} />
       {video && (
         <video
           key={video}
-          src={video}
+          src={video.startsWith("/") ? video : `/${video}`}
           autoPlay
           muted
           loop
           playsInline
           onCanPlayThrough={() => setVideoReady(true)}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 z-1 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
     </div>

@@ -7,6 +7,7 @@ import { useShallow } from "zustand/shallow";
 import { appConfigs, ALL_WIN_IDS, type AppId } from "@/configs/apps";
 import { useWallpaper } from "@/hooks/useWallpaper";
 import { useMobile } from "@/hooks/useMobile";
+import { WallpaperLayer } from "@/components/WallpaperLayer";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import AppWindow from "./AppWindow";
@@ -185,30 +186,32 @@ export default function MacDesktop() {
     openWin(id);
   };
 
-  // ── Background ──────────────────────────────────────────────────────────────
-  const bgStyle = {
-    backgroundImage: image ? `url(${image})` : undefined,
-    backgroundSize: "cover" as const,
-    backgroundPosition: "center" as const,
+  // ── Background (real `<img>` for LCP; brightness filter on shell) ───────────
+  const shellStyle = {
     filter: `brightness(${brightness * 0.7 + 50}%)`,
   };
 
   if (!mounted) {
-    return <div className="h-screen w-screen" style={bgStyle} />;
+    return (
+      <div className="relative h-screen w-screen" style={shellStyle}>
+        <WallpaperLayer image={image} priority />
+      </div>
+    );
   }
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden" style={bgStyle}>
+    <div className="relative h-screen w-screen overflow-hidden" style={shellStyle}>
+      <WallpaperLayer image={image} priority />
       {video && (
         <video
           key={video}
-          src={video}
+          src={video.startsWith("/") ? video : `/${video}`}
           autoPlay
           muted
           loop
           playsInline
           onCanPlayThrough={() => setVideoReady(true)}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 z-1 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
       {!isMobile && (
@@ -222,7 +225,7 @@ export default function MacDesktop() {
 
       {/* Window container — same bounds as playground-macos .window-bound */}
       <div
-        className="absolute right-0 left-0 overflow-hidden"
+        className="absolute right-0 left-0 z-2 overflow-hidden"
         style={{ top: isMobile ? 0 : TOP_BAR_H, bottom: 76 }}
       >
         {ALL_WIN_IDS.map((id) => {

@@ -41,6 +41,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="author" content={siteConfig.author} />
+        {/* Dark-mode hero: fetch before JS (light mode uses morning vs sunrise by time — no single static preload). */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/wallpapers/SequoiaNight.webp"
+          media="(prefers-color-scheme: dark)"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}})();`,

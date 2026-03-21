@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { user } from "@/configs/user";
 import { useWallpaper } from "@/hooks/useWallpaper";
+import { WallpaperLayer } from "@/components/WallpaperLayer";
 import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 
@@ -22,26 +23,22 @@ export default function Login() {
   return (
     <div
       className="relative flex h-screen w-screen cursor-default flex-col items-center justify-center text-center select-none"
-      style={{
-        backgroundImage: image ? `url(${image})` : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
       onClick={() => setSystemPhase("desktop")}
     >
+      <WallpaperLayer image={image} priority />
       {video && (
         <video
           key={video}
-          src={video}
+          src={video.startsWith("/") ? video : `/${video}`}
           autoPlay
           muted
           loop
           playsInline
           onCanPlayThrough={() => setVideoReady(true)}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 z-1 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
-      <div className="relative -top-10 z-10">
+      <div className="relative z-10 -top-10">
         <Image
           src={user.avatar}
           alt={user.name}
