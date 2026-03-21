@@ -101,7 +101,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       {/* Redirect before React hydration */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.location.replace("/?post=${slug}");`,
+          __html: `window.location.replace("/desk?post=${slug}");`,
         }}
       />
       <script

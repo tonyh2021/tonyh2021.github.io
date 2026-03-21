@@ -7,7 +7,7 @@ export default function PostDeepLink({ slug }: { slug: string }) {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(`/?post=${slug}`);
+    router.replace(`/desk?post=${slug}`);
   }, [slug, router]);
 
   return null;

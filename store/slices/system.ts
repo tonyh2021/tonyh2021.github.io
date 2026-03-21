@@ -1,13 +1,7 @@
 import type { StateCreator } from "zustand";
 import { enterFullScreen, exitFullScreen } from "@/lib/screen";
 
-export type SystemPhase =
-  | "desktop"
-  | "login"
-  | "bootRestart"
-  | "bootShutdown"
-  | "sleep"
-  | "shutdownWait";
+export type SystemPhase = "desktop" | "login" | "sleep";
 
 export interface SystemSlice {
   dark: boolean;
@@ -40,12 +34,18 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
   bluetooth: true,
   airdrop: true,
   fullscreen: false,
-  // Start with a "restart boot" animation, then end up on the login screen.
-  systemPhase: "bootRestart",
+  systemPhase: "login",
   setSystemPhase: (p) => set({ systemPhase: p }),
-  shutdown: () => set({ systemPhase: "bootShutdown" }),
+  shutdown: () => {
+    localStorage.removeItem("desktopDate");
+    localStorage.setItem("shutdown", "1");
+    window.location.replace("/");
+  },
   sleep: () => set({ systemPhase: "sleep" }),
-  restart: () => set({ systemPhase: "bootRestart" }),
+  restart: () => {
+    localStorage.removeItem("desktopDate");
+    window.location.replace("/");
+  },
   toggleDark: () =>
     set((state) => {
       if (typeof document !== "undefined") {
