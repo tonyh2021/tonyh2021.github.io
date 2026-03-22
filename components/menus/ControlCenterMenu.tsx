@@ -9,6 +9,7 @@ import { useShallow } from "zustand/shallow";
 import { music } from "@/configs/music";
 import { isFullScreen } from "@/lib/screen";
 import { PlayIcon, PauseIcon, ForwardIcon, BackwardIcon } from "@heroicons/react/24/solid";
+import { cn } from "@/lib/utils";
 
 interface Props {
   playing: boolean;
@@ -19,39 +20,89 @@ interface Props {
   btnRef: React.RefObject<HTMLDivElement | null>;
 }
 
-function Tile({
-  onClick,
-  className = "",
+function IconBubble({
+  active,
+  activeColor,
+  color,
   children,
 }: {
-  onClick?: () => void;
-  className?: string;
+  active: boolean;
+  activeColor?: string;
+  color?: string;
   children: React.ReactNode;
 }) {
+  const bubbleClass = active
+    ? (activeColor ?? "bg-blue-500 text-white")
+    : (color ?? "bg-white/75 text-gray-800 dark:bg-white/20 dark:text-white");
+
   return (
     <div
-      onClick={onClick}
-      className={`cursor-default rounded-xl border border-black/5 bg-white/22 shadow-none backdrop-blur-md dark:border-white/8 dark:bg-white/[0.07] dark:backdrop-blur-md ${className}`}
+      className={cn(
+        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors",
+        bubbleClass,
+      )}
     >
       {children}
     </div>
   );
 }
 
-function IconBubble({
-  active,
-  color = "bg-blue-500 text-white",
-  children,
-}: {
+interface CCButtonProps {
+  onClick: () => void;
+  className?: string;
   active: boolean;
+  activeColor?: string;
   color?: string;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}
+
+const base =
+  "flex w-full cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-left shadow-none transition-[opacity,transform] duration-150 active:scale-[0.98]";
+
+const surface =
+  "border-white/25 bg-white/55 backdrop-blur-sm hover:opacity-95 dark:border-white/8 dark:bg-white/[0.07] dark:backdrop-blur-md";
+
+const focus =
+  "focus-visible:ring-2 focus-visible:ring-blue-500/35 focus-visible:ring-offset-0 focus-visible:outline-none dark:focus-visible:ring-white/25";
+
+function CCButton({
+  onClick,
+  className,
+  active,
+  activeColor,
+  color,
+  icon,
+  title,
+  subtitle,
+}: CCButtonProps) {
+  return (
+    <button type="button" onClick={onClick} className={cn(base, surface, focus, className)}>
+      <IconBubble active={active} activeColor={activeColor} color={color}>
+        {icon}
+      </IconBubble>
+      <div className="min-w-0">
+        <div className="text-[12px] font-semibold">{title}</div>
+        <div className="text-[10px] font-medium text-gray-600 dark:text-white/80">{subtitle}</div>
+      </div>
+    </button>
+  );
+}
+
+interface CCTileProps {
+  className?: string;
   children: React.ReactNode;
-}) {
+}
+
+function CCTile({ className, children }: CCTileProps) {
   return (
     <div
-      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-        active ? color : "bg-gray-200/90 text-gray-700 dark:bg-white/20 dark:text-white"
-      }`}
+      className={cn(
+        "rounded-xl border border-white/25 bg-white/55 shadow-none backdrop-blur-sm dark:border-white/8 dark:bg-white/[0.07] dark:backdrop-blur-md",
+        "cursor-default",
+        className,
+      )}
     >
       {children}
     </div>
@@ -76,7 +127,7 @@ function RangeSlider({
         max={100}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-gray-300 accent-gray-900 dark:bg-white/20 dark:accent-white"
+        className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-slate-300/70 accent-gray-800 dark:bg-white/20 dark:accent-white"
       />
       <div className="shrink-0 text-gray-600 dark:text-white/60">{icon}</div>
     </div>
@@ -110,70 +161,46 @@ export default function ControlCenterMenu({
   const toggleFullScreen = useStore((s) => s.toggleFullScreen);
 
   return (
-    <div ref={ref} className="fixed top-[33px] right-0 z-10000 sm:right-1.5">
-      <div className="menu-box-surface flex w-72 flex-col gap-1.5 p-2">
+    <div ref={ref} className="fixed top-[33px] right-0 z-10000">
+      <div className="menu-box-surface flex w-80 flex-col gap-2.5 p-2.5">
         {/* Network */}
-        <div className="grid grid-cols-2 gap-1.5">
-          <Tile onClick={toggleWIFI} className="flex items-center gap-2.5 p-3">
-            <IconBubble active={wifi}>
-              <WifiIcon />
-            </IconBubble>
-            <div>
-              <div className="text-sm leading-4 font-semibold">Wi-Fi</div>
-              <div className="text-[11px] text-gray-600 dark:text-white/50">
-                {wifi ? "Home" : "Off"}
-              </div>
-            </div>
-          </Tile>
-          <Tile onClick={toggleBluetooth} className="flex items-center gap-2.5 p-3">
-            <IconBubble active={bluetooth}>
-              <BluetoothIcon />
-            </IconBubble>
-            <div>
-              <div className="text-sm leading-4 font-semibold">Bluetooth</div>
-              <div className="text-[11px] text-gray-600 dark:text-white/50">
-                {bluetooth ? "On" : "Off"}
-              </div>
-            </div>
-          </Tile>
+        <div className="grid grid-cols-2 gap-2.5">
+          <CCButton
+            onClick={toggleWIFI}
+            active={wifi}
+            icon={<WifiIcon />}
+            title="Wi-Fi"
+            subtitle={wifi ? "On" : "Off"}
+          />
+          <CCButton
+            onClick={toggleBluetooth}
+            active={bluetooth}
+            icon={<BluetoothIcon />}
+            title="Bluetooth"
+            subtitle={bluetooth ? "On" : "Off"}
+          />
         </div>
 
         {/* Dark/Light + Fullscreen */}
-        <div className="grid grid-cols-2 gap-1.5">
-          <Tile onClick={toggleDark} className="flex items-center gap-2.5 p-3">
-            <IconBubble
-              active={dark}
-              color={dark ? "bg-gray-600 text-white" : "bg-amber-400 text-gray-900"}
-            >
-              {dark ? <MoonIcon size={18} /> : <SunIcon size={18} />}
-            </IconBubble>
-            <div>
-              <div className="text-sm leading-4 font-semibold">{dark ? "Dark" : "Light"}</div>
-              <div className="text-[11px] text-gray-600 dark:text-white/50">
-                {dark ? "Dark Mode" : "Light Mode"}
-              </div>
-            </div>
-          </Tile>
-          <Tile
+        <div className="grid grid-cols-2 gap-2.5">
+          <CCButton
+            onClick={toggleDark}
+            active={dark}
+            icon={dark ? <MoonIcon size={18} /> : <SunIcon size={18} />}
+            title={dark ? "Dark" : "Light"}
+            subtitle={dark ? "Dark Mode" : "Light Mode"}
+          />
+          <CCButton
             onClick={() => toggleFullScreen(!isFullScreen())}
-            className="flex cursor-pointer items-center gap-2.5 p-3"
-          >
-            <IconBubble active={fullscreen} color="bg-gray-500 text-white">
-              {fullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
-            </IconBubble>
-            <div>
-              <div className="text-sm leading-4 font-semibold">
-                {fullscreen ? "Exit Full" : "Fullscreen"}
-              </div>
-              <div className="text-[11px] text-gray-600 dark:text-white/50">
-                {fullscreen ? "On" : "Off"}
-              </div>
-            </div>
-          </Tile>
+            active={fullscreen}
+            icon={fullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+            title={fullscreen ? "Exit Full" : "Fullscreen"}
+            subtitle={fullscreen ? "On" : "Off"}
+          />
         </div>
 
         {/* Brightness */}
-        <Tile>
+        <CCTile>
           <div className="px-3 pt-2.5 pb-0.5 text-xs font-semibold text-gray-800 dark:text-white/80">
             Display
           </div>
@@ -182,18 +209,18 @@ export default function ControlCenterMenu({
             value={brightness}
             onChange={setBrightness}
           />
-        </Tile>
+        </CCTile>
 
         {/* Volume */}
-        <Tile>
+        <CCTile>
           <div className="px-3 pt-2.5 pb-0.5 text-xs font-semibold text-gray-800 dark:text-white/80">
             Sound
           </div>
           <RangeSlider icon={<VolumeIcon size={12} />} value={volume} onChange={setVolume} />
-        </Tile>
+        </CCTile>
 
         {/* Now Playing */}
-        <Tile className="flex items-center gap-3 px-3 py-2.5">
+        <CCTile className="flex items-center gap-3 px-3 py-2.5">
           <Image
             src={music.cover}
             alt="cover"
@@ -237,23 +264,23 @@ export default function ControlCenterMenu({
               <ForwardIcon className="h-5 w-5" aria-hidden />
             </button>
           </div>
-        </Tile>
+        </CCTile>
       </div>
     </div>
   );
 }
 
 /* ── Icons ── */
-function WifiIcon() {
+function WifiIcon({ size = 18 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
       <path d="M1 9l2 2c5-5 13-5 18 0l2-2C16.5 2.5 7.5 2.5 1 9zm8 8l3 3 3-3a4.24 4.24 0 0 0-6 0zm-4-4l2 2a7 7 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
     </svg>
   );
 }
-function BluetoothIcon() {
+function BluetoothIcon({ size = 17 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
       <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z" />
     </svg>
   );
