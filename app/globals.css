@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "highlight.js/styles/github.css";
 @plugin "@tailwindcss/typography";
 
 @keyframes fadeIn {

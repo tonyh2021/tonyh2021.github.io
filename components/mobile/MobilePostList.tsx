@@ -28,7 +28,7 @@ export default function MobilePostList({ postIndexBundle }: Props) {
     if (typeof window === "undefined") return "zh";
     const saved = localStorage.getItem(LOCALE_KEY) as Locale | null;
     if (saved === "zh" || saved === "en") return saved;
-    return navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en";
+    return "en";
   });
   const divRef = useRef<HTMLDivElement>(null);
 

@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-screen overflow-hidden bg-black">{children}</body>
+      <body className="min-h-screen overflow-hidden">{children}</body>
     </html>
   );
 }

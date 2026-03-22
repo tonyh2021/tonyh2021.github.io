@@ -28,10 +28,7 @@ function formatDate(dateStr: string): string {
 
 export default function TagsApp() {
   const postIndexBundle = usePostIndexBundle();
-  const [locale, setLocale] = useState<Locale>("zh");
-  useEffect(() => {
-    if (!navigator.language.toLowerCase().startsWith("zh")) setLocale("en");
-  }, []);
+  const [locale] = useState<Locale>("en");
 
   const indices = useMemo(
     () => resolvePostIndices(postIndexBundle, locale),

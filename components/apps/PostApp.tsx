@@ -31,7 +31,7 @@ type FilterType =
 export default function PostApp() {
   const postIndexBundle = usePostIndexBundle();
   const [locale, setLocale] = useState<Locale>(() =>
-    navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en",
+    "en",
   );
 
   const indices = resolvePostIndices(postIndexBundle, locale);
