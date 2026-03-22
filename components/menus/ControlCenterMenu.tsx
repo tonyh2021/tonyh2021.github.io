@@ -8,7 +8,14 @@ import { useDark } from "@/hooks/useDark";
 import { useShallow } from "zustand/shallow";
 import { music } from "@/configs/music";
 import { isFullScreen } from "@/lib/screen";
-import { PlayIcon, PauseIcon, ForwardIcon, BackwardIcon } from "@heroicons/react/24/solid";
+import {
+  PlayIcon,
+  PauseIcon,
+  ForwardIcon,
+  BackwardIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon,
+} from "@heroicons/react/24/solid";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -110,17 +117,19 @@ function CCTile({ className, children }: CCTileProps) {
 }
 
 function RangeSlider({
-  icon,
+  leftIcon,
+  rightIcon,
   value,
   onChange,
 }: {
-  icon: React.ReactNode;
+  leftIcon: React.ReactNode;
+  rightIcon: React.ReactNode;
   value: number;
   onChange: (v: number) => void;
 }) {
   return (
     <div className="flex items-center gap-2.5 px-3 py-2.5">
-      <div className="shrink-0 text-gray-600 dark:text-white/50">{icon}</div>
+      <div className="shrink-0 text-gray-600 dark:text-white/50">{leftIcon}</div>
       <input
         type="range"
         min={1}
@@ -129,7 +138,7 @@ function RangeSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-slate-300/70 accent-gray-800 dark:bg-white/20 dark:accent-white"
       />
-      <div className="shrink-0 text-gray-600 dark:text-white/60">{icon}</div>
+      <div className="shrink-0 text-gray-600 dark:text-white/60">{rightIcon}</div>
     </div>
   );
 }
@@ -205,7 +214,8 @@ export default function ControlCenterMenu({
             Display
           </div>
           <RangeSlider
-            icon={<BrightnessIcon size={12} />}
+            leftIcon={<BrightnessLowIcon size={12} />}
+            rightIcon={<BrightnessHighIcon size={12} />}
             value={brightness}
             onChange={setBrightness}
           />
@@ -216,7 +226,12 @@ export default function ControlCenterMenu({
           <div className="px-3 pt-2.5 pb-0.5 text-xs font-semibold text-gray-800 dark:text-white/80">
             Sound
           </div>
-          <RangeSlider icon={<VolumeIcon size={12} />} value={volume} onChange={setVolume} />
+          <RangeSlider
+            leftIcon={<SpeakerXMarkIcon className="h-4 w-4" aria-hidden />}
+            rightIcon={<SpeakerWaveIcon className="h-4 w-4" aria-hidden />}
+            value={volume}
+            onChange={setVolume}
+          />
         </CCTile>
 
         {/* Now Playing */}
@@ -314,7 +329,8 @@ function SunIcon({ size = 14 }: { size?: number }) {
     </svg>
   );
 }
-function BrightnessIcon({ size = 14 }: { size?: number }) {
+
+function BrightnessHighIcon({ size = 14 }: { size?: number }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -325,24 +341,41 @@ function BrightnessIcon({ size = 14 }: { size?: number }) {
       strokeWidth="2"
     >
       <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="4.93" y1="4.93" x2="6.34" y2="6.34" />
-      <line x1="17.66" y1="17.66" x2="19.07" y2="19.07" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.93" y1="19.07" x2="6.34" y2="17.66" />
-      <line x1="17.66" y1="6.34" x2="19.07" y2="4.93" />
+      <line x1="12" y1="1" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="23" />
+      <line x1="1" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+      <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+      <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+      <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
     </svg>
   );
 }
-function VolumeIcon({ size = 14 }: { size?: number }) {
+
+function BrightnessLowIcon({ size = 14 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="3" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="21" />
+      <line x1="3" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="21" y2="12" />
+      <line x1="5.5" y1="5.5" x2="6.8" y2="6.8" />
+      <line x1="17.2" y1="17.2" x2="18.5" y2="18.5" />
+      <line x1="5.5" y1="18.5" x2="6.8" y2="17.2" />
+      <line x1="17.2" y1="6.8" x2="18.5" y2="5.5" />
     </svg>
   );
 }
+
 function FullscreenIcon() {
   return (
     <svg
