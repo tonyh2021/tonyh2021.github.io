@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 function toSrc(path: string | null): string | null {
   if (!path) return null;
@@ -27,7 +28,7 @@ export function WallpaperLayer({
   if (!src) return null;
 
   return (
-    <div className={`pointer-events-none absolute inset-0 z-0 ${className}`} aria-hidden>
+    <div className={cn("pointer-events-none absolute inset-0 z-0", className)} aria-hidden>
       <Image
         src={src}
         alt=""

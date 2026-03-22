@@ -9,6 +9,7 @@ import { useInterval } from "@/hooks/useInterval";
 import { useAudio } from "@/hooks/useAudio";
 import { isFullScreen } from "@/lib/screen";
 import { music } from "@/configs/music";
+import { cn } from "@/lib/utils";
 import AppleMenu from "@/components/menus/AppleMenu";
 import WifiMenu from "@/components/menus/WifiMenu";
 import Battery from "@/components/menus/Battery";
@@ -43,7 +44,7 @@ const TopItem = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={`${base} ${hover} h-6 cursor-default items-center gap-1 rounded px-2 transition-colors ${className}`}
+      className={cn(base, hover, "h-6 cursor-default items-center gap-1 rounded px-2 transition-colors", className)}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
     >
