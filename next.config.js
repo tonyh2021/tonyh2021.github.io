@@ -1,11 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /**
-   * GitHub Pages maps directories (`blog/<slug>/index.html`) to `/blog/<slug>/`.
-   * `blog/<slug>.html` alone often 404s at `/blog/<slug>` with no extensionless rewrite.
-   */
+  // GitHub Pages maps /blog/<slug>/index.html
   trailingSlash: true,
   reactStrictMode: true,
+  experimental: {
+    // Server Components cache to improve back-navigation experience
+    staleTimes: {
+      dynamic: 30, // Dynamic pages cache for 30 seconds
+      static: 600, // Static pages cache for 600 seconds (articles rarely change)
+    },
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -17,22 +21,18 @@ const nextConfig = {
   },
 };
 
-/** Project site: `https://<user>.github.io/<repo>/` — set e.g. `/tonyh2021` in CI vars. */
+/** Handle GitHub Pages subpath */
 const rawBase = (process.env.NEXT_PUBLIC_BASE_PATH || "").trim();
 const basePath =
   rawBase === ""
     ? ""
-    : (rawBase.startsWith("/") ? rawBase : `/${rawBase}`).replace(/\/$/, "");
+    : (rawBase.startsWith("/") ? `/${rawBase}` : `/${rawBase}`).replace(/\/$/, "");
 if (basePath) {
   nextConfig.basePath = basePath;
   nextConfig.assetPrefix = basePath;
 }
 
-/**
- * Static export is required for GitHub Pages, but with `output: "export"` Next will refuse
- * to render unknown `/blog/[slug]` in dev (runtime error before `notFound()`).
- * Enable export only for production `next build` so local `next dev` matches normal App Router behavior.
- */
+/** Enable static export only in production */
 if (process.env.NODE_ENV === "production") {
   nextConfig.output = "export";
 }
