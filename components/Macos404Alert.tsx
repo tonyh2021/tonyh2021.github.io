@@ -140,7 +140,7 @@ export function Macos404Alert() {
                 href="/"
                 className="rounded-md border border-white/8 bg-[#6b6b6b] px-3.5 py-1 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[#787878] active:bg-[#5c5c5c]"
               >
-                Go to Desktop
+                Go to Home
               </Link>
             </div>
           </div>

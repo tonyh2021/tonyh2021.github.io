@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import "highlight.js/styles/github-dark.css";
+@import "highlight.js/styles/github.css";
+@plugin "@tailwindcss/typography";
 
 @keyframes fadeIn {
   from {
@@ -13,17 +14,51 @@
 /* Dark mode: apply when .dark class is on any ancestor */
 @variant dark (&:where(.dark, .dark *));
 
-/* Base */
-html,
-body,
-#__next {
-  height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+/* Prose link + heading overrides (matches tailwind-nextjs-starter-blog) */
+@layer utilities {
+  .prose {
+    & a {
+      color: rgb(59 130 246);
+      &:hover {
+        color: rgb(37 99 235);
+      }
+    }
+    & :where(h1, h2) {
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    & h3 {
+      font-weight: 600;
+    }
+    & :where(code):not(pre code) {
+      color: rgb(99 102 241);
+    }
+  }
+  .prose-invert {
+    & a {
+      color: rgb(96 165 250);
+      &:hover {
+        color: rgb(147 197 253);
+      }
+    }
+    & :where(h1, h2, h3, h4, h5, h6) {
+      color: rgb(243 244 246);
+    }
+  }
 }
 
+/* Base */
 html {
-  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#__next {
+  min-height: 100%;
 }
 
 /* Window title bar — matches playground-macos window-bar class */
@@ -180,8 +215,87 @@ html {
     transform 0.15s;
 }
 
+/* hljs background is always transparent — prose/md-body pre handles the bg */
 .hljs {
   background: transparent !important;
+}
+
+/* Dark mode syntax colors (github-dark palette) */
+.dark .hljs {
+  color: #c9d1d9;
+}
+.dark .hljs-doctag,
+.dark .hljs-keyword,
+.dark .hljs-meta .hljs-keyword,
+.dark .hljs-template-tag,
+.dark .hljs-template-variable,
+.dark .hljs-type,
+.dark .hljs-variable.language_ {
+  color: #ff7b72;
+}
+.dark .hljs-title,
+.dark .hljs-title.class_,
+.dark .hljs-title.class_.inherited__,
+.dark .hljs-title.function_ {
+  color: #d2a8ff;
+}
+.dark .hljs-attr,
+.dark .hljs-attribute,
+.dark .hljs-literal,
+.dark .hljs-meta,
+.dark .hljs-number,
+.dark .hljs-operator,
+.dark .hljs-variable,
+.dark .hljs-selector-attr,
+.dark .hljs-selector-class,
+.dark .hljs-selector-id {
+  color: #79c0ff;
+}
+.dark .hljs-regexp,
+.dark .hljs-string,
+.dark .hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+.dark .hljs-built_in,
+.dark .hljs-symbol {
+  color: #ffa657;
+}
+.dark .hljs-comment,
+.dark .hljs-code,
+.dark .hljs-formula {
+  color: #8b949e;
+}
+.dark .hljs-name,
+.dark .hljs-quote,
+.dark .hljs-selector-tag,
+.dark .hljs-selector-pseudo {
+  color: #7ee787;
+}
+.dark .hljs-subst {
+  color: #c9d1d9;
+}
+.dark .hljs-section {
+  color: #1f6feb;
+  font-weight: bold;
+}
+.dark .hljs-bullet {
+  color: #f2cc60;
+}
+.dark .hljs-emphasis {
+  color: #c9d1d9;
+  font-style: italic;
+}
+.dark .hljs-strong {
+  color: #c9d1d9;
+  font-weight: bold;
+}
+.dark .hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+.dark .hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
 }
 
 /* ── macOS Menu box (Apple menu, WiFi dropdown) ───────────────────── */

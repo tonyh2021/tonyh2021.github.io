@@ -26,7 +26,7 @@ export default function BootPage() {
     } else {
       setPhase("boot");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (phase === "black") return <div className="h-screen w-screen bg-black" />;
