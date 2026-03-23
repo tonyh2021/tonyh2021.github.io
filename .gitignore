@@ -58,3 +58,12 @@ public/data/post-bodies/
 *.tsbuildinfo
 
 *.pem
+
+# OpenSpec
+openspec/
+
+# Claude
+.claude/
+
+# Cursor
+.cursor/
