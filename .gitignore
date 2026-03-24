@@ -67,3 +67,6 @@ openspec/
 
 # Cursor
 .cursor/
+
+# Codex
+.codex/
