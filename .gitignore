@@ -59,6 +59,8 @@ public/data/post-bodies/
 
 *.pem
 
+_drafts/
+
 # OpenSpec
 openspec/
 
