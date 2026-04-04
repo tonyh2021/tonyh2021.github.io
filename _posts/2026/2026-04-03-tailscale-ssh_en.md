@@ -1,11 +1,11 @@
 ---
-
 ## layout: post
 title: "Running Claude Code from My iPhone Using Tailscale + SSH"
 description: "Running Claude Code from My iPhone Using Tailscale + SSH"
 category: articles
 tags: [Claude Code, Tailscale, SSH]
 comments: true
+---
 
 # Running Claude Code from My iPhone Using Tailscale + SSH
 
