@@ -96,6 +96,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     },
     keywords,
   };
+  const plainText = markdownExcerpt(seoPost.content, seoPost.content.length);
+
   return (
     <>
       {/* Redirect before React hydration */}
@@ -108,6 +110,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {/* Full content for crawlers that don't execute JS */}
+      <article aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
+        <h1>{seoPost.frontMatter.title}</h1>
+        {seoPost.frontMatter.description && <p>{seoPost.frontMatter.description}</p>}
+        <p>{plainText}</p>
+      </article>
       <PostDeepLink slug={slug} />
     </>
   );
