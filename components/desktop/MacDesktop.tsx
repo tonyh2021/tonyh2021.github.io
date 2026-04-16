@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 import { appConfigs, ALL_WIN_IDS, type AppId } from "@/configs/apps";
 import { useWallpaper } from "@/hooks/useWallpaper";
 import { WallpaperLayer } from "@/components/WallpaperLayer";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import AppWindow from "./AppWindow";
@@ -113,6 +114,15 @@ export default function MacDesktop() {
       safari: <Safari />,
       vscode: <VSCode />,
       terminal: <Terminal />,
+    }),
+    [],
+  );
+
+  // Per-app title-bar extras (only blog apps get the language toggle).
+  const windowTitleBarExtras = useMemo<Partial<Record<AppId, ReactNode>>>(
+    () => ({
+      blog: <LocaleSwitcher size="sm" />,
+      tags: <LocaleSwitcher size="sm" />,
     }),
     [],
   );
@@ -251,6 +261,7 @@ export default function MacDesktop() {
               setMax={toggleMaxWin}
               setMin={minimizeApp}
               focus={focusWin}
+              titleBarExtras={windowTitleBarExtras[id]}
             >
               {windowContents[id as keyof typeof windowContents]}
             </AppWindow>

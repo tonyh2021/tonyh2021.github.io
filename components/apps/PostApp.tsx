@@ -30,9 +30,7 @@ type FilterType =
 
 export default function PostApp() {
   const postIndexBundle = usePostIndexBundle();
-  const [locale, setLocale] = useState<Locale>(() =>
-    "en",
-  );
+  const locale = useStore((s) => s.locale);
 
   const indices = resolvePostIndices(postIndexBundle, locale);
 
@@ -72,11 +70,14 @@ export default function PostApp() {
     const found = indices.find((p) => p.slug === blogCurrentSlug);
     if (found) {
       setSelectedIndex(found);
+      return;
+    }
+    const otherLocale: Locale = locale === "zh" ? "en" : "zh";
+    const crossIdx = postIndexBundle[otherLocale].find((p) => p.slug === blogCurrentSlug);
+    if (crossIdx) {
+      setSelectedIndex(crossIdx);
     } else {
-      const otherLocale: Locale = locale === "zh" ? "en" : "zh";
-      if (postIndexBundle[otherLocale].some((p) => p.slug === blogCurrentSlug)) {
-        setLocale(otherLocale);
-      }
+      setSelectedIndex(indices[0] ?? null);
     }
   }, [blogCurrentSlug, indices, locale, postIndexBundle]);
 

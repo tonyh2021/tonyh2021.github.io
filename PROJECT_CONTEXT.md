@@ -101,4 +101,4 @@ openspec/          # OpenSpec workflow (tony-blog schema)
 ### SSR / Hydration
 
 - `PostIndexBundle` is fetched server-side and injected via `PostIndexContext` to avoid client re-fetching
-- Zustand store initializes `locale` from `localStorage` at slice creation (client-only; SSR defaults to `"en"`)
+- Zustand slice defaults `locale` to `"en"`; `initLocale()` is called on client mount (alongside `initDark()`) to restore from `localStorage`

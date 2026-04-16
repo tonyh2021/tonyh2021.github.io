@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
-import { resolvePostIndices, type Locale } from "@/lib/postBundle";
+import { resolvePostIndices } from "@/lib/postBundle";
 import { normalizeTags } from "@/lib/utils";
 import type { PostIndexBundle } from "@/lib/types";
 import MobileHeader from "@/components/mobile/MobileHeader";
+import { useStore } from "@/store";
 
-const LOCALE_KEY = "mobileLocale";
 const SCROLL_KEY = "postListScrollTop";
 
 function formatDate(dateStr: string): string {
@@ -24,12 +24,7 @@ interface Props {
 }
 
 export default function MobilePostList({ postIndexBundle }: Props) {
-  const [locale] = useState<Locale>(() => {
-    if (typeof window === "undefined") return "zh";
-    const saved = localStorage.getItem(LOCALE_KEY) as Locale | null;
-    if (saved === "zh" || saved === "en") return saved;
-    return "en";
-  });
+  const locale = useStore((s) => s.locale);
   const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

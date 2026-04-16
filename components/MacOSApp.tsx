@@ -8,9 +8,10 @@ import Login from "./Login";
 import MacDesktop from "./desktop/MacDesktop";
 
 export default function MacOSApp() {
-  const { initDark, systemPhase, setSystemPhase } = useStore(
+  const { initDark, initLocale, systemPhase, setSystemPhase } = useStore(
     useShallow((s) => ({
       initDark: s.initDark,
+      initLocale: s.initLocale,
       systemPhase: s.systemPhase,
       setSystemPhase: s.setSystemPhase,
     })),
@@ -18,6 +19,7 @@ export default function MacOSApp() {
 
   useEffect(() => {
     initDark();
+    initLocale();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

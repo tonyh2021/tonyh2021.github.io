@@ -22,6 +22,7 @@ export interface AppWindowDesktopProps {
   setMax: (id: AppId, target?: boolean) => void;
   setMin: (id: AppId) => void;
   focus: (id: AppId) => void;
+  titleBarExtras?: ReactNode;
   children: ReactNode;
 }
 
@@ -78,6 +79,7 @@ const AppWindowDesktop = memo(function AppWindowDesktop({
   setMax,
   setMin,
   focus,
+  titleBarExtras,
   children,
 }: AppWindowDesktopProps) {
   const [vw, setVw] = useState(1280);
@@ -182,6 +184,16 @@ const AppWindowDesktop = memo(function AppWindowDesktop({
         <span className="inline-block max-w-[60%] truncate text-xs font-semibold text-gray-700 dark:text-gray-300">
           {title}
         </span>
+
+        {titleBarExtras && (
+          <div
+            className="absolute right-0 flex h-full items-center pr-2"
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
+          >
+            {titleBarExtras}
+          </div>
+        )}
       </div>
 
       <div

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useStore } from "@/store";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 const navLinks = [
   { href: "/mobile", label: "Home" },
@@ -19,9 +21,12 @@ export default function MobileFloatingControls() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const initLocale = useStore((s) => s.initLocale);
 
   useEffect(() => {
     setDark(document.documentElement.classList.contains("dark"));
+    initLocale();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDark = () => {
@@ -34,6 +39,7 @@ export default function MobileFloatingControls() {
     <>
       {/* Floating buttons */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-1">
+        {pathname.startsWith("/mobile/posts") && <LocaleSwitcher size="md" />}
         <button
           onClick={toggleDark}
           aria-label="Toggle theme"

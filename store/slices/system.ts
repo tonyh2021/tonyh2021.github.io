@@ -1,5 +1,8 @@
 import type { StateCreator } from "zustand";
 import { enterFullScreen, exitFullScreen } from "@/lib/screen";
+import type { Locale } from "@/lib/postBundle";
+
+const LOCALE_STORAGE_KEY = "tony-blog-locale";
 
 export type SystemPhase = "desktop" | "login" | "sleep";
 
@@ -12,6 +15,7 @@ export interface SystemSlice {
   airdrop: boolean;
   fullscreen: boolean;
   systemPhase: SystemPhase;
+  locale: Locale;
   toggleDark: () => void;
   initDark: () => void;
   setBrightness: (v: number) => void;
@@ -24,6 +28,8 @@ export interface SystemSlice {
   shutdown: () => void;
   sleep: () => void;
   restart: () => void;
+  setLocale: (l: Locale) => void;
+  initLocale: () => void;
 }
 
 export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
@@ -35,6 +41,7 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
   airdrop: true,
   fullscreen: false,
   systemPhase: "login",
+  locale: "en",
   setSystemPhase: (p) => set({ systemPhase: p }),
   shutdown: () => {
     localStorage.removeItem("desktopDate");
@@ -76,4 +83,17 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
       }
       return { fullscreen: v };
     }),
+  setLocale: (l) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LOCALE_STORAGE_KEY, l);
+    }
+    set({ locale: l });
+  },
+  initLocale: () => {
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
+    if (saved === "zh" || saved === "en") {
+      set({ locale: saved });
+    }
+  },
 });

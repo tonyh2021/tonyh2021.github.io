@@ -28,6 +28,7 @@ interface Props {
   setMax: (id: AppId, target?: boolean) => void;
   setMin: (id: AppId) => void;
   focus: (id: AppId) => void;
+  titleBarExtras?: ReactNode;
   children: ReactNode;
 }
 
