@@ -3,6 +3,7 @@ import { enterFullScreen, exitFullScreen } from "@/lib/screen";
 import type { Locale } from "@/lib/postBundle";
 
 const LOCALE_STORAGE_KEY = "tony-blog-locale";
+const DARK_STORAGE_KEY = "tony-blog-dark";
 
 export type SystemPhase = "desktop" | "login" | "sleep";
 
@@ -55,21 +56,27 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
   },
   toggleDark: () =>
     set((state) => {
+      const next = !state.dark;
       if (typeof document !== "undefined") {
-        if (!state.dark) document.documentElement.classList.add("dark");
-        else document.documentElement.classList.remove("dark");
+        document.documentElement.classList.toggle("dark", next);
       }
-      return { dark: !state.dark };
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(DARK_STORAGE_KEY, next ? "1" : "0");
+      }
+      return { dark: next };
     }),
   initDark: () =>
     set(() => {
-      const prefersDark =
-        typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const stored = typeof localStorage !== "undefined"
+        ? localStorage.getItem(DARK_STORAGE_KEY)
+        : null;
+      const dark = stored !== null
+        ? stored === "1"
+        : typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (typeof document !== "undefined") {
-        if (prefersDark) document.documentElement.classList.add("dark");
-        else document.documentElement.classList.remove("dark");
+        document.documentElement.classList.toggle("dark", dark);
       }
-      return { dark: prefersDark };
+      return { dark };
     }),
   setBrightness: (v) => set({ brightness: v }),
   setVolume: (v) => set({ volume: v }),

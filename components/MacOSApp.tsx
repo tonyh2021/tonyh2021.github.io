@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useStore } from "@/store";
 import { useShallow } from "zustand/shallow";
 import SleepOverlay from "./SleepOverlay";
@@ -17,8 +17,13 @@ export default function MacOSApp() {
     })),
   );
 
-  useEffect(() => {
+  // Run before paint so useWallpaper() picks up the correct dark value on first frame.
+  useLayoutEffect(() => {
     initDark();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     initLocale();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
