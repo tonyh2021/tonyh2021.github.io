@@ -55,41 +55,38 @@ export default function MobilePostList({ postIndexBundle }: Props) {
           const tags = normalizeTags(post.frontMatter.tags);
           return (
             <li key={post.slug} className="py-5">
-              <article className="flex flex-col space-y-2 xl:space-y-0">
-                <dl>
-                  <dt className="sr-only">Published on</dt>
-                  <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
-                    <time dateTime={post.frontMatter.date}>
-                      {formatDate(post.frontMatter.date)}
-                    </time>
-                  </dd>
-                </dl>
-                <div className="space-y-3">
-                  <div>
-                    <h2 className="text-2xl leading-8 font-bold tracking-tight">
-                      <Link
-                        href={`/mobile/posts/${post.slug}`}
-                        className="text-gray-900 dark:text-gray-100"
-                      >
+              <Link href={`/mobile/posts/${post.slug}`} className="block">
+                <article className="flex flex-col space-y-2 xl:space-y-0">
+                  <dl>
+                    <dt className="sr-only">Published on</dt>
+                    <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
+                      <time dateTime={post.frontMatter.date}>
+                        {formatDate(post.frontMatter.date)}
+                      </time>
+                    </dd>
+                  </dl>
+                  <div className="space-y-3">
+                    <div>
+                      <h2 className="text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:text-gray-100">
                         {post.frontMatter.title}
-                      </Link>
-                    </h2>
-                    <div className="flex flex-wrap">
-                      {tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="mt-2 mr-3 text-sm font-medium text-blue-500 uppercase hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      </h2>
+                      <div className="flex flex-wrap">
+                        {tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="mt-2 mr-3 text-sm font-medium text-blue-500 uppercase dark:text-blue-400"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="prose max-w-none text-gray-500 dark:text-gray-400">
+                      {post.excerpt}
                     </div>
                   </div>
-                  <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                    {post.excerpt}
-                  </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             </li>
           );
         })}
